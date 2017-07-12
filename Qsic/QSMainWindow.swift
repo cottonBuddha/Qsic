@@ -18,7 +18,8 @@ class QSMainWindow: QSWidget {
         keypad(stdscr, true)
         noecho()
         cbreak()
-        start_color()
+
+//        start_color()
         refresh()
     }
     

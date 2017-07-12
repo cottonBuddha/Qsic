@@ -39,8 +39,6 @@ public var KEY_R_C_BRACE: Int32 = 124
 
 QSMusicController().start()
 
-endwin()
-
 
 
 

@@ -21,25 +21,28 @@ struct MenuItem {
 
 class QSMenuWidget : QSWidget {
     
-    var items : [MenuItem]
+    var items : [MenuItem] = []
     
-    var currentIndex : Int = 0
-    var rowsNum : Int = 9
-    var pagesNum : Int
-    var currentChoice : MenuItem {
-        get {
-            return self.items[currentIndex]
+    var currentIndex : Int = 0 {
+        didSet {
+            if (currentIndex >= 0 && currentIndex < items.count) {
+                self.drawWidget()
+            } else {
+                currentIndex = currentIndex < 0 ? 0 : items.count - 1
+            }
         }
     }
+    var rowsNum : Int = 9
+    var pagesNum : Int
     
-    var selected : (_ selectedIndex: Int) -> ()
-    public init(startX: Int, startY: Int, rowsPerPage: Int, items: [MenuItem], selected: @escaping (_ selectedIndex: Int) -> ()) {
+    var selected : (_ selectedItem: MenuItem) -> ()
+    public init(startX: Int, startY: Int, width: Int, rowsPerPage: Int, items: [MenuItem], selected: @escaping (_ selectedItem: MenuItem) -> ()) {
         self.rowsNum = rowsPerPage > 0 ? rowsPerPage : 1
         self.items = items
         self.selected = selected
         let num = self.items.count / rowsPerPage
         self.pagesNum = self.items.count % rowsPerPage == 0 ? num : num + 1
-        super.init(startX: startX, startY: startY, width: Int(COLS-2), height: rowsPerPage)
+        super.init(startX: startX, startY: startY, width: width, height: rowsPerPage)
     }
     
     override func drawWidget() {
@@ -58,30 +61,24 @@ class QSMenuWidget : QSWidget {
 
         for index in 0..<items.count {
             init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_BLACK))
-//            let line = index + 1
             mvwaddstr(self.window, Int32(index), 0, items[index].title)
-            mvwchgat(self.window, 0, 0, -1, 2097152, 1, nil)
+            mvwchgat(self.window, Int32(self.currentIndex), 0, -1, 2097152, 1, nil)
             
         }
+        
+        mvcur(0, 0, 0, 0)
     }
-    
-
-    
 }
 
 
 extension QSMenuWidget {
     
     func up() {
-        if self.currentIndex > 0 {
-            self.currentIndex = self.currentIndex - 1
-            mvwchgat(self.window, Int32(self.currentIndex), 0, -1, 2097152, 1, nil)
-
-        }
+        self.currentIndex = self.currentIndex - 1
     }
     
     func down() {
-        
+        self.currentIndex = self.currentIndex + 1
     }
     
     func left() {

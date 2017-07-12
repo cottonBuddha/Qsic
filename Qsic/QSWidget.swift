@@ -38,7 +38,6 @@ class QSWidget {
             self.width = superwidget.width - self.startX
         }
         self.window = subwin(superwidget.window, Int32(self.height), Int32(self.width), Int32(self.startY), Int32(self.startX))
-        keypad(self.window, true)
 //        wborder(self.window, 0, 0, 0, 0, 0, 0, 0, 0)
 
     }
@@ -54,28 +53,16 @@ class QSWidget {
     public func resize() {
         
     }
-}
-
-extension QSWidget {
     
     public func addSubWidget(widget:QSWidget) {
         
         widget.initWidgetOnSuperwidget(superwidget: self)
         widget.drawWidget()
     }
-    
-    public func removeFromSuperwidget() {
-        
-    }
 
-    public func insertSubwidget() {
-        
-    }
-    
-    public func bringSubwidgetToFront() {
-        
-    }
-    
 }
 
+protocol OperatorationProtocol {
+    
+}
 

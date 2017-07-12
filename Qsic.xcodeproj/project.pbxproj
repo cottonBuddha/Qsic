@@ -1,0 +1,290 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		43CBD4D21F0FD97A005D6766 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D11F0FD97A005D6766 /* main.swift */; };
+		43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */; };
+		43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DA1F0FDB75005D6766 /* QSProgressWidget.swift */; };
+		43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DC1F10B901005D6766 /* QSWidget.swift */; };
+		43CBD4DF1F114322005D6766 /* QSMainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DE1F114322005D6766 /* QSMainWindow.swift */; };
+		43CBD4E21F114467005D6766 /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 43CBD4E11F114467005D6766 /* libncurses.5.4.tbd */; };
+		FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		43CBD4CC1F0FD97A005D6766 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		43CBD4CE1F0FD97A005D6766 /* Qsic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Qsic; sourceTree = BUILT_PRODUCTS_DIR; };
+		43CBD4D11F0FD97A005D6766 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMenuWidget.swift; sourceTree = "<group>"; };
+		43CBD4DA1F0FDB75005D6766 /* QSProgressWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSProgressWidget.swift; sourceTree = "<group>"; };
+		43CBD4DC1F10B901005D6766 /* QSWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSWidget.swift; sourceTree = "<group>"; };
+		43CBD4DE1F114322005D6766 /* QSMainWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMainWindow.swift; sourceTree = "<group>"; };
+		43CBD4E11F114467005D6766 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
+		FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMusicController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		43CBD4CB1F0FD97A005D6766 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43CBD4E21F114467005D6766 /* libncurses.5.4.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		43CBD4C51F0FD97A005D6766 = {
+			isa = PBXGroup;
+			children = (
+				43CBD4D01F0FD97A005D6766 /* Qsic */,
+				43CBD4CF1F0FD97A005D6766 /* Products */,
+				43CBD4E01F114467005D6766 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		43CBD4CF1F0FD97A005D6766 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				43CBD4CE1F0FD97A005D6766 /* Qsic */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		43CBD4D01F0FD97A005D6766 /* Qsic */ = {
+			isa = PBXGroup;
+			children = (
+				43CBD4D11F0FD97A005D6766 /* main.swift */,
+				43CBD4DA1F0FDB75005D6766 /* QSProgressWidget.swift */,
+				43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */,
+				43CBD4DC1F10B901005D6766 /* QSWidget.swift */,
+				43CBD4DE1F114322005D6766 /* QSMainWindow.swift */,
+				FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */,
+			);
+			path = Qsic;
+			sourceTree = "<group>";
+		};
+		43CBD4E01F114467005D6766 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				43CBD4E11F114467005D6766 /* libncurses.5.4.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		43CBD4CD1F0FD97A005D6766 /* Qsic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43CBD4D51F0FD97A005D6766 /* Build configuration list for PBXNativeTarget "Qsic" */;
+			buildPhases = (
+				43CBD4CA1F0FD97A005D6766 /* Sources */,
+				43CBD4CB1F0FD97A005D6766 /* Frameworks */,
+				43CBD4CC1F0FD97A005D6766 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Qsic;
+			productName = Qsic;
+			productReference = 43CBD4CE1F0FD97A005D6766 /* Qsic */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		43CBD4C61F0FD97A005D6766 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = cottonBuddha;
+				TargetAttributes = {
+					43CBD4CD1F0FD97A005D6766 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 43CBD4C91F0FD97A005D6766 /* Build configuration list for PBXProject "Qsic" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 43CBD4C51F0FD97A005D6766;
+			productRefGroup = 43CBD4CF1F0FD97A005D6766 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				43CBD4CD1F0FD97A005D6766 /* Qsic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		43CBD4CA1F0FD97A005D6766 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */,
+				43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */,
+				43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */,
+				43CBD4D21F0FD97A005D6766 /* main.swift in Sources */,
+				FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */,
+				43CBD4DF1F114322005D6766 /* QSMainWindow.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		43CBD4D31F0FD97A005D6766 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		43CBD4D41F0FD97A005D6766 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		43CBD4D61F0FD97A005D6766 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		43CBD4D71F0FD97A005D6766 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		43CBD4C91F0FD97A005D6766 /* Build configuration list for PBXProject "Qsic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43CBD4D31F0FD97A005D6766 /* Debug */,
+				43CBD4D41F0FD97A005D6766 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43CBD4D51F0FD97A005D6766 /* Build configuration list for PBXNativeTarget "Qsic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43CBD4D61F0FD97A005D6766 /* Debug */,
+				43CBD4D71F0FD97A005D6766 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 43CBD4C61F0FD97A005D6766 /* Project object */;
+}

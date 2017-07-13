@@ -16,51 +16,93 @@ class QSMusicController {
     
     private var ic : Int32?
     
-    private var windows : [QSWidget] = []
+    var navigator : QSNavigator?
     
     func start() {
         
-        self.initHomeMenu()
+        self.navigator = QSNavigator.init(rootWidget: self.initHomeMenu())
+        self.mainwin.addNavigator(navigator: self.navigator!)
         self.listenToInstructions()
         
         mainwin.endWin()
     }
     
-    func initHomeMenu() {
-        let menuItem0 = MenuItem.init(itemTitle: "推荐", itemCode: 0)
-        let menuItem1 = MenuItem.init(itemTitle: "榜单", itemCode: 1)
-        let menuItem2 = MenuItem.init(itemTitle: "歌手", itemCode: 2)
-        let menuItem3 = MenuItem.init(itemTitle: "搜索", itemCode: 3)
-        let menuItem4 = MenuItem.init(itemTitle: "帮助", itemCode: 4)
-
-        let mainMenu = QSMenuWidget.init(startX: 17, startY: 7, width: 4,rowsPerPage: 9, items: [menuItem0,menuItem1,menuItem2,menuItem3,menuItem4]) { (item) in
+    func initHomeMenu() -> QSMenuWidget {
+        let menuData = [("推荐",0),
+                        ("榜单",1),
+                        ("歌手",2),
+                        ("搜索",3),
+                        ("帮助",4)];
+        
+        var menuItems : [MenuItem] = []
+        menuData.forEach {
+            let item = MenuItem.init(itemTitle: $0.0, itemCode: $0.1)
+            menuItems.append(item)
+        }
+        
+        let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
+            
+//            switch item.code {
+//            case 0 :
+//                
+//            default :
+//                break
+//            }
             
         }
         
-        self.windows.append(mainMenu)
-        self.mainwin.addSubWidget(widget: mainMenu)
+        return mainMenu
+    }
+    
+    func initSecMenu() -> QSMenuWidget {
+        let menuData = [("悲伤",0),
+                        ("逆流",1),
+                        ("成河",2),
+                        ("搜索",3),
+                        ("帮助",4)];
+        
+        var menuItems : [MenuItem] = []
+        menuData.forEach {
+            let item = MenuItem.init(itemTitle: $0.0, itemCode: $0.1)
+            menuItems.append(item)
+        }
+        
+        let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
+            
+            //            switch item.code {
+            //            case 0 :
+            //
+            //            default :
+            //                break
+            //            }
+            
+        }
+        
+        return mainMenu
     }
     
     func listenToInstructions() {
         ic = getch()
-        ch  = Character(UnicodeScalar(UInt32(ic!))!)
+        ch = Character(UnicodeScalar(UInt32(ic!))!)
         
         while ch != "q" {
-            let widget = self.windows.last as? QSMenuWidget
 
             switch Int32(ic!) {
                 
             case KEY_RIGHT :
-                widget?.right()
+                navigator?.currentWidget?.right()
                 
             case KEY_LEFT :
-                widget?.left()
+                navigator?.currentWidget?.left()
+
                 
             case KEY_UP :
-                widget?.up()
+                navigator?.currentWidget?.up()
+
                 
             case KEY_DOWN :
-                widget?.down()
+                navigator?.currentWidget?.down()
+
                 
             case KEY_A_LOW :
                 print("m")

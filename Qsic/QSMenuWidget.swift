@@ -71,13 +71,13 @@ class QSMenuWidget : QSWidget {
 }
 
 
-extension QSMenuWidget {
+extension QSMenuWidget{
     
     func up() {
         self.currentIndex = self.currentIndex - 1
     }
     
-    func down() {
+    func down() { 
         self.currentIndex = self.currentIndex + 1
     }
     

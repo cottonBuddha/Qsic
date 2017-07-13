@@ -9,7 +9,7 @@
 import Foundation
 import Darwin.ncurses
 
-class QSWidget {
+class QSWidget : OperatorationProtocol{
 
     var startX : Int
     var startY : Int
@@ -20,6 +20,8 @@ class QSWidget {
     
     var focused : Bool
     
+    weak var superWidget : QSWidget?
+    var subWidgets : [QSWidget]?
 //    var bgColor : WidgetUIColor
 
     public init(startX:Int, startY:Int, width:Int, height:Int) {
@@ -55,14 +57,74 @@ class QSWidget {
     }
     
     public func addSubWidget(widget:QSWidget) {
-        
+        widget.superWidget = self
+        self.subWidgets?.append(widget)
         widget.initWidgetOnSuperwidget(superwidget: self)
         widget.drawWidget()
+        widget.subWidgets?.forEach({ (widget) in
+            widget.addSubWidget(widget: widget)
+        })
+
+    }
+    
+    public func removeSubWidget(widget:QSWidget) {
+        if let index = self.subWidgets?.index(of: widget) {
+            self.subWidgets?.remove(at: index)
+            widget.destroyWindow()
+        }
+    }
+    
+    public func removeSubWidgets() {
+        self.subWidgets?.removeAll()
+        self.drawWidget()
+    }
+    
+    private func destroyWindow() {
+        delwin(self.window)
     }
 
 }
 
-protocol OperatorationProtocol {
+extension QSWidget : Equatable {
     
+    public static func ==(lhs: QSWidget, rhs: QSWidget) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    }
 }
 
+
+
+protocol OperatorationProtocol {
+    func up();
+    
+    func down();
+    
+    func left();
+    
+    func right();
+    
+    func enter();
+}
+
+extension OperatorationProtocol {
+    
+    func up() {
+        
+    }
+    
+    func down() {
+        
+    }
+    
+    func left() {
+        
+    }
+    
+    func right() {
+        
+    }
+    
+    func enter() {
+        
+    }
+}

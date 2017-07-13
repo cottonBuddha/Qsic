@@ -9,7 +9,7 @@
 import Foundation
 import Darwin.ncurses
 
-class QSWidget : OperatorationProtocol{
+class QSWidget {
 
     var startX : Int
     var startY : Int
@@ -79,52 +79,18 @@ class QSWidget : OperatorationProtocol{
         self.drawWidget()
     }
     
-    private func destroyWindow() {
+    public func destroyWindow() {
         delwin(self.window)
     }
 
+    public func handleWithKeyEvent(keyCode:Int32) {
+        
+    }
 }
 
 extension QSWidget : Equatable {
     
     public static func ==(lhs: QSWidget, rhs: QSWidget) -> Bool {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
-    }
-}
-
-
-
-protocol OperatorationProtocol {
-    func up();
-    
-    func down();
-    
-    func left();
-    
-    func right();
-    
-    func enter();
-}
-
-extension OperatorationProtocol {
-    
-    func up() {
-        
-    }
-    
-    func down() {
-        
-    }
-    
-    func left() {
-        
-    }
-    
-    func right() {
-        
-    }
-    
-    func enter() {
-        
     }
 }

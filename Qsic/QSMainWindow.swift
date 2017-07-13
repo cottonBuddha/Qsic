@@ -17,8 +17,7 @@ class QSMainWindow: QSWidget {
         self.window = initscr()
         keypad(stdscr, true)
         noecho()
-        cbreak()
-
+        raw()
 //        start_color()
         refresh()
     }

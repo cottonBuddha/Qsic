@@ -2,7 +2,7 @@
 //  QSMusicController.swift
 //  Qsic
 //
-//  Created by 江齐松 on 2017/7/12.
+//  Created by cottonBuddha on 2017/7/12.
 //  Copyright © 2017年 cottonBuddha. All rights reserved.
 //
 
@@ -22,6 +22,9 @@ class QSMusicController {
         
         self.navigator = QSNavigator.init(rootWidget: self.initHomeMenu())
         self.mainwin.addNavigator(navigator: self.navigator!)
+        
+//        self.mainwin.addSubWidget(widget: self.initHomeMenu())
+
         self.listenToInstructions()
         
         mainwin.endWin()
@@ -41,14 +44,9 @@ class QSMusicController {
         }
         
         let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
-            
-//            switch item.code {
-//            case 0 :
-//                
-//            default :
-//                break
-//            }
-            
+            self.navigator?.pushTo(self.initSecMenu())
+//            self.mainwin.addSubWidget(widget: self.initSecMenu())
+
         }
         
         return mainMenu
@@ -68,54 +66,17 @@ class QSMusicController {
         }
         
         let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
-            
-            //            switch item.code {
-            //            case 0 :
-            //
-            //            default :
-            //                break
-            //            }
-            
+            self.navigator?.pop()
         }
         
         return mainMenu
     }
     
     func listenToInstructions() {
-        ic = getch()
-        ch = Character(UnicodeScalar(UInt32(ic!))!)
-        
-        while ch != "q" {
-
-            switch Int32(ic!) {
-                
-            case KEY_RIGHT :
-                navigator?.currentWidget?.right()
-                
-            case KEY_LEFT :
-                navigator?.currentWidget?.left()
-
-                
-            case KEY_UP :
-                navigator?.currentWidget?.up()
-
-                
-            case KEY_DOWN :
-                navigator?.currentWidget?.down()
-
-                
-            case KEY_A_LOW :
-                print("m")
-                
-            default :
-                break
-            }
-            
+        repeat {
             ic = getch()
-            ch  = Character(UnicodeScalar(UInt32(ic!))!)
-            
-        }
-
+            self.navigator?.currentWidget?.handleWithKeyEvent(keyCode: ic!)
+        } while ic != KEY_Q_LOW
     }
     
 }

@@ -13,6 +13,8 @@ struct MenuItem {
     var title : String
     var code : Int
     
+    weak var navigator : QSNavigator?
+    
     init(itemTitle : String, itemCode : Int) {
         self.title = itemTitle
         self.code = itemCode
@@ -68,38 +70,22 @@ class QSMenuWidget : QSWidget {
         
         mvcur(0, 0, 0, 0)
     }
+    
+    override func handleWithKeyEvent(keyCode:Int32) {
+        switch keyCode {
+        case KEY_UP:
+            self.currentIndex = self.currentIndex - 1
+            
+        case KEY_DOWN:
+            self.currentIndex = self.currentIndex + 1
+          
+        case 10:
+            self.selected(self.items[self.currentIndex])
+
+        default:
+            break
+        }
+    }
+
 }
-
-
-extension QSMenuWidget{
-    
-    func up() {
-        self.currentIndex = self.currentIndex - 1
-    }
-    
-    func down() { 
-        self.currentIndex = self.currentIndex + 1
-    }
-    
-    func left() {
-        
-    }
-    
-    func right() {
-        
-    }
-    
-    func enter() {
-        
-    }
-}
-
-
-
-
-
-
-
-
-
 

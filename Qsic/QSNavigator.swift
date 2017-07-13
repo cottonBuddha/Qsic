@@ -2,7 +2,7 @@
 //  QSNavigator.swift
 //  Qsic
 //
-//  Created by 江齐松 on 2017/7/13.
+//  Created by cottonBuddha on 2017/7/13.
 //  Copyright © 2017年 cottonBuddha. All rights reserved.
 //
 
@@ -17,18 +17,21 @@ class QSNavigator {
     public init(rootWidget:QSWidget) {
         
         self.rootWidget = rootWidget
-
+        self.currentWidget = rootWidget
     }
     
     func pushTo(_ widget:QSWidget) {
-        
+        self.mainWin?.addSubWidget(widget: widget)
         widgets.append(widget)
         self.currentWidget = widget
     }
     
     func pop() {
+        widgets.last?.destroyWindow()
         widgets.removeLast()
-//        self.removeSubWidget(widget: currentWidget!)
+        self.currentWidget = self.rootWidget!
+        self.mainWin?.addSubWidget(widget: self.rootWidget!)
+        //有add就有remove，补完remove方法
     }
     
     

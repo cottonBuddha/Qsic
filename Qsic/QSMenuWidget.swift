@@ -68,7 +68,8 @@ class QSMenuWidget : QSWidget {
             
         }
         
-        mvcur(0, 0, 0, 0)
+//        mvcur(0, 0, 0, 0)
+        move(0, 0)
     }
     
     override func handleWithKeyEvent(keyCode:Int32) {

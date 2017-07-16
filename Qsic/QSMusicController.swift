@@ -25,9 +25,9 @@ class QSMusicController {
         
 //        self.mainwin.addSubWidget(widget: self.initHomeMenu())
 
-        self.listenToInstructions()
+//        self.listenToInstructions()
         
-        mainwin.endWin()
+//        mainwin.endWin()
     }
     
     func initHomeMenu() -> QSMenuWidget {
@@ -43,8 +43,8 @@ class QSMusicController {
             menuItems.append(item)
         }
         
-        let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
-            self.navigator?.pushTo(self.initSecMenu())
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
+//            self.navigator?.pushTo(self.initSecMenu())
 //            self.mainwin.addSubWidget(widget: self.initSecMenu())
 
         }
@@ -52,31 +52,11 @@ class QSMusicController {
         return mainMenu
     }
     
-    func initSecMenu() -> QSMenuWidget {
-        let menuData = [("悲伤",0),
-                        ("逆流",1),
-                        ("成河",2),
-                        ("搜索",3),
-                        ("帮助",4)];
-        
-        var menuItems : [MenuItem] = []
-        menuData.forEach {
-            let item = MenuItem.init(itemTitle: $0.0, itemCode: $0.1)
-            menuItems.append(item)
-        }
-        
-        let mainMenu = QSMenuWidget.init(startX: 0, startY: 0, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
-            self.navigator?.pop()
-        }
-        
-        return mainMenu
-    }
-    
     func listenToInstructions() {
-        repeat {
+//        repeat {
             ic = getch()
             self.navigator?.currentWidget?.handleWithKeyEvent(keyCode: ic!)
-        } while ic != KEY_Q_LOW
+//        } while ic != KEY_Q_LOW
     }
     
 }

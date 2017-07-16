@@ -37,7 +37,19 @@ public var KEY_Z_LOW: Int32 = 122
 public var KEY_L_C_BRACE: Int32 = 123
 public var KEY_R_C_BRACE: Int32 = 124
 
+
+API.shared.GET(urlStr: "http://music.163.com/api/artist/6452", params: nil) { (data, response, error) in
+    if (error != nil) {
+        print(error ?? "")
+    } else {
+        if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
+            print("jsonDic:",json)
+        }
+    }
+}
 QSMusicController().start()
+
+
 
 
 

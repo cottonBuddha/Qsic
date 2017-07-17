@@ -15,7 +15,9 @@
 		43CBD4E21F114467005D6766 /* libncurses.5.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 43CBD4E11F114467005D6766 /* libncurses.5.4.tbd */; };
 		43CBD4E81F1B665E005D6766 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4E71F1B665E005D6766 /* API.swift */; };
 		FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */; };
+		FC5DA85C1F1CAF09000485DA /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA85B1F1CAF09000485DA /* SwCrypt.swift */; };
 		FC6AD8AA1F17503700E7E4F1 /* QSNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6AD8A91F17503700E7E4F1 /* QSNavigator.swift */; };
+		FCE294701F1C70A100097942 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE2946F1F1C70A100097942 /* extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,7 +42,9 @@
 		43CBD4E11F114467005D6766 /* libncurses.5.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.5.4.tbd; path = usr/lib/libncurses.5.4.tbd; sourceTree = SDKROOT; };
 		43CBD4E71F1B665E005D6766 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMusicController.swift; sourceTree = "<group>"; };
+		FC5DA85B1F1CAF09000485DA /* SwCrypt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwCrypt.swift; sourceTree = "<group>"; };
 		FC6AD8A91F17503700E7E4F1 /* QSNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSNavigator.swift; sourceTree = "<group>"; };
+		FCE2946F1F1C70A100097942 /* extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,8 @@
 				FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */,
 				FC6AD8A91F17503700E7E4F1 /* QSNavigator.swift */,
 				43CBD4E71F1B665E005D6766 /* API.swift */,
+				FCE2946F1F1C70A100097942 /* extension.swift */,
+				FC5DA85B1F1CAF09000485DA /* SwCrypt.swift */,
 			);
 			path = Qsic;
 			sourceTree = "<group>";
@@ -155,7 +161,9 @@
 			files = (
 				43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */,
 				43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */,
+				FC5DA85C1F1CAF09000485DA /* SwCrypt.swift in Sources */,
 				43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */,
+				FCE294701F1C70A100097942 /* extension.swift in Sources */,
 				43CBD4D21F0FD97A005D6766 /* main.swift in Sources */,
 				FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */,
 				43CBD4DF1F114322005D6766 /* QSMainWindow.swift in Sources */,

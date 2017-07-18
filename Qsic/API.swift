@@ -76,19 +76,18 @@ class API {
     }
     
     func POST(urlStr:String, params:[String:String]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
-        let url : URL = URL.init(string: "")!
+        let url : URL = URL.init(string: urlStr)!
         var request = URLRequest.init(url: url)
         request.httpMethod = "POST"
         if (params != nil) && (params!.count > 0){
             do {
-                
                 let jsonData = try JSONSerialization.data(withJSONObject: params!, options: .prettyPrinted)
-                let data = encryptedRequest(content: jsonData)
-                request.httpBody = data
+                let jsonStr = String.init(data: jsonData, encoding: String.Encoding.utf8)
+                let bodyData = self.encryptedRequest(content: jsonStr!)
+                request.httpBody = bodyData
             } catch {
-                
+                request.httpBody = nil
             }
-            
             
         }
         let semaphore = DispatchSemaphore.init(value: 0)
@@ -105,7 +104,13 @@ class API {
     
     //登录
     func login(username:String, password:String) {
-        
+        let url = self.urlDic["login"]
+        let loginfo = ["username":"18662867625","password":"jqsjsssjp1","rememberLogin":"true"]
+        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+            if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
+                print("jsonDic:",json)
+            }
+        }
     }
     
     //手机登录
@@ -155,18 +160,19 @@ class API {
     let nonce = "0CoJUm6Qyw8W8jud"
     let pubKey = "010001"
     
-    func encryptedRequest(content:Data) -> Dictionary<String, Any> {
-        let secKey = createSecretKey().data(using: String.Encoding.utf8)
-        let modulusData = self.modulus.data(using: String.Encoding.utf8)
-        let nonceData = self.nonce.data(using: String.Encoding.utf8)
-        let pubkeyData = self.pubKey.data(using: String.Encoding.utf8)
-        let encData = aesEncrypt(content: aesEncrypt(content: content, secKey: nonceData!)!, secKey: secKey!)
-        let encSecData = rsaEncrypt(content: secKey!, pubKey: pubkeyData!, modulus: modulusData!)
-        
-        return ["params": encData!, "encSecKey": encSecData!]
+    func encryptedRequest(content:String) -> Data? {
+        let secKey = createSecretKey()
+
+        let encContent = aesEncrypt(content: aesEncrypt(content: content, secKey: nonce)!, secKey: secKey)
+        let encSec = rsaEncrypt(content: secKey, pubKey: pubKey, modulus: modulus)
+        let bodyDic = ["params": encContent!, "encSecKey": encSec!]
+        do {
+            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDic, options: .prettyPrinted)
+            return bodyData
+        }
     }
     
-    //16为随机字符串
+    //16位随机字符串
     func createSecretKey() -> String{
         let min : UInt32 = 33
         let max : UInt32 = 127
@@ -179,35 +185,59 @@ class API {
     }
 
     //AES加密
-    func aesEncrypt(content:Data, secKey:Data) -> Data?{
-//        let pad = 16 - content.characters.count % 16
-//        var padString = ""
-//        (0..<pad).forEach { (_) in
-//            padString.append("")
-//        }
-//        let newContent = content.appending(padString)
+    func aesEncrypt(content:String, secKey:String) -> String?{
         
         let iv = "0102030405060708".data(using: String.Encoding.utf8)
         
-        let data = try? CC.crypt(.encrypt, blockMode: .cbc, algorithm: .aes, padding: .pkcs7Padding, data: content, key: secKey, iv: iv!)
+        let data = try? CC.crypt(.encrypt, blockMode: .cbc, algorithm: .aes, padding: .pkcs7Padding, data: content.data(using: String.Encoding.utf8)!, key: secKey.data(using: String.Encoding.utf8)!, iv: iv!)
         
         if data != nil {
-            return data?.base64EncodedData()
+            return data?.base64EncodedString()
         } else {
             return nil
         }
     }
     
     //RSA加密
-    func rsaEncrypt(content:Data, pubKey:Data, modulus:Data) -> Data?{
-        let data = try? CC.RSA.encrypt(content, derKey: pubKey, tag: modulus, padding: .pkcs1, digest: .sha1)
-        return data
+    func rsaEncrypt(content:String, pubKey:String, modulus:String) -> String?{
+        let radix = 16
+        let rText = String.init(content.characters.reversed())
+        let biText = Int((rText.data(using: String.Encoding.utf8)?.hexadecimalString())!,radix: radix)
+        let biEx = Int(pubKey,radix: radix)
+        let biMod = Int(modulus,radix: radix)
+        let biRet = modPow(firstArg: biText!, secArg: biEx!, thirdArg: biMod!)
+        let encText = String().appendingFormat("%x", biRet)
+        
+        return addPadding(encText: encText, modulus: modulus)
+    }
+    
+    private func modPow(firstArg a:Int, secArg b:Int, thirdArg c:Int) -> Int{
+        var result = a
+        (0..<b).forEach { (num) in
+            result = result * a
+        }
+        
+        return result % c
+    }
+    
+    
+    private func addPadding(encText:String, modulus:String) -> String {
+        var ml = modulus.characters.count
+        for char in modulus.characters {
+            if char == "0" {
+                ml = ml - 1
+            } else {
+                break
+            }
+        }
+        
+        let num = ml - encText.characters.count
+        var prefix = ""
+        (0..<num).forEach { (num) in
+            prefix.append(Character.init("0"))
+        }
+        
+        return prefix + encText
     }
 }
-
-
-
-
-
-
 

@@ -68,7 +68,9 @@ class API {
 
         let dataTask = session.dataTask(with: request) { (data, response, error) in
             completionHandler(data,response,error)
+            
             semaphore.signal()
+
         }
         
         dataTask.resume()
@@ -93,8 +95,9 @@ class API {
         let semaphore = DispatchSemaphore.init(value: 0)
         let session = URLSession.shared
         let dataTask = session.dataTask(with: request) { (data, response, error) in
-            completionHandler(data,response,error)
             semaphore.signal()
+            completionHandler(data,response,error)
+
         }
         
         dataTask.resume()
@@ -106,7 +109,7 @@ class API {
     func login(username:String, password:String) {
         let url = self.urlDic["login"]
         let loginfo = ["username":"18662867625","password":"jqsjsssjp1","rememberLogin":"true"]
-        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+        self.GET(urlStr: url!, params: nil) { (data, response, error) in
             if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
                 print("jsonDic:",json)
             }
@@ -202,22 +205,13 @@ class API {
     func rsaEncrypt(content:String, pubKey:String, modulus:String) -> String?{
         let radix = 16
         let rText = String.init(content.characters.reversed())
-        let biText = Int((rText.data(using: String.Encoding.utf8)?.hexadecimalString())!,radix: radix)
-        let biEx = Int(pubKey,radix: radix)
-        let biMod = Int(modulus,radix: radix)
-        let biRet = modPow(firstArg: biText!, secArg: biEx!, thirdArg: biMod!)
-        let encText = String().appendingFormat("%x", biRet)
+        let biText = BInt.init(number: (rText.data(using: String.Encoding.utf8)?.hexString)!, withBase: radix)
+        let biEx = BInt.init(number: pubKey, withBase: radix)
+        let biMod = BInt.init(number: modulus, withBase: radix)
+        let biRet = mod_exp(biText, biEx, biMod)
+        let encText = biRet.hex
         
         return addPadding(encText: encText, modulus: modulus)
-    }
-    
-    private func modPow(firstArg a:Int, secArg b:Int, thirdArg c:Int) -> Int{
-        var result = a
-        (0..<b).forEach { (num) in
-            result = result * a
-        }
-        
-        return result % c
     }
     
     
@@ -239,5 +233,6 @@ class API {
         
         return prefix + encText
     }
+
 }
 

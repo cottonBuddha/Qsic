@@ -38,18 +38,6 @@ public var KEY_L_C_BRACE: Int32 = 123
 public var KEY_R_C_BRACE: Int32 = 124
 
 
-//API.shared.GET(urlStr: "http://music.163.com/api/artist/6452", params: nil) { (data, response, error) in
-//    if (error != nil) {
-//        print(error ?? "")
-//    } else {
-//        if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
-//            print("jsonDic:",json)
-//        }
-//    }
-//}
-
-API.shared.login(username: "18662867625", password: "jqsjsssjp1")
-
 QSMusicController().start()
 
 

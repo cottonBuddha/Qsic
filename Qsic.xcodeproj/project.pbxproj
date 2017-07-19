@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43490B3C1F1FAC6E0034281B /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43490B3B1F1FAC6E0034281B /* models.swift */; };
 		43CBD4D21F0FD97A005D6766 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D11F0FD97A005D6766 /* main.swift */; };
 		43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */; };
 		43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DA1F0FDB75005D6766 /* QSProgressWidget.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		43490B3B1F1FAC6E0034281B /* models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
 		43CBD4CE1F0FD97A005D6766 /* Qsic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Qsic; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CBD4D11F0FD97A005D6766 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMenuWidget.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				43CBD4E71F1B665E005D6766 /* API.swift */,
 				FCE2946F1F1C70A100097942 /* extension.swift */,
 				FC5DA85B1F1CAF09000485DA /* SwCrypt.swift */,
+				43490B3B1F1FAC6E0034281B /* models.swift */,
 			);
 			path = Qsic;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				FC5DA8B31F1F4573000485DA /* SMP Core.swift in Sources */,
 				43CBD4DF1F114322005D6766 /* QSMainWindow.swift in Sources */,
 				FC5DA8B21F1F4573000485DA /* SMP Bignum Extensions.swift in Sources */,
+				43490B3C1F1FAC6E0034281B /* models.swift in Sources */,
 				43CBD4E81F1B665E005D6766 /* API.swift in Sources */,
 				FC6AD8AA1F17503700E7E4F1 /* QSNavigator.swift in Sources */,
 				FC5DA8B41F1F4573000485DA /* SMP String Module.swift in Sources */,

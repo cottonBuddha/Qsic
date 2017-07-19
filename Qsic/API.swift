@@ -37,7 +37,7 @@ class API {
         "login" : "https://music.163.com/weapi/login",
         "phoneLogin" : "https://music.163.com/weapi/login/cellphone",
         "signin" : "http://music.163.com/weapi/point/dailyTask",
-        
+        "artist" : "http://music.163.com/api/artist/top"
     
     ]
     
@@ -67,10 +67,11 @@ class API {
         let semaphore = DispatchSemaphore.init(value: 0)
 
         let dataTask = session.dataTask(with: request) { (data, response, error) in
-            completionHandler(data,response,error)
-            
-            semaphore.signal()
+            //DispatchQueue.main.async {
+                completionHandler(data,response,error)
+                semaphore.signal()
 
+            //}
         }
         
         dataTask.resume()
@@ -111,7 +112,6 @@ class API {
         let loginfo = ["username":"18662867625","password":"jqsjsssjp1","rememberLogin":"true"]
         self.GET(urlStr: url!, params: nil) { (data, response, error) in
             if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
-                print("jsonDic:",json)
             }
         }
     }
@@ -142,9 +142,18 @@ class API {
         
     }
     
-    //歌手单曲
-    func artists() {
-        
+    //歌手
+    func artists(completionHandler : @escaping ([ArtistModle])->()) {
+        let url = urlDic["artist"]
+        let params = ["offset":"0","limit":"100"]
+        self.GET(urlStr: url!, params: params) { (data, response, error) in
+
+            if data != nil {
+                completionHandler(generateArtistModles(data: data!))
+            } else {
+                
+            }
+        }
     }
     
     //歌手专辑

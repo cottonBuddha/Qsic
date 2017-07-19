@@ -9,21 +9,9 @@
 import Foundation
 import Darwin
 
-struct MenuItem {
-    var title : String
-    var code : Int
-    
-    weak var navigator : QSNavigator?
-    
-    init(itemTitle : String, itemCode : Int) {
-        self.title = itemTitle
-        self.code = itemCode
-    }
-}
-
 class QSMenuWidget : QSWidget {
     
-    var items : [MenuItem] = []
+    var items : [MenuItemModel] = []
     
     var currentIndex : Int = 0 {
         didSet {
@@ -35,10 +23,14 @@ class QSMenuWidget : QSWidget {
         }
     }
     var rowsNum : Int = 9
-    var pagesNum : Int
+    var pagesNum : Int = 0 {
+        didSet {
+            
+        }
+    }
     
-    var selected : (_ selectedItem: MenuItem) -> ()
-    public init(startX: Int, startY: Int, width: Int, rowsPerPage: Int, items: [MenuItem], selected: @escaping (_ selectedItem: MenuItem) -> ()) {
+    var selected : (_ selectedItem: MenuItemModel) -> ()
+    public init(startX: Int, startY: Int, width: Int, rowsPerPage: Int, items: [MenuItemModel], selected: @escaping (_ selectedItem: MenuItemModel) -> ()) {
         self.rowsNum = rowsPerPage > 0 ? rowsPerPage : 1
         self.items = items
         self.selected = selected
@@ -78,8 +70,12 @@ class QSMenuWidget : QSWidget {
             self.currentIndex = self.currentIndex - 1
             
         case KEY_DOWN:
-            self.currentIndex = self.currentIndex + 1
-          
+            if self.currentIndex < 8 {
+                self.currentIndex = self.currentIndex + 1
+            } else {
+                
+            }
+            
         case 10:
             self.selected(self.items[self.currentIndex])
 

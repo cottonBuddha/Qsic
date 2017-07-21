@@ -16,3 +16,13 @@ extension String {
         return false
     }
 }
+
+extension Data {
+    func jsonDic() -> [String : Any]? {
+        if let dic = try? JSONSerialization.jsonObject(with: self, options: .allowFragments) as! [String : Any] {
+            return dic
+        } else {
+            return nil
+        }
+    }
+}

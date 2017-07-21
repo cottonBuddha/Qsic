@@ -27,7 +27,6 @@ public class ArtistModle: MenuItemModel {
     }
 }
 
-
 public func generateArtistModles(data:Data) -> [ArtistModle] {
     let dic = data.jsonDic()
     guard dic != nil else {return []}
@@ -42,15 +41,7 @@ public func generateArtistModles(data:Data) -> [ArtistModle] {
 }
 
 
-extension Data {
-    func jsonDic() -> [String : Any]? {
-        if let dic = try? JSONSerialization.jsonObject(with: self, options: .allowFragments) as! [String : Any] {
-            return dic
-        } else {
-            return nil
-        }
-    }
-}
+
 
 
 

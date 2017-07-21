@@ -34,7 +34,7 @@ extension Array {
     
     func split(num:Int) -> [Array] {
         
-        if num > self.count {
+        if num >= self.count {
             return [self]
         }
         
@@ -44,13 +44,14 @@ extension Array {
         
         self.forEach {
             index = index + 1
-            if index > num {
+            subArr.append($0)
+
+            if index >= num {
                 index = 0
                 splitArr.append(subArr)
                 subArr = []
             }
-            
-            subArr.append($0)
+
         }
         
         return splitArr

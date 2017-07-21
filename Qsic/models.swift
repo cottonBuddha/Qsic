@@ -18,7 +18,7 @@ public class MenuItemModel {
     }
 }
 
-public class ArtistModle: MenuItemModel {
+public class ArtistModel: MenuItemModel {
     var name : String = ""
     var id :String = ""
     
@@ -29,35 +29,40 @@ public class ArtistModle: MenuItemModel {
     }
 }
 
-
-public func generateArtistModles(data:Data) -> [ArtistModle] {
-    let dic = data.jsonDic()
-    guard dic != nil else {return []}
-    var artists : [ArtistModle] = []
-    if let arr = dic!["artists"] as? NSArray{
-        var code = 0
-        arr.forEach {
-            let artist = ArtistModle.init(itemDic: $0 as! Dictionary<String, Any>, code: code)
-            code = code + 1
-            artists.append(artist)
+public func generateArtistModles(data:Data) -> [ArtistModel] {
+    if let dic = data.jsonDic() {
+        var artists : [ArtistModel] = []
+        if let arr = dic["artists"] as? NSArray{
+            var code = 0
+            arr.forEach {
+                let artist = ArtistModel.init(itemDic: $0 as! Dictionary<String, Any>, code: code)
+                artists.append(artist)
+                code = code + 1
+            }
         }
+        return artists
     }
-    return artists
+    
+    return []
 }
 
-public class QSMenuModle {
+public class QSMenuModel {
     var title : String = ""
+    var type : String = ""
     var items : [MenuItemModel] = []
     var rowsNum : Int = 10
-    var currentRowIndex : Int = 0
-    var currentPageIndex : Int = 0
+    var currentItemCode : Int = 0 {
+        didSet {
+            let lastCode = self.items.count - 1
+            currentItemCode = currentItemCode > lastCode ? lastCode : (currentItemCode < 0 ? 0 : currentItemCode)        }
+    }
     
-    init(title:String, items:[MenuItemModel], rowsNum:Int, currentRowIndex:Int, currentPageIndex:Int) {
+    init(title:String, type:String, items:[MenuItemModel], rowsNum:Int = 10, currentItemCode:Int) {
         self.title = title
         self.items = items
         self.rowsNum = rowsNum
-        self.currentRowIndex = currentRowIndex
-        self.currentPageIndex = currentPageIndex
+        let lastCode = items.count - 1
+        self.currentItemCode = currentItemCode > lastCode ? lastCode : (currentItemCode < 0 ? 0 : currentItemCode)
     }
 }
 

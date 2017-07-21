@@ -52,8 +52,13 @@ class QSWidget {
         wrefresh(self.window)
     }
     
+    public func refresh() {
+        
+    }
+    
     public func resize() {
         
+//        resizeterm(Int32, <#T##Int32#>)
     }
     
     public func addSubWidget(widget:QSWidget) {

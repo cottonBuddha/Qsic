@@ -10,6 +10,7 @@ import Foundation
 import Darwin
 
 class QSMusicController {
+    
     var mainwin : QSMainWindow = QSMainWindow.init()
     
     private var ch : Character?
@@ -18,7 +19,7 @@ class QSMusicController {
     
     private var menu : QSMenuWidget?
     
-    private var menuStack : [QSMenuModle] = []
+    private var menuStack : [QSMenuModel] = []
     
     func start() {
         
@@ -43,7 +44,8 @@ class QSMusicController {
             menuItems.append(item)
         }
         
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20,rowsPerPage: 10, items: menuItems) { (item) in
+        let dataModel = QSMenuModel.init(title: "棉花爱音乐", type:"common", items: menuItems, currentItemCode: 0)
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20, dataModel: dataModel) { (item) in
             self.handleHomeSelection(menu: self.menu!, item: item)
             
             
@@ -57,8 +59,8 @@ class QSMusicController {
         switch code {
         case 2:
             API.shared.artists { (artists) in
-                let module = QSMenuModle.init(title: "歌手", items: artists, rowsNum: 10, currentRowIndex: 0, currentPageIndex: 0)
-                self.push(menuModel: module)
+                let dataModel = QSMenuModel.init(title: "歌手", type:"common", items: artists, currentItemCode: 0)
+                self.push(menuModel: dataModel)
             }
             
         default:
@@ -67,8 +69,6 @@ class QSMusicController {
         
     }
     
-    
-    
     func listenToInstructions() {
         repeat {
             ic = getch()
@@ -76,13 +76,13 @@ class QSMusicController {
         } while ic != KEY_Q_LOW
     }
     
-    func push(menuModel:QSMenuModle) {
+    func push(menuModel:QSMenuModel) {
         self.menuStack.append(menuModel)
-        self.menu?.refreshMenu(menuModule: menuModel)
+        self.menu?.presentMenuWithModel(menuModel: menuModel)
     }
     
     func pop() {
         self.menuStack.removeLast()
-        self.menu?.refreshMenu(menuModule: self.menuStack.last!)
+        self.menu?.presentMenuWithModel(menuModel: self.menuStack.last!)
     }
 }

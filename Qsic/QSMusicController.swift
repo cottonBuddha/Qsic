@@ -16,15 +16,15 @@ class QSMusicController {
     
     private var ic : Int32?
     
-    var navigator : QSNavigator?
+    private var menu : QSMenuWidget?
+    
+    private var menuStack : [QSMenuModle] = []
     
     func start() {
         
-        self.navigator = QSNavigator.init(rootWidget: self.initHomeMenu())
-        self.mainwin.addNavigator(navigator: self.navigator!)
+        self.menu = self.initHomeMenu()
+        self.mainwin.addSubWidget(widget: self.menu!)
         
-//        self.mainwin.addSubWidget(widget: self.initHomeMenu())
-
         self.listenToInstructions()
         
         mainwin.endWin()
@@ -39,31 +39,32 @@ class QSMusicController {
         
         var menuItems : [MenuItemModel] = []
         menuData.forEach {
-            let item = MenuItemModel.init(title: $0.0)
+            let item = MenuItemModel.init(title: $0.0, code: $0.1)
             menuItems.append(item)
         }
         
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 4,rowsPerPage: 9, items: menuItems) { (item) in
-
-            if item.title == "歌手" {
-                API.shared.artists { (artists) in
-                    let menu = self.initArtistsMenu(artists: artists)
-                    self.navigator?.pushTo(menu)
-                }
-            }
-
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20,rowsPerPage: 10, items: menuItems) { (item) in
+            self.handleHomeSelection(menu: self.menu!, item: item)
+            
+            
         }
         
         return mainMenu
     }
     
-    func initArtistsMenu(artists:[ArtistModle]) -> QSMenuWidget {
-        let artistsMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS)-6,rowsPerPage: 9, items: artists) { (item) in
-
+    func handleHomeSelection(menu:QSMenuWidget, item:MenuItemModel) {
+        let code = item.code
+        switch code {
+        case 2:
+            API.shared.artists { (artists) in
+                let module = QSMenuModle.init(title: "歌手", items: artists, rowsNum: 10, currentRowIndex: 0, currentPageIndex: 0)
+                self.push(menuModel: module)
+            }
             
+        default:
+            break
         }
         
-        return artistsMenu
     }
     
     
@@ -71,8 +72,17 @@ class QSMusicController {
     func listenToInstructions() {
         repeat {
             ic = getch()
-            self.navigator?.currentWidget?.handleWithKeyEvent(keyCode: ic!)
+            self.menu?.handleWithKeyEvent(keyCode: ic!)
         } while ic != KEY_Q_LOW
     }
     
+    func push(menuModel:QSMenuModle) {
+        self.menuStack.append(menuModel)
+        self.menu?.refreshMenu(menuModule: menuModel)
+    }
+    
+    func pop() {
+        self.menuStack.removeLast()
+        self.menu?.refreshMenu(menuModule: self.menuStack.last!)
+    }
 }

@@ -18,7 +18,7 @@ class QSMainWindow: QSWidget {
         keypad(stdscr, true)
         noecho()
         raw()
-//        start_color()
+        //        start_color()
         refresh()
     }
     
@@ -26,8 +26,4 @@ class QSMainWindow: QSWidget {
         endWin()
     }
     
-    func addNavigator(navigator:QSNavigator) {
-        self.addSubWidget(widget: navigator.rootWidget!)
-        navigator.mainWin = self
-    }
 }

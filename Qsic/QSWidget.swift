@@ -10,7 +10,7 @@ import Foundation
 import Darwin.ncurses
 
 class QSWidget {
-
+    
     var startX : Int
     var startY : Int
     var width : Int
@@ -22,8 +22,8 @@ class QSWidget {
     
     weak var superWidget : QSWidget?
     var subWidgets : [QSWidget]?
-//    var bgColor : WidgetUIColor
-
+    //    var bgColor : WidgetUIColor
+    
     public init(startX:Int, startY:Int, width:Int, height:Int) {
         self.startX = startX
         self.startY = startY
@@ -40,15 +40,15 @@ class QSWidget {
             self.width = superwidget.width - self.startX
         }
         self.window = subwin(superwidget.window, Int32(self.height), Int32(self.width), Int32(self.startY), Int32(self.startX))
-//        wborder(self.window, 0, 0, 0, 0, 0, 0, 0, 0)
-
+        //        wborder(self.window, 0, 0, 0, 0, 0, 0, 0, 0)
+        
     }
     
     public func drawWidget() {
         guard self.window != nil else {
             return
         }
-
+        
         wrefresh(self.window)
     }
     
@@ -64,7 +64,7 @@ class QSWidget {
         widget.subWidgets?.forEach({ (widget) in
             widget.addSubWidget(widget: widget)
         })
-
+        
     }
     
     public func removeSubWidget(widget:QSWidget) {
@@ -82,7 +82,7 @@ class QSWidget {
     public func destroyWindow() {
         delwin(self.window)
     }
-
+    
     public func handleWithKeyEvent(keyCode:Int32) {
         
     }

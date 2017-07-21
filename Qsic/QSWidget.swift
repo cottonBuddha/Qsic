@@ -18,18 +18,14 @@ class QSWidget {
     
     var window : OpaquePointer?
     
-    var focused : Bool
-    
     weak var superWidget : QSWidget?
     var subWidgets : [QSWidget]?
-    //    var bgColor : WidgetUIColor
     
     public init(startX:Int, startY:Int, width:Int, height:Int) {
         self.startX = startX
         self.startY = startY
         self.width = width
         self.height = height
-        self.focused = false
     }
     
     internal func initWidgetOnSuperwidget(superwidget:QSWidget) {

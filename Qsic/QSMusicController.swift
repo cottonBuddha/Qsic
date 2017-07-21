@@ -17,18 +17,31 @@ class QSMusicController {
     
     private var ic : Int32?
     
+    private var navtitle : QSNaviTitleWidget?
     private var menu : QSMenuWidget?
     
     private var menuStack : [QSMenuModel] = []
+    
+    
     
     func start() {
         
         self.menu = self.initHomeMenu()
         self.mainwin.addSubWidget(widget: self.menu!)
         
+        self.navtitle = self.initNaviTitle()
+        self.mainwin.addSubWidget(widget: self.navtitle!)
+        
+        self.navtitle?.push(title: self.menu!.title)
+        
         self.listenToInstructions()
         
         mainwin.endWin()
+    }
+    
+    func initNaviTitle() -> QSNaviTitleWidget {
+        let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: 40, height: 1)
+        return naviTitle
     }
     
     func initHomeMenu() -> QSMenuWidget {
@@ -79,10 +92,12 @@ class QSMusicController {
     func push(menuModel:QSMenuModel) {
         self.menuStack.append(menuModel)
         self.menu?.presentMenuWithModel(menuModel: menuModel)
+        self.navtitle?.push(title: menuModel.title)
     }
     
     func pop() {
         self.menuStack.removeLast()
         self.menu?.presentMenuWithModel(menuModel: self.menuStack.last!)
+        self.navtitle?.pop()
     }
 }

@@ -37,6 +37,9 @@ public var KEY_Z_LOW: Int32 = 122
 public var KEY_L_C_BRACE: Int32 = 123
 public var KEY_R_C_BRACE: Int32 = 124
 
+let str = "笑哈哈...."
+let index = str.index(str.startIndex, offsetBy: 2) //索引从开始偏移7个位置
+let a = str.substring(from: index)
 
 QSMusicController().start()
 

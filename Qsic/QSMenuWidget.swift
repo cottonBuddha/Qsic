@@ -52,10 +52,7 @@ class QSMenuWidget : QSWidget {
     }
     
     override func drawWidget() {
-        guard self.window != nil else {
-            return
-        }
-        
+        super.drawWidget()
         self.drawMenu()
         wrefresh(self.window)
     }

@@ -21,6 +21,15 @@ class QSWidget {
     weak var superWidget : QSWidget?
     var subWidgets : [QSWidget]?
     
+    //wclear()函数在item上会留下之前屏幕的记录，所以只能用空白字符串手动清除
+    lazy var eraseLineStr : String = {
+        var str = ""
+        for i in (0..<self.width) {
+            str.append(" ")
+        }
+        return str
+    }()
+    
     public init(startX:Int, startY:Int, width:Int, height:Int) {
         self.startX = startX
         self.startY = startY
@@ -45,16 +54,12 @@ class QSWidget {
             return
         }
         
-        wrefresh(self.window)
-    }
-    
-    public func refresh() {
-        
+//        refresh()
     }
     
     public func resize() {
         
-//        resizeterm(Int32, <#T##Int32#>)
+        //        resizeterm(Int32, <#T##Int32#>)
     }
     
     public func addSubWidget(widget:QSWidget) {
@@ -87,6 +92,7 @@ class QSWidget {
     public func handleWithKeyEvent(keyCode:Int32) {
         
     }
+    
 }
 
 extension QSWidget : Equatable {

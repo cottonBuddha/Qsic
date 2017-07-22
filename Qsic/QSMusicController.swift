@@ -22,17 +22,15 @@ class QSMusicController {
     
     private var menuStack : [QSMenuModel] = []
     
-    
-    
     func start() {
-        
+ 
         self.menu = self.initHomeMenu()
         self.mainwin.addSubWidget(widget: self.menu!)
         
-        self.navtitle = self.initNaviTitle()
-        self.mainwin.addSubWidget(widget: self.navtitle!)
-        
-        self.navtitle?.push(title: self.menu!.title)
+//        self.navtitle = self.initNaviTitle()
+//        self.mainwin.addSubWidget(widget: self.navtitle!)
+//        
+//        self.navtitle?.push(title: self.menu!.title)
         
         self.listenToInstructions()
         

@@ -35,5 +35,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Qsic/QSMenuWidget.swift"
+            timestampString = "522351089.371966"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "init(startX:startY:width:dataModel:selected:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Qsic.QSMenuWidget.init (startX : Swift.Int, startY : Swift.Int, width : Swift.Int, dataModel : Qsic.QSMenuModel, selected : Swift.Optional&lt;(Qsic.MenuItemModel) -&gt; ()&gt;) -&gt; Qsic.QSMenuWidget"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
+                  timestampString = "522355750.98094"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "14"
+                  endingLineNumber = "14"
+                  offsetFromSymbolStart = "63">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Qsic.QSMenuWidget.__allocating_init (startX : Swift.Int, startY : Swift.Int, width : Swift.Int, dataModel : Qsic.QSMenuModel, selected : Swift.Optional&lt;(Qsic.MenuItemModel) -&gt; ()&gt;) -&gt; Qsic.QSMenuWidget"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
+                  timestampString = "522355750.982861"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

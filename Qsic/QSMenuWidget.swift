@@ -57,15 +57,17 @@ class QSMenuWidget : QSWidget {
         wrefresh(self.window)
     }
     
+
     private func drawMenu() {
         guard self.dataModel.items.count > 0 else {
             return
         }
         
-        wclear(self.window)
-        
         for index in 0..<self.splitItems[self.currentPageIndex].count {
             init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_BLACK))
+            
+            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
+
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
         }

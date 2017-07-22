@@ -37,9 +37,31 @@ public var KEY_Z_LOW: Int32 = 122
 public var KEY_L_C_BRACE: Int32 = 123
 public var KEY_R_C_BRACE: Int32 = 124
 
-let str = "笑哈哈...."
-let index = str.index(str.startIndex, offsetBy: 2) //索引从开始偏移7个位置
-let a = str.substring(from: index)
+
+//let window = initscr()
+//raw()
+//refresh()
+//
+//
+//
+//func initNaviTitle() -> QSNaviTitleWidget {
+//    let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: 40, height: 1)
+//    return naviTitle
+//}
+//
+//let w = initNaviTitle()
+//
+//w.push(title: "棉花做生意")
+//
+//wrefresh(w.window)
+//private var ic : Int32?
+//
+//repeat {
+//    ic = getch()
+//    wrefresh(w.window)
+//} while ic != KEY_Q_LOW
+//
+//endwin()
 
 QSMusicController().start()
 

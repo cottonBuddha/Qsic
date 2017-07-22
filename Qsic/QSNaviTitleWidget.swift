@@ -18,16 +18,16 @@ class QSNaviTitleWidget: QSWidget {
     
     func push(title:String) {
         self.titleStack.append(title)
-        self.refresh()
+        self.refreshNaviTitle()
     }
     
     func pop() {
         self.titleStack.removeLast()
-        self.refresh()
+        self.refreshNaviTitle()
     }
     
-    override func refresh() {
-        super.refresh()
+    func refreshNaviTitle() {
+
         drawWidget()
     }
     
@@ -35,11 +35,13 @@ class QSNaviTitleWidget: QSWidget {
         super.drawWidget()
         var naviStr : String = ""
         self.titleStack.forEach {
-            naviStr.append($0+". ")
+            naviStr.append($0+"-")
         }
-        let index = naviStr.index(naviStr.endIndex, offsetBy: 2)
-        let subStr = naviStr.substring(from: index)
-        mvwaddstr(self.window, 0, 0, naviStr)
-        wrefresh(self.window)
-    }
-}
+        if self.titleStack.count < 1 {
+            return
+        }
+        let index = naviStr.index(naviStr.endIndex, offsetBy: -1)
+        let subStr = naviStr.substring(to: index)
+        mvwaddstr(self.window, 0, 0, subStr)
+        refresh()
+    }}

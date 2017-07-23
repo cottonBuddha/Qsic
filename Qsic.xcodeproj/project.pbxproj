@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		43490B3C1F1FAC6E0034281B /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43490B3B1F1FAC6E0034281B /* models.swift */; };
+		43490B3E1F23AC600034281B /* QSPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43490B3D1F23AC600034281B /* QSPlayer.swift */; };
 		43CBD4D21F0FD97A005D6766 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D11F0FD97A005D6766 /* main.swift */; };
 		43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */; };
 		43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DA1F0FDB75005D6766 /* QSProgressWidget.swift */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		43490B3B1F1FAC6E0034281B /* models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
+		43490B3D1F23AC600034281B /* QSPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSPlayer.swift; sourceTree = "<group>"; };
 		43CBD4CE1F0FD97A005D6766 /* Qsic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Qsic; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CBD4D11F0FD97A005D6766 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMenuWidget.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				43CBD4DC1F10B901005D6766 /* QSWidget.swift */,
 				43CBD4DE1F114322005D6766 /* QSMainWindow.swift */,
 				FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */,
+				43490B3D1F23AC600034281B /* QSPlayer.swift */,
 				43CBD4E71F1B665E005D6766 /* API.swift */,
 				FCE2946F1F1C70A100097942 /* extension.swift */,
 				43490B3B1F1FAC6E0034281B /* models.swift */,
@@ -197,6 +200,7 @@
 				43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */,
 				43CBD4DB1F0FDB75005D6766 /* QSProgressWidget.swift in Sources */,
 				FCE294701F1C70A100097942 /* extension.swift in Sources */,
+				43490B3E1F23AC600034281B /* QSPlayer.swift in Sources */,
 				FC5DA8C21F2040B4000485DA /* SwCrypt.swift in Sources */,
 				43CBD4D21F0FD97A005D6766 /* main.swift in Sources */,
 				FC5DA8BD1F2040B4000485DA /* MG Basic Math.swift in Sources */,

@@ -10,11 +10,26 @@ import Foundation
 
 extension String {
     
-    func matchRegExp(_ pattern:String) -> Bool {
+    func matchRegExp(_ pattern:String) -> [String] {
         let regular = try! NSRegularExpression.init(pattern: pattern, options: .caseInsensitive)
         let result = regular.matches(in: self, options: .reportProgress, range: NSMakeRange(0, self.characters.count))
-        if result.count > 0 {return true}
-        return false
+        var resultStr : [String] = []
+        result.forEach {
+            let range = self.range(from: $0.range)
+            let str = self.substring(with: range!)
+            resultStr.append(str)
+        }
+        return resultStr
+    }
+    
+    func range(from nsRange: NSRange) -> Range<String.Index>? {
+        guard
+            let from16 = utf16.index(utf16.startIndex, offsetBy: nsRange.location, limitedBy: utf16.endIndex),
+            let to16 = utf16.index(from16, offsetBy: nsRange.length, limitedBy: utf16.endIndex),
+            let from = String.Index(from16, within: self),
+            let to = String.Index(to16, within: self)
+            else { return nil }
+        return from ..< to
     }
     
 }
@@ -51,7 +66,6 @@ extension Array {
                 splitArr.append(subArr)
                 subArr = []
             }
-
         }
         
         return splitArr

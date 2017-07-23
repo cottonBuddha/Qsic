@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public var KEY_A_LOW: Int32 = 97
 public var KEY_B_LOW: Int32 = 98
@@ -37,31 +38,26 @@ public var KEY_Z_LOW: Int32 = 122
 public var KEY_L_C_BRACE: Int32 = 123
 public var KEY_R_C_BRACE: Int32 = 124
 
+API.shared.GET(urlStr: "http://music.163.com/discover/toplist?id=180106", params: nil) { (data, response, error) in
+//    let models = generateSongModels(data: data!)
+//    print(models)
+    let str = String.init(data: data!, encoding: String.Encoding.utf8)
+    let result = str?.matchRegExp("/song\\?id=(\\d+)")
+    print(result ?? "")
+    
+//    if let model = models.first {
+//        print(model.name)
+//        print(model.id)
+//        print(model.mp3Url!)
+//    }
+}
 
-//let window = initscr()
-//raw()
-//refresh()
+//let url = "http://m2.music.126.net/RMJR7wDullRqppBk8dhLow==/3435973841155597.mp3"
+//let player = try AVAudioPlayer(contentsOf: URL.init(string: url)!)
 //
-//
-//
-//func initNaviTitle() -> QSNaviTitleWidget {
-//    let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: 40, height: 1)
-//    return naviTitle
-//}
-//
-//let w = initNaviTitle()
-//
-//w.push(title: "棉花做生意")
-//
-//wrefresh(w.window)
-//private var ic : Int32?
-//
-//repeat {
-//    ic = getch()
-//    wrefresh(w.window)
-//} while ic != KEY_Q_LOW
-//
-//endwin()
+//player.play()
+
+//API.shared.login(username: "", password: "")
 
 QSMusicController().start()
 

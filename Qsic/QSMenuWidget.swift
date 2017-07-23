@@ -13,7 +13,7 @@ class QSMenuWidget : QSWidget {
     
     var title : String = ""
     
-    var type : String = ""
+    var type : Int = 0
     
     var dataModel : QSMenuModel! {
         didSet {
@@ -24,7 +24,7 @@ class QSMenuWidget : QSWidget {
         }
     }
     
-    var selected : ((_ selectedItem: MenuItemModel) -> ())?
+    var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
     
     private var currentItemCode : Int = 0 {
         didSet {
@@ -41,7 +41,7 @@ class QSMenuWidget : QSWidget {
     
     private var splitItems : [[MenuItemModel]] = []
     
-    public init(startX: Int, startY: Int, width: Int, dataModel: QSMenuModel, selected: ((_ selectedItem: MenuItemModel) -> ())?) {
+    public init(startX: Int, startY: Int, width: Int, dataModel: QSMenuModel, selected: ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?) {
         self.selected = selected
         super.init(startX: startX, startY: startY, width: width, height: dataModel.rowsNum)
         self.setUpMenu(dataModel: dataModel)
@@ -76,6 +76,7 @@ class QSMenuWidget : QSWidget {
     }
     
     func presentMenuWithModel(menuModel:QSMenuModel) {
+        self.eraseMenu()
         self.setUpMenu(dataModel: menuModel)
         currentPageIndex = 0
         currentRowIndex = 0
@@ -83,7 +84,14 @@ class QSMenuWidget : QSWidget {
     }
     
     func refreshMenu() {
+        self.eraseMenu()
         self.drawWidget()
+    }
+    
+    func eraseMenu() {//在展示下一组数据之前，要清空当前menu
+        for index in 0..<self.dataModel.rowsNum {
+            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
+        }
     }
     
     override func handleWithKeyEvent(keyCode:Int32) {
@@ -96,7 +104,7 @@ class QSMenuWidget : QSWidget {
             self.refreshMenu()
         case 10:
             if self.selected != nil {
-                self.selected!(self.dataModel.items[self.currentRowIndex])
+                self.selected!(self.type, self.dataModel.items[self.currentRowIndex])
             }
             
         default:

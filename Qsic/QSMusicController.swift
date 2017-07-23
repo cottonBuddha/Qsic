@@ -8,6 +8,15 @@
 
 import Foundation
 import Darwin
+import AVFoundation
+
+enum MenuType : Int {
+    case Home
+    case Artist
+    case Song
+    case Album
+    case SongOrAlbum
+}
 
 class QSMusicController {
     
@@ -23,14 +32,14 @@ class QSMusicController {
     private var menuStack : [QSMenuModel] = []
     
     func start() {
- 
+        
         self.menu = self.initHomeMenu()
         self.mainwin.addSubWidget(widget: self.menu!)
         
-//        self.navtitle = self.initNaviTitle()
-//        self.mainwin.addSubWidget(widget: self.navtitle!)
-//        
-//        self.navtitle?.push(title: self.menu!.title)
+        self.navtitle = self.initNaviTitle()
+        self.mainwin.addSubWidget(widget: self.navtitle!)
+        
+        self.navtitle?.push(title: self.menu!.title)
         
         self.listenToInstructions()
         
@@ -55,29 +64,76 @@ class QSMusicController {
             menuItems.append(item)
         }
         
-        let dataModel = QSMenuModel.init(title: "棉花爱音乐", type:"common", items: menuItems, currentItemCode: 0)
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20, dataModel: dataModel) { (item) in
-            self.handleHomeSelection(menu: self.menu!, item: item)
-            
-            
+        let dataModel = QSMenuModel.init(title: "棉花爱音乐", type:MenuType.Home, items: menuItems, currentItemCode: 0)
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20, dataModel: dataModel) { (type,item) in
+            if let menuType = MenuType.init(rawValue: type) {
+                switch menuType {
+                case MenuType.Home:
+                    self.handleHomeSelection(item: item)
+                case MenuType.Artist:
+                    self.handleArtistSelection(item: item as! ArtistModel)
+                case MenuType.SongOrAlbum:
+                    self.handleSongOrAlbumSelection(item: item as! SongOrAlbumModel)
+                case MenuType.Song:
+                    self.handleSongSelection(item: item as! SongModel)
+                default:
+                    break
+                }
+            }
         }
         
         return mainMenu
     }
     
-    func handleHomeSelection(menu:QSMenuWidget, item:MenuItemModel) {
+    func handleHomeSelection(item:MenuItemModel) {
         let code = item.code
         switch code {
         case 2:
             API.shared.artists { (artists) in
-                let dataModel = QSMenuModel.init(title: "歌手", type:"common", items: artists, currentItemCode: 0)
+                let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
             
         default:
             break
         }
+    }
+    
+    func handleArtistSelection(item:ArtistModel) {
         
+        let itemModels = generateSongOrAlbumModels(artistId: item.id)
+        let dataModel = QSMenuModel.init(title: "歌曲or专辑", type: MenuType.SongOrAlbum, items: itemModels, currentItemCode: 0)
+        self.push(menuModel: dataModel)
+    }
+    
+    func handleSongOrAlbumSelection(item:SongOrAlbumModel) {
+        let code = item.code
+        switch code {
+        case 0:
+            API.shared.getSongsOfArtist(artistId: item.artistId) { (models) in
+                let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
+                self.push(menuModel: dataModel)
+            }
+        case 1:
+            print("")
+        default:
+            break
+        }
+    }
+    
+    var player : AVAudioPlayer?
+    func handleSongSelection(item:SongModel) {
+        
+        do {
+//            player = try AVAudioPlayer(contentsOf: URL.init(string: item.mp3Url!)!)
+//            player?.play()
+            addstr("链接\(item.mp3Url)")
+            addstr("歌曲id\(item.id)")
+            refresh()
+        } catch {
+            
+        }
+    
     }
     
     func listenToInstructions() {

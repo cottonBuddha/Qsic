@@ -35,10 +35,17 @@ class API {
     let urlDic = [
         //登录
         "login" : "https://music.163.com/weapi/login",
+        //手机登录
         "phoneLogin" : "https://music.163.com/weapi/login/cellphone",
+        //签到
         "signin" : "http://music.163.com/weapi/point/dailyTask",
-        "artist" : "http://music.163.com/api/artist/top"
-    
+        //歌手
+        "artist" : "http://music.163.com/api/artist/top",
+        //歌手曲目
+        "songOfArtist" : "http://music.163.com/api/artist",
+        //歌手专辑
+        "albumOfArtist" : "http://music.163.com/api/artist/albums"
+        
     ]
     
     
@@ -67,11 +74,8 @@ class API {
         let semaphore = DispatchSemaphore.init(value: 0)
 
         let dataTask = session.dataTask(with: request) { (data, response, error) in
-            //DispatchQueue.main.async {
                 completionHandler(data,response,error)
                 semaphore.signal()
-
-            //}
         }
         
         dataTask.resume()
@@ -96,23 +100,25 @@ class API {
         let semaphore = DispatchSemaphore.init(value: 0)
         let session = URLSession.shared
         let dataTask = session.dataTask(with: request) { (data, response, error) in
-            semaphore.signal()
             completionHandler(data,response,error)
+            semaphore.signal()
 
         }
         
         dataTask.resume()
         semaphore.wait()
-
     }
+    
+    
     
     //登录
     func login(username:String, password:String) {
         let url = self.urlDic["login"]
         let loginfo = ["username":"18662867625","password":"jqsjsssjp1","rememberLogin":"true"]
-        self.GET(urlStr: url!, params: nil) { (data, response, error) in
-            if let json = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String : Any] {
-            }
+        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+
+            let dic = data?.jsonDic()
+            print(dic ?? "没有")
         }
     }
     
@@ -149,23 +155,31 @@ class API {
         self.GET(urlStr: url!, params: params) { (data, response, error) in
 
             if data != nil {
-                completionHandler(generateArtistModles(data: data!))
+                let models = generateArtistModles(data: data!)
+                completionHandler(models)
             } else {
                 
             }
         }
     }
     
+    //歌手热门歌曲
+    func getSongsOfArtist(artistId:String,completionHandler : @escaping ([SongModel])->()) {
+        let urlStr = self.urlDic["songOfArtist"]! + "/" + artistId
+        API.shared.GET(urlStr: urlStr, params: nil) { (data, response, error) in
+            let models = generateSongModels(data: data!)
+            completionHandler(models)
+        }
+
+    }
+    
     //歌手专辑
-    func getArtistAlbum() {
+    func getAlbumsOfArtist(completionHandler : @escaping ([AlbumModel])->()) {
         
     }
     
     
-    func album() {
-        
-    }
-    
+    //下载歌曲
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"

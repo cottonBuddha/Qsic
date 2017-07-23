@@ -42,6 +42,7 @@ class QSNaviTitleWidget: QSWidget {
         }
         let index = naviStr.index(naviStr.endIndex, offsetBy: -1)
         let subStr = naviStr.substring(to: index)
+        mvwaddstr(self.window, 0, 0, self.eraseLineStr)
         mvwaddstr(self.window, 0, 0, subStr)
-        refresh()
+        wrefresh(self.window)
     }}

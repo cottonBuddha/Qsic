@@ -44,12 +44,11 @@ class API {
         //歌手曲目
         "songOfArtist" : "http://music.163.com/api/artist",
         //歌手专辑
-        "albumOfArtist" : "http://music.163.com/api/artist/albums"
+        "albumOfArtist" : "http://music.163.com/api/artist/albums",
+        //歌曲详情
+        "songDetail" : "http://music.163.com/api/song/detail"
         
     ]
-    
-    
-    
     
     func GET(urlStr:String, params:[String:String]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
         let components = NSURLComponents.init(string: urlStr)
@@ -143,11 +142,48 @@ class API {
         
     }
     
-    //搜索
-    func search() {
-        
+    //榜单
+    func rankings(completionHandler : @escaping ([RankingModel])->()) {
+        let models = generateRankingModels()
+        completionHandler(models)
     }
     
+    func songDetail(rankingUrl:String, completionHandler : @escaping ([SongModel])->()) {
+        
+//        let url = urlDic["songDetail"]
+//        self.GET(urlStr: rankingUrl, params: nil) { (data, response, error) in
+//            
+//            let str = String.init(data: data!, encoding: String.Encoding.utf8)
+//            let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
+//            var idResultStr : String = ""
+//            regResult?.forEach {
+//                let index = $0.index($0.startIndex, offsetBy: 9)
+//                let subStr = $0.substring(from: index)
+//                idResultStr.append(subStr + ",")
+//            }
+//            
+//            let index = idResultStr.index(idResultStr.endIndex, offsetBy: -1)
+//            idResultStr = idResultStr.substring(to: index)
+        
+            
+//            let params = ["ids":"[\(idResultStr)]"]
+            let params = ["id":"28377211","ids":"[28377211]"]
+
+            self.GET(urlStr: "http://music.163.com/api/song/detail/?id=28377211&ids=%5B28377211%5D", params: params) { (data, response, error) in
+                let json = data?.jsonDic()
+                print(json ?? "jqs")
+//                if data != nil {
+//                    let models = generateSongModels(data: data!)
+//                    completionHandler(models)
+//                } else {
+//                    
+//                }
+                
+            }
+//        }
+
+    }
+
     //歌手
     func artists(completionHandler : @escaping ([ArtistModel])->()) {
         let url = urlDic["artist"]
@@ -178,8 +214,11 @@ class API {
         
     }
     
+    //搜索
+    func search() {
+        
+    }
     
-    //下载歌曲
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"

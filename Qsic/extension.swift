@@ -67,7 +67,10 @@ extension Array {
                 subArr = []
             }
         }
-        
+        if subArr.count > 0 {
+            splitArr.append(subArr)
+            subArr = []
+        }
         return splitArr
     }
     

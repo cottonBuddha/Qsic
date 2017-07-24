@@ -16,6 +16,7 @@ enum MenuType : Int {
     case Song
     case Album
     case SongOrAlbum
+    case Ranking
 }
 
 class QSMusicController {
@@ -65,7 +66,8 @@ class QSMusicController {
         }
         
         let dataModel = QSMenuModel.init(title: "棉花爱音乐", type:MenuType.Home, items: menuItems, currentItemCode: 0)
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: 20, dataModel: dataModel) { (type,item) in
+        self.menuStack.append(dataModel)
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) { (type,item) in
             if let menuType = MenuType.init(rawValue: type) {
                 switch menuType {
                 case MenuType.Home:
@@ -88,6 +90,11 @@ class QSMusicController {
     func handleHomeSelection(item:MenuItemModel) {
         let code = item.code
         switch code {
+        case 1:
+            API.shared.rankings(completionHandler: { (rankings) in
+                let datamodel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
+                self.push(menuModel: datamodel)
+            })
         case 2:
             API.shared.artists { (artists) in
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
@@ -136,10 +143,16 @@ class QSMusicController {
     
     }
     
+    func handleRankingSelection(item:RankingModel) {
+        
+    }
+    
     func listenToInstructions() {
         repeat {
             ic = getch()
+
             self.menu?.handleWithKeyEvent(keyCode: ic!)
+            self.handleWithKeyEvent(keyCode: ic!)
         } while ic != KEY_Q_LOW
     }
     
@@ -150,8 +163,20 @@ class QSMusicController {
     }
     
     func pop() {
-        self.menuStack.removeLast()
-        self.menu?.presentMenuWithModel(menuModel: self.menuStack.last!)
-        self.navtitle?.pop()
+        if self.menuStack.count > 1 {
+            self.menuStack.removeLast()
+            self.menu?.presentMenuWithModel(menuModel: self.menuStack.last!)
+            self.navtitle?.pop()
+        }
+    }
+    
+    func handleWithKeyEvent(keyCode:Int32) {
+        switch keyCode {
+        case KEY_SLASH:
+            self.pop()
+        default:
+            break
+        }
+
     }
 }

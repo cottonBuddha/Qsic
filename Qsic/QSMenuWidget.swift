@@ -63,6 +63,7 @@ class QSMenuWidget : QSWidget {
             return
         }
         
+        
         for index in 0..<self.splitItems[self.currentPageIndex].count {
             init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_BLACK))
             
@@ -78,8 +79,7 @@ class QSMenuWidget : QSWidget {
     func presentMenuWithModel(menuModel:QSMenuModel) {
         self.eraseMenu()
         self.setUpMenu(dataModel: menuModel)
-        currentPageIndex = 0
-        currentRowIndex = 0
+        self.currentItemCode = menuModel.currentItemCode
         self.drawWidget()
     }
     
@@ -102,13 +102,21 @@ class QSMenuWidget : QSWidget {
         case KEY_DOWN:
             self.currentItemCode = self.currentItemCode + 1
             self.refreshMenu()
+        case KEY_LEFT:
+            let prePageIndex = self.currentPageIndex - 1
+            self.currentItemCode = prePageIndex * self.dataModel.rowsNum
+            self.refreshMenu()
+        case KEY_RIGHT:
+            let nextPageIndex = self.currentPageIndex + 1
+            self.currentItemCode = nextPageIndex * self.dataModel.rowsNum
+            self.refreshMenu()
         case 10:
             if self.selected != nil {
                 self.selected!(self.type, self.dataModel.items[self.currentRowIndex])
             }
             
         default:
-            break
+          break
         }
     }
     

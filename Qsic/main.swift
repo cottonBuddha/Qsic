@@ -50,8 +50,8 @@ public let KEY_R_C_BRACE: Int32 = 124
 //    
 //}
 
-let A_ASCII = UnicodeScalar("⠋")
-print(A_ASCII)
+//let A_ASCII = UnicodeScalar("⠋")
+//print(A_ASCII)
 
 API.shared.songDetail(rankingUrl: "http://music.163.com/discover/toplist?id=180106") { (songs) in
     print(songs)

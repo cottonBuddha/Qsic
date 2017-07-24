@@ -101,7 +101,6 @@ class API {
         let dataTask = session.dataTask(with: request) { (data, response, error) in
             completionHandler(data,response,error)
             semaphore.signal()
-
         }
         
         dataTask.resume()
@@ -149,38 +148,35 @@ class API {
     }
     
     func songDetail(rankingUrl:String, completionHandler : @escaping ([SongModel])->()) {
-        
-//        let url = urlDic["songDetail"]
-//        self.GET(urlStr: rankingUrl, params: nil) { (data, response, error) in
-//            
-//            let str = String.init(data: data!, encoding: String.Encoding.utf8)
-//            let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
-//            var idResultStr : String = ""
-//            regResult?.forEach {
-//                let index = $0.index($0.startIndex, offsetBy: 9)
-//                let subStr = $0.substring(from: index)
-//                idResultStr.append(subStr + ",")
-//            }
-//            
-//            let index = idResultStr.index(idResultStr.endIndex, offsetBy: -1)
-//            idResultStr = idResultStr.substring(to: index)
-        
-            
-//            let params = ["ids":"[\(idResultStr)]"]
-            let params = ["id":"28377211","ids":"[28377211]"]
+        print(Thread.current)
+        let url = urlDic["songDetail"]
+        var idResultStr : String = ""
 
-            self.GET(urlStr: "http://music.163.com/api/song/detail/?id=28377211&ids=%5B28377211%5D", params: params) { (data, response, error) in
-                let json = data?.jsonDic()
-                print(json ?? "jqs")
-//                if data != nil {
-//                    let models = generateSongModels(data: data!)
-//                    completionHandler(models)
-//                } else {
-//                    
-//                }
+        self.GET(urlStr: rankingUrl, params: nil) { (data, response, error) in
+            
+            let str = String.init(data: data!, encoding: String.Encoding.utf8)
+            let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
+            regResult?.forEach {
+                let index = $0.index($0.startIndex, offsetBy: 9)
+                let subStr = $0.substring(from: index)
+                idResultStr.append(subStr + ",")
+            }
+            
+            let index = idResultStr.index(idResultStr.endIndex, offsetBy: -1)
+            idResultStr = idResultStr.substring(to: index)
                 
             }
-//        }
+        
+        let params = ["ids":"[\(idResultStr)]"]
+        
+        self.GET(urlStr: url!, params: params) { (data, response, error) in
+            if data != nil {
+                let models = generateSongModels(data: data!)
+                completionHandler(models)
+            } else {
+                
+            }
+        }
 
     }
 

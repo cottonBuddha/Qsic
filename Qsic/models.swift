@@ -75,14 +75,19 @@ public class SongModel:MenuItemModel {
     var name : String = ""
     var id : String = ""
     var mp3Url : String?
-    var quality : String?
+    var quality : String = ""
+    var artist : String = ""
+    var album : String = ""
     
     init(itemDic:Dictionary<String, Any>, code:Int) {
     
         self.name = itemDic["name"] as! String
         self.id = (itemDic["id"] as! NSNumber).stringValue//dfsId是什么
         self.mp3Url = itemDic["mp3Url"] as? String
-        self.quality = itemDic["itemDic"] as? String
+        self.quality = itemDic["quality"] as! String
+        self.artist = itemDic["artist"] as! String
+        self.album = itemDic["album"] as! String
+        
         super.init(title: self.name, code: code)
     }
 }
@@ -91,22 +96,30 @@ public func generateSongModels(data:Data) -> [SongModel] {
     
     if let dic = data.jsonDic() {
         var songs : [SongModel] = []
+        var songArr : NSArray = []
         if let arr = dic["hotSongs"] as? NSArray{
-            var code = 0
-            
-            arr.forEach({ (item) in
-                var itemDic : [String : Any] = [:]
-                let item = item as! [String : Any]
-                itemDic["name"] = item["name"]
-                itemDic["id"] = item["id"]
-                itemDic["mp3Url"] = item["mp3Url"]
-                itemDic["quality"] = "hMusic"
-                
-                let song = SongModel.init(itemDic: itemDic, code: code)
-                songs.append(song)
-                code = code + 1
-            })
+            songArr = arr 
+        } else if let arr = dic["songs"] as? NSArray {
+            songArr = arr 
         }
+        var code = 0
+        songArr.forEach({ (item) in
+            var itemDic : [String : Any] = [:]
+            let item = item as! [String : Any]
+            itemDic["name"] = item["name"]
+            itemDic["id"] = item["id"]
+            itemDic["mp3Url"] = item["mp3Url"]
+            itemDic["quality"] = "hMusic"
+            if let albumDic = item["album"] as? [String:Any]{
+                itemDic["artist"] = (albumDic["artists"] as! Dictionary)["name"]
+                itemDic["album"] = albumDic["name"]
+            }
+            
+            let song = SongModel.init(itemDic: itemDic, code: code)
+            songs.append(song)
+            code = code + 1
+        })
+
         return songs
     }
     return []
@@ -190,4 +203,4 @@ public func generateRankingModels() -> [RankingModel] {
     return itemArr
 }
 
-//
+//songdetail

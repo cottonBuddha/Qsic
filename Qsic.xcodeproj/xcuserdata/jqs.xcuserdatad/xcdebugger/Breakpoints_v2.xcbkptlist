@@ -26,7 +26,7 @@
                   moduleName = "Qsic"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
-                  timestampString = "522519532.591505"
+                  timestampString = "522606292.1592"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "14"
@@ -41,7 +41,7 @@
                   moduleName = "Qsic"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
-                  timestampString = "522519532.595375"
+                  timestampString = "522606292.161156"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -72,13 +72,59 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Qsic/API.swift"
-            timestampString = "522480401.820626"
+            timestampString = "522602470.687915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "login(username:password:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Qsic.API.login (username : Swift.String, password : Swift.String) -&gt; ()"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/API.swift"
+                  timestampString = "522606292.345805"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "120"
+                  endingLineNumber = "120"
+                  offsetFromSymbolStart = "1031">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Qsic.API.(login (username : Swift.String, password : Swift.String) -&gt; ()).(closure #1)"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/API.swift"
+                  timestampString = "522606292.348222"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "120"
+                  endingLineNumber = "120"
+                  offsetFromSymbolStart = "807">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Qsic/main.swift"
+            timestampString = "522599004.194641"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -88,13 +134,45 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Qsic/API.swift"
-            timestampString = "522512611.837359"
+            timestampString = "522606155.997312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "GET(urlStr:params:completionHandler:)"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "songDetail(rankingUrl:completionHandler:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Qsic/models.swift"
+            timestampString = "522606208.133294"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "generateSongModels(data:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Qsic/models.swift"
+            timestampString = "522606224.533894"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "generateSongModels(data:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -46,7 +46,9 @@ class API {
         //歌手专辑
         "albumOfArtist" : "http://music.163.com/api/artist/albums",
         //歌曲详情
-        "songDetail" : "http://music.163.com/api/song/detail"
+        "songDetail" : "http://music.163.com/api/song/detail",
+        //排行榜
+        "ranking" : "http://music.163.com/discover/toplist"
         
     ]
     
@@ -147,12 +149,13 @@ class API {
         completionHandler(models)
     }
     
-    func songDetail(rankingUrl:String, completionHandler : @escaping ([SongModel])->()) {
+    func songDetail(rankingId:String, completionHandler : @escaping ([SongModel])->()) {
 //        print(Thread.current)
-        let url = urlDic["songDetail"]
+        let rankingUrl = urlDic["ranking"]
+        let detailUrl = urlDic["songDetail"]
         var idResultStr : String = ""
 
-        self.GET(urlStr: rankingUrl, params: nil) { (data, response, error) in
+        self.GET(urlStr: rankingUrl!, params: ["id":rankingId]) { (data, response, error) in
             
             let str = String.init(data: data!, encoding: String.Encoding.utf8)
             let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
@@ -169,7 +172,7 @@ class API {
         
         let params = ["ids":"[\(idResultStr)]"]
         
-        self.GET(urlStr: url!, params: params) { (data, response, error) in
+        self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
             if data != nil {
                 let models = generateSongModels(data: data!)
                 completionHandler(models)

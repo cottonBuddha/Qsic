@@ -112,7 +112,7 @@ class QSMenuWidget : QSWidget {
             self.refreshMenu()
         case 10:
             if self.selected != nil {
-                self.selected!(self.type, self.dataModel.items[self.currentRowIndex])
+                self.selected!(self.type, self.dataModel.items[self.currentItemCode])
             }
             
         default:

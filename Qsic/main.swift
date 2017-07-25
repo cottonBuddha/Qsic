@@ -42,13 +42,26 @@ public let KEY_L_C_BRACE: Int32 = 123
 public let KEY_R_C_BRACE: Int32 = 124
 
 
-//API.shared.GET(urlStr: "http://music.163.com/discover/toplist?id=180106", params: nil) { (data, response, error) in
+//API.shared.GET(urlStr: "http://music.163.com/api/playlist/detail", params: ["id":"3779629"]) { (data, response, error) in
 //
 //    let str = String.init(data: data!, encoding: String.Encoding.utf8)
-//    let result = str?.matchRegExp("/song\\?id=(\\d+)")
-//    print(result ?? "")
+////    let result = str?.matchRegExp("/song\\?id=(\\d+)")
+////    print(result ?? "")
+//    let jsonDic = data?.jsonDic()
+//    let arr = (jsonDic?["result"] as! [String:Any])["tracks"] as? NSArray
+//    
+//    print(jsonDic ?? "jqs")
 //    
 //}
+
+//API.shared.rankingSongs(rankingId: "3779629") { (songs) in
+//    print(songs)
+//}
+
+//API.shared.getSongsOfArtist(artistId: "6452") { (songs) in
+//    print(songs)
+//}
+
 
 //let A_ASCII = UnicodeScalar("⠋")
 //print(A_ASCII)

@@ -142,11 +142,10 @@ class QSMusicController {
         } catch {
             
         }
-    
     }
     
     func handleRankingSelection(item:RankingModel) {
-        API.shared.songDetail(rankingUrl: item.url) { (songs) in
+        API.shared.songDetail(rankingId: item.id) { (songs) in
             let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Ranking, items: songs, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }

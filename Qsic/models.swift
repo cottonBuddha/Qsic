@@ -166,11 +166,11 @@ public func generateSongOrAlbumModels(artistId:String) -> [SongOrAlbumModel] {
 //歌曲榜单
 public class RankingModel:MenuItemModel {
     var name : String = ""
-    var url : String = ""
+    var id : String = ""
     
-    init(name:String, url:String, code:Int) {
+    init(name:String, id:String, code:Int) {
         self.name = name
-        self.url = url
+        self.id = id
         super.init(title: name, code: code)
     }
 }
@@ -178,34 +178,34 @@ public class RankingModel:MenuItemModel {
 public func generateRankingModels() -> [RankingModel] {
     
     let rankingList = [
-        ("云音乐新歌榜","/discover/toplist??idx=0"),
-        ("云音乐热歌榜","/discover/toplist??idx=1"),
-        ("网易原创歌曲榜","/discover/toplist?id=2884035"),
-        ("云音乐飙升榜","/discover/toplist?id=19723756"),
-        ("云音乐电音榜","/discover/toplist?id=10520166"),
-        ("UK排行榜周榜","/discover/toplist?id=180106"),
-        ("美国Billboard周榜","/discover/toplist?id=60198"),
-        ("KTV嗨榜","/discover/toplist?id=21845217"),
-        ("iTunes榜","/discover/toplist?id=11641012"),
-        ("Hit FM Top榜","/discover/toplist?id=120001"),
-        ("日本Oricon周榜","/discover/toplist?id=60131"),
-        ("韩国Melon排行榜周榜","/discover/toplist?id=3733003"),
-        ("韩国Mnet排行榜周榜","/discover/toplist?id=60255"),
-        ("韩国Melon原声周榜","/discover/toplist?id=46772709"),
-        ("中国TOP排行榜(港台榜)","/discover/toplist?id=112504"),
-        ("中国TOP排行榜(内地榜)","/discover/toplist?id=64016"),
-        ("香港电台中文歌曲龙虎榜","/discover/toplist?id=10169002"),
-        ("华语金曲榜","/discover/toplist?id=4395559"),
-        ("中国嘻哈榜","/discover/toplist?id=1899724"),
-        ("法国 NRJ EuroHot 30周榜","/discover/toplist?id=27135204"),
-        ("台湾Hito排行榜","/discover/toplist?id=112463"),
-        ("Beatport全球电子舞曲榜","/discover/toplist?id=3812895")
+        ("云音乐新歌榜","3779629"),
+        ("云音乐热歌榜","3778678"),
+        ("网易原创歌曲榜","2884035"),
+        ("云音乐飙升榜","19723756"),
+        ("云音乐电音榜","10520166"),
+        ("UK排行榜周榜","180106"),
+        ("美国Billboard周榜","60198"),
+        ("KTV嗨榜","21845217"),
+        ("iTunes榜","11641012"),
+        ("Hit FM Top榜","120001"),
+        ("日本Oricon周榜","60131"),
+        ("韩国Melon排行榜周榜","3733003"),
+        ("韩国Mnet排行榜周榜","60255"),
+        ("韩国Melon原声周榜","46772709"),
+        ("中国TOP排行榜(港台榜)","112504"),
+        ("中国TOP排行榜(内地榜)","64016"),
+        ("香港电台中文歌曲龙虎榜","10169002"),
+        ("华语金曲榜","4395559"),
+        ("中国嘻哈榜","1899724"),
+        ("法国 NRJ EuroHot 30周榜","27135204"),
+        ("台湾Hito排行榜","112463"),
+        ("Beatport全球电子舞曲榜","3812895")
     ]
     
     var itemArr : [RankingModel] = []
     var code = 0
     rankingList.forEach {
-        let item = RankingModel.init(name: $0.0, url: "http://music.163.com" + $0.1, code: code)
+        let item = RankingModel.init(name: $0.0, id: $0.1, code: code)
         itemArr.append(item)
         code = code + 1
     }

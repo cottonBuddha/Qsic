@@ -110,8 +110,17 @@ public func generateSongModels(data:Data) -> [SongModel] {
             itemDic["id"] = item["id"]
             itemDic["mp3Url"] = item["mp3Url"]
             itemDic["quality"] = "hMusic"
-            if let albumDic = item["album"] as? [String:Any]{
-                itemDic["artist"] = (albumDic["artists"] as! Dictionary)["name"]
+            if let albumDic = item["album"] as? [String:Any] {
+                
+                let artists = albumDic["artists"] as! [Any]
+                var artistStr = ""
+                artists.forEach {
+                    let artDic = $0 as! [String:Any]
+                    artistStr.append(artDic["name"] as! String)
+                    artistStr.append(" ")
+                }
+                
+                itemDic["artist"] = artistStr
                 itemDic["album"] = albumDic["name"]
             }
             
@@ -169,8 +178,8 @@ public class RankingModel:MenuItemModel {
 public func generateRankingModels() -> [RankingModel] {
     
     let rankingList = [
-        ("云音乐新歌榜","/discover/toplist?id=3779629"),
-        ("云音乐热歌榜","/discover/toplist?id=3778678"),
+        ("云音乐新歌榜","/discover/toplist??idx=0"),
+        ("云音乐热歌榜","/discover/toplist??idx=1"),
         ("网易原创歌曲榜","/discover/toplist?id=2884035"),
         ("云音乐飙升榜","/discover/toplist?id=19723756"),
         ("云音乐电音榜","/discover/toplist?id=10520166"),

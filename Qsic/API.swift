@@ -148,7 +148,7 @@ class API {
     }
     
     func songDetail(rankingUrl:String, completionHandler : @escaping ([SongModel])->()) {
-        print(Thread.current)
+//        print(Thread.current)
         let url = urlDic["songDetail"]
         var idResultStr : String = ""
 

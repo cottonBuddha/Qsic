@@ -101,6 +101,8 @@ public func generateSongModels(data:Data) -> [SongModel] {
             songArr = arr 
         } else if let arr = dic["songs"] as? NSArray {
             songArr = arr 
+        } else if let albumDic = dic["album"] as? [String:Any] {
+            songArr = albumDic["songs"] as! NSArray
         }
         var code = 0
         songArr.forEach({ (item) in
@@ -138,8 +140,45 @@ public func generateSongModels(data:Data) -> [SongModel] {
 public class AlbumModel:MenuItemModel {
     var name : String = ""
     var id : String = ""
-//    var 
+    var artist : String = ""
+    
+    init(name:String, id:String, artist:String, code:Int) {
+        self.name = name
+        self.id = id
+        self.artist = artist
+        super.init(title: name, code: code)
+    }
 }
+
+public func generateAlbumModels(data:Data) -> [AlbumModel] {
+    if let dic = data.jsonDic() {
+        var albums : [AlbumModel] = []
+        if let arr = dic["hotAlbums"] as? NSArray{
+            var code = 0
+            arr.forEach {
+                let albumDic = $0 as! [String:Any]
+                let name = albumDic["name"] as! String
+                let id = (albumDic["id"] as! NSNumber).stringValue
+                var artists : String = ""
+                if let arr = dic["artists"] as? NSArray{
+                    var code = 0
+                    arr.forEach {
+                        let artistDic = $0 as! [String:Any]
+                        artists.append(artistDic["name"] as! String)
+                        code = code + 1
+                    }
+                }
+                let album = AlbumModel.init(name: name, id: id, artist: artists, code: code)
+                albums.append(album)
+                code = code + 1
+            }
+        }
+        return albums
+    }
+    
+    return []
+}
+
 
 //歌曲或专辑选择列表
 public class SongOrAlbumModel:MenuItemModel {

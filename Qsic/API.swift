@@ -48,9 +48,13 @@ class API {
         //歌曲详情
         "songDetail" : "http://music.163.com/api/song/detail",
         //排行榜
-        "ranking" : "http://music.163.com/discover/toplist"
+        "ranking" : "http://music.163.com/discover/toplist",
+        //专辑歌曲
+        "songsOfAlbum" : "http://music.163.com/api/album/"
         
     ]
+    
+    var finish : Bool = false
     
     func GET(urlStr:String, params:[String:String]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
         let components = NSURLComponents.init(string: urlStr)
@@ -77,9 +81,15 @@ class API {
         let dataTask = session.dataTask(with: request) { (data, response, error) in
                 completionHandler(data,response,error)
                 semaphore.signal()
+//                self.finish = true
         }
         
         dataTask.resume()
+        
+//        while !self.finish {
+//            print("jqs")
+//        }
+        
         semaphore.wait()
     }
     
@@ -201,7 +211,7 @@ class API {
     //歌手热门歌曲
     func getSongsOfArtist(artistId:String,completionHandler : @escaping ([SongModel])->()) {
         let urlStr = self.urlDic["songOfArtist"]! + "/" + artistId
-        API.shared.GET(urlStr: urlStr, params: nil) { (data, response, error) in
+        self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
@@ -209,12 +219,27 @@ class API {
     }
     
     //歌手专辑
-    func getAlbumsOfArtist(completionHandler : @escaping ([AlbumModel])->()) {
+    func getAlbumsOfArtist(artistId:String, completionHandler : @escaping ([AlbumModel])->()) {
+        let urlStr = self.urlDic["albumOfArtist"]! + "/" + artistId
+        let params = ["offset":"0","limit":"100"]
+        self.GET(urlStr: urlStr, params: params) { (data, response, error) in
+            let models = generateAlbumModels(data: data!)
+            completionHandler(models)
+        }
+    }
+    
+    //专辑歌曲
+    func getSongsOfAlbum(albumId:String,completionHandler : @escaping ([SongModel])->()) {
+        let urlStr = self.urlDic["songsOfAlbum"]! + "/" + albumId
+        self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
+            let models = generateSongModels(data:data!)
+            completionHandler(models)
+        }
         
     }
     
     //搜索
-    func search() {
+    func search(type:String,completionHandler : @escaping ([SongModel])->()) {
         
     }
     

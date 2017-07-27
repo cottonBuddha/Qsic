@@ -80,6 +80,8 @@ class QSMusicController {
                     self.handleSongSelection(item: item as! SongModel)
                 case MenuType.Ranking:
                     self.handleRankingSelection(item: item as! RankingModel)
+                case MenuType.Album:
+                    self.handleAlbumSelection(item: item as! AlbumModel)
                 default:
                     break
                 }
@@ -111,7 +113,7 @@ class QSMusicController {
     func handleArtistSelection(item:ArtistModel) {
         
         let itemModels = generateSongOrAlbumModels(artistId: item.id)
-        let dataModel = QSMenuModel.init(title: "歌曲or专辑", type: MenuType.SongOrAlbum, items: itemModels, currentItemCode: 0)
+        let dataModel = QSMenuModel.init(title: item.name, type: MenuType.SongOrAlbum, items: itemModels, currentItemCode: 0)
         self.push(menuModel: dataModel)
     }
     
@@ -124,7 +126,10 @@ class QSMusicController {
                 self.push(menuModel: dataModel)
             }
         case 1:
-            print("")
+            API.shared.getAlbumsOfArtist(artistId: item.artistId, completionHandler: { (models) in
+                let dataModel = QSMenuModel.init(title: "专辑", type: MenuType.Album, items: models, currentItemCode: 0)
+                self.push(menuModel: dataModel)
+            })
         default:
             break
         }
@@ -145,8 +150,15 @@ class QSMusicController {
     }
     
     func handleRankingSelection(item:RankingModel) {
-        API.shared.songDetail(rankingId: item.id) { (songs) in
-            let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Ranking, items: songs, currentItemCode: 0)
+        API.shared.songDetail(rankingId: item.id) { (models) in
+            let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Ranking, items: models, currentItemCode: 0)
+            self.push(menuModel: dataModel)
+        }
+    }
+    
+    func handleAlbumSelection(item:AlbumModel) {
+        API.shared.getSongsOfAlbum(albumId: item.id) { (models) in
+            let dataModel = QSMenuModel.init(title: "歌曲", type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
     }

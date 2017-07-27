@@ -84,6 +84,14 @@ public let KEY_R_C_BRACE: Int32 = 124
 //    print(newDic)
 //})
 
+//API.shared.getAlbumsOfArtist(artistId: "6452") { (albums) in
+//    print(albums)
+//}
+
+//API.shared.getSongsOfAlbum(albumId: "18877") { (songs) in
+//    print(songs)
+//}
+
 QSMusicController().start()
 
 

@@ -92,6 +92,8 @@ public let KEY_R_C_BRACE: Int32 = 124
 //    print(songs)
 //}
 
+API.shared.getSongUrl(id: "186008")
+
 QSMusicController().start()
 
 

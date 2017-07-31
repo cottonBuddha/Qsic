@@ -28,7 +28,7 @@ class API {
         "Connection": "keep-alive",
         "Content-Type": "application/x-www-form-urlencoded",
         "Host": "music.163.com",
-        "Referer": "http://music.163.com/search/",
+        "Referer": "http://music.163.com/",
         "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
     ]
     
@@ -93,13 +93,16 @@ class API {
         semaphore.wait()
     }
     
-    func POST(urlStr:String, params:[String:String]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
+    func POST(urlStr:String, params:[String:Any]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
         let url : URL = URL.init(string: urlStr)!
+
         var request = URLRequest.init(url: url)
+        request.allHTTPHeaderFields = self.headerDic
+
         request.httpMethod = "POST"
         if (params != nil) && (params!.count > 0){
             do {
-                let jsonData = try JSONSerialization.data(withJSONObject: params!, options: .prettyPrinted)
+                let jsonData = try JSONSerialization.data(withJSONObject: params!, options: .init(rawValue: 0))
                 let jsonStr = String.init(data: jsonData, encoding: String.Encoding.utf8)
                 let bodyData = self.encryptedRequest(content: jsonStr!)
                 request.httpBody = bodyData
@@ -243,19 +246,28 @@ class API {
         
     }
     
+    func getSongUrl(id:String) {
+        let params = ["csrf_token":"", "ids":"[\(id)]"] as [String : Any]
+        self.POST(urlStr: "http://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
+            print(data?.jsonDic() ?? "jqs")
+        }
+    }
+    
+    
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"
     let pubKey = "010001"
     
     func encryptedRequest(content:String) -> Data? {
-        let secKey = createSecretKey()
-
+        let secKey = "/_zfe,\\os9q4$(&s"
+        let str = "{\"br\":128000,\"csrf_token\":\"\",\"ids\":\"[186008]\"}"
+        
         let encContent = aesEncrypt(content: aesEncrypt(content: content, secKey: nonce)!, secKey: secKey)
         let encSec = rsaEncrypt(content: secKey, pubKey: pubKey, modulus: modulus)
         let bodyDic = ["params": encContent!, "encSecKey": encSec!]
         do {
-            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDic, options: .prettyPrinted)
+            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDic, options: .init(rawValue: 0))
             return bodyData
         }
     }
@@ -272,7 +284,7 @@ class API {
         return string
     }
 
-    //AES加密
+    //AES加密(pass)
     func aesEncrypt(content:String, secKey:String) -> String?{
         
         let iv = "0102030405060708".data(using: String.Encoding.utf8)
@@ -286,7 +298,7 @@ class API {
         }
     }
     
-    //RSA加密
+    //RSA加密(pass)
     func rsaEncrypt(content:String, pubKey:String, modulus:String) -> String?{
         let radix = 16
         let rText = String.init(content.characters.reversed())

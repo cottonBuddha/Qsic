@@ -105,7 +105,7 @@ class API {
                 let jsonData = try JSONSerialization.data(withJSONObject: params!, options: .init(rawValue: 0))
                 let jsonStr = String.init(data: jsonData, encoding: String.Encoding.utf8)
                 let bodyData = self.encryptedRequest(content: jsonStr!)
-                request.httpBody = bodyData
+                request.httpBody = bodyData!
             } catch {
                 request.httpBody = nil
             }
@@ -206,7 +206,7 @@ class API {
                 let models = generateArtistModles(data: data!)
                 completionHandler(models)
             } else {
-                
+
             }
         }
     }
@@ -246,10 +246,13 @@ class API {
         
     }
     
-    func getSongUrl(id:String) {
-        let params = ["csrf_token":"", "ids":"[\(id)]"] as [String : Any]
+    func getSongUrl(id:String,completionHandler : @escaping (String)->()) {
+        let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
         self.POST(urlStr: "http://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             print(data?.jsonDic() ?? "jqs")
+            if let dic = data?.jsonDic() {
+                completionHandler(dic["url"] as! String)
+            }
         }
     }
     
@@ -260,16 +263,12 @@ class API {
     let pubKey = "010001"
     
     func encryptedRequest(content:String) -> Data? {
-        let secKey = "/_zfe,\\os9q4$(&s"
-        let str = "{\"br\":128000,\"csrf_token\":\"\",\"ids\":\"[186008]\"}"
-        
+        let secKey = createSecretKey()
         let encContent = aesEncrypt(content: aesEncrypt(content: content, secKey: nonce)!, secKey: secKey)
         let encSec = rsaEncrypt(content: secKey, pubKey: pubKey, modulus: modulus)
-        let bodyDic = ["params": encContent!, "encSecKey": encSec!]
-        do {
-            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDic, options: .init(rawValue: 0))
-            return bodyData
-        }
+        let bodyStr = "params="+escape(encContent!)+"&"+"encSecKey="+escape(encSec!)
+        let bodyData = bodyStr.data(using: String.Encoding.utf8)
+        return bodyData
     }
     
     //16位随机字符串
@@ -329,6 +328,33 @@ class API {
         }
         
         return prefix + encText
+    }
+    
+    public func escape(_ string: String) -> String {
+        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+        let subDelimitersToEncode = "!$&'()*+,;="
+        
+        var allowedCharacterSet = CharacterSet.urlQueryAllowed
+        allowedCharacterSet.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
+        
+        var escaped = ""
+        
+        let batchSize = 50
+        var index = string.startIndex
+        
+        while index != string.endIndex {
+            let startIndex = index
+            let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? string.endIndex
+            let range = startIndex..<endIndex
+            
+            let substring = string.substring(with: range)
+            
+            escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
+            
+            index = endIndex
+        }
+        
+        return escaped
     }
 
 }

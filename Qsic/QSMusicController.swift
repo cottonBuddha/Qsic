@@ -21,17 +21,14 @@ enum MenuType : Int {
 
 class QSMusicController {
     
-    var mainwin : QSMainWindow = QSMainWindow.init()
-    
-    private var ch : Character?
-    
     private var ic : Int32?
-    
     private var navtitle : QSNaviTitleWidget?
     private var menu : QSMenuWidget?
-    
     private var menuStack : [QSMenuModel] = []
+    private var getchThread : Thread?
     
+    var mainwin : QSMainWindow = QSMainWindow.init()
+
     func start() {
         
         self.menu = self.initHomeMenu()
@@ -42,9 +39,10 @@ class QSMusicController {
         
         self.navtitle?.push(title: self.menu!.title)
         
-        self.listenToInstructions()
+        self.getchThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
+        self.getchThread?.start()
         
-        mainwin.endWin()
+        RunLoop.main.run()
     }
     
     func initNaviTitle() -> QSNaviTitleWidget {
@@ -94,6 +92,11 @@ class QSMusicController {
     func handleHomeSelection(item:MenuItemModel) {
         let code = item.code
         switch code {
+        case 0:
+            API.shared.recommendPlaylist(completionHandler: { (models) in
+                let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
+                self.push(menuModel: dataModel)
+            })
         case 1:
             API.shared.rankings(completionHandler: { (rankings) in
                 let datamodel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
@@ -104,7 +107,10 @@ class QSMusicController {
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
-            
+        case 3:
+            print("")
+        case 4:
+            print("")
         default:
             break
         }
@@ -137,16 +143,8 @@ class QSMusicController {
     
     var player : AVAudioPlayer?
     func handleSongSelection(item:SongModel) {
-        
-        do {
-//            player = try AVAudioPlayer(contentsOf: URL.init(string: item.mp3Url!)!)
-//            player?.play()
-            addstr("链接\(item.mp3Url)")
-            addstr("歌曲id\(item.id)")
-            refresh()
-        } catch {
-            
-        }
+        QSPlayer.shared.songList = self.menuStack.last?.items as! [SongModel]
+        QSPlayer.shared.playCurrentIndexSong(index: item.code)
     }
     
     func handleRankingSelection(item:RankingModel) {
@@ -163,13 +161,15 @@ class QSMusicController {
         }
     }
     
-    func listenToInstructions() {
+    @objc func listenToInstructions() {
+        
         repeat {
             ic = getch()
-
             self.menu?.handleWithKeyEvent(keyCode: ic!)
             self.handleWithKeyEvent(keyCode: ic!)
         } while ic != KEY_Q_LOW
+        
+        self.mainwin.endWin()
     }
     
     func push(menuModel:QSMenuModel) {

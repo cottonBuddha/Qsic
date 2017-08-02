@@ -54,7 +54,7 @@ public class ArtistModel: MenuItemModel {
 }
 
 public func generateArtistModles(data:Data) -> [ArtistModel] {
-    if let dic = data.jsonDic() {
+    if let dic = data.jsonDic() as? NSDictionary {
         var artists : [ArtistModel] = []
         if let arr = dic["artists"] as? NSArray{
             var code = 0
@@ -93,47 +93,50 @@ public class SongModel:MenuItemModel {
 }
 
 public func generateSongModels(data:Data) -> [SongModel] {
-    
-    if let dic = data.jsonDic() {
-        var songs : [SongModel] = []
-        var songArr : NSArray = []
+   
+    var songArr : NSArray = []
+    var songModels : [SongModel] = []
+
+    if let dic = data.jsonDic() as? NSDictionary {
         if let arr = dic["hotSongs"] as? NSArray{
             songArr = arr 
         } else if let arr = dic["songs"] as? NSArray {
             songArr = arr 
         } else if let albumDic = dic["album"] as? [String:Any] {
             songArr = albumDic["songs"] as! NSArray
+        } else if let arr = dic["recommend"] as? NSArray {
+            songArr = arr//这里的dic命名,包括jsondic方法，要改一下
         }
-        var code = 0
-        songArr.forEach({ (item) in
-            var itemDic : [String : Any] = [:]
-            let item = item as! [String : Any]
-            itemDic["name"] = item["name"]
-            itemDic["id"] = item["id"]
-            itemDic["mp3Url"] = item["mp3Url"]
-            itemDic["quality"] = "hMusic"
-            if let albumDic = item["album"] as? [String:Any] {
-                
-                let artists = albumDic["artists"] as! [Any]
-                var artistStr = ""
-                artists.forEach {
-                    let artDic = $0 as! [String:Any]
-                    artistStr.append(artDic["name"] as! String)
-                    artistStr.append(" ")
-                }
-                
-                itemDic["artist"] = artistStr
-                itemDic["album"] = albumDic["name"]
+    }
+    
+    var code = 0
+    songArr.forEach({ (item) in
+        var itemDic : [String : Any] = [:]
+        let item = item as! [String : Any]
+        itemDic["name"] = item["name"]
+        itemDic["id"] = item["id"]
+        itemDic["mp3Url"] = item["mp3Url"]
+        itemDic["quality"] = "hMusic"
+        if let albumDic = item["album"] as? [String:Any] {
+            
+            let artists = albumDic["artists"] as! [Any]
+            var artistStr = ""
+            artists.forEach {
+                let artDic = $0 as! [String:Any]
+                artistStr.append(artDic["name"] as! String)
+                artistStr.append(" ")
             }
             
-            let song = SongModel.init(itemDic: itemDic, code: code)
-            songs.append(song)
-            code = code + 1
-        })
-
-        return songs
-    }
-    return []
+            itemDic["artist"] = artistStr
+            itemDic["album"] = albumDic["name"]
+        }
+        
+        let song = SongModel.init(itemDic: itemDic, code: code)
+        songModels.append(song)
+        code = code + 1
+    })
+    
+    return songModels
 }
 
 //专辑列表
@@ -151,7 +154,7 @@ public class AlbumModel:MenuItemModel {
 }
 
 public func generateAlbumModels(data:Data) -> [AlbumModel] {
-    if let dic = data.jsonDic() {
+    if let dic = data.jsonDic() as? NSDictionary {
         var albums : [AlbumModel] = []
         if let arr = dic["hotAlbums"] as? NSArray{
             var code = 0

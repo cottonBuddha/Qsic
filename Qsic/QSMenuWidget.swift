@@ -63,7 +63,6 @@ class QSMenuWidget : QSWidget {
             return
         }
         
-        
         for index in 0..<self.splitItems[self.currentPageIndex].count {
             init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_BLACK))
             

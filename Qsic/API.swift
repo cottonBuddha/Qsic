@@ -38,7 +38,7 @@ class API {
         //手机登录
         "phoneLogin" : "https://music.163.com/weapi/login/cellphone",
         //签到
-        "signin" : "http://music.163.com/weapi/point/dailyTask",
+        "signin" : "https://music.163.com/weapi/point/dailyTask",
         //歌手
         "artist" : "http://music.163.com/api/artist/top",
         //歌手曲目
@@ -50,8 +50,9 @@ class API {
         //排行榜
         "ranking" : "http://music.163.com/discover/toplist",
         //专辑歌曲
-        "songsOfAlbum" : "http://music.163.com/api/album/"
-        
+        "songsOfAlbum" : "http://music.163.com/api/album/",
+        //推荐
+        "recommend" :"https://music.163.com/weapi/v1/discovery/recommend/songs"
     ]
     
     var finish : Bool = false
@@ -76,21 +77,11 @@ class API {
         var request = URLRequest.init(url: url)
         request.allHTTPHeaderFields = self.headerDic
         
-        let semaphore = DispatchSemaphore.init(value: 0)
-
         let dataTask = session.dataTask(with: request) { (data, response, error) in
                 completionHandler(data,response,error)
-                semaphore.signal()
-//                self.finish = true
         }
         
         dataTask.resume()
-        
-//        while !self.finish {
-//            print("jqs")
-//        }
-        
-        semaphore.wait()
     }
     
     func POST(urlStr:String, params:[String:Any]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
@@ -111,15 +102,13 @@ class API {
             }
             
         }
-        let semaphore = DispatchSemaphore.init(value: 0)
+
         let session = URLSession.shared
         let dataTask = session.dataTask(with: request) { (data, response, error) in
             completionHandler(data,response,error)
-            semaphore.signal()
         }
         
         dataTask.resume()
-        semaphore.wait()
     }
     
     
@@ -127,17 +116,27 @@ class API {
     //登录
     func login(username:String, password:String) {
         let url = self.urlDic["login"]
-        let loginfo = ["username":"18662867625","password":"jqsjsssjp1","rememberLogin":"true"]
+        let loginfo = ["username":username,"password":password,"rememberLogin":"true"]
         self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
 
             let dic = data?.jsonDic()
             print(dic ?? "没有")
+            
+            
         }
     }
     
     //手机登录
-    func phoneLogin(username:String, password:String) {
-        
+    func phoneLogin(phoneNumber:String, password:String) {
+        let url = self.urlDic["phoneLogin"]
+        let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
+        let loginfo = ["phone":phoneNumber,"password":passwordMD5,"rememberLogin":"true"]
+        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+            
+            let dic = data?.jsonDic()
+            print(dic ?? "没有")
+            
+        }
     }
     
     //签到
@@ -152,8 +151,23 @@ class API {
     }
     
     //每日推荐歌单
-    func recommendPlaylist() {
-        
+    func recommendPlaylist(completionHandler : @escaping ([SongModel])->()) {
+        let urlStr = self.urlDic["recommend"]
+        let phoneUrl = self.urlDic["phoneLogin"]
+
+        let cookies = HTTPCookieStorage.shared.cookies(for: URL.init(string: phoneUrl!)!)
+        //print(cookies)
+        var csrf = ""
+        cookies?.forEach {
+            if $0.name == "__csrf" {
+                csrf = $0.value
+            }
+        }
+        let params = ["limit":20, "csrf_token":csrf] as [String : Any]
+        self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
+            let models = generateSongModels(data: data!)
+            completionHandler(models)
+        }
     }
     
     //榜单
@@ -248,15 +262,15 @@ class API {
     
     func getSongUrl(id:String,completionHandler : @escaping (String)->()) {
         let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
-        self.POST(urlStr: "http://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
-            print(data?.jsonDic() ?? "jqs")
-            if let dic = data?.jsonDic() {
-                completionHandler(dic["url"] as! String)
+        self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
+            //print(data?.jsonDic() ?? "jqs")
+            if let dic = data?.jsonDic() as? NSDictionary {
+                let dataArr = dic["data"] as! NSArray
+                let dataDic = dataArr.lastObject as! NSDictionary
+                completionHandler(dataDic["url"] as! String)
             }
         }
     }
-    
-    
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"

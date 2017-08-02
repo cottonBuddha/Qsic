@@ -78,6 +78,8 @@ public let KEY_R_C_BRACE: Int32 = 124
 //player.play()
 
 //API.shared.login(username: "", password: "")
+//API.shared.phoneLogin(phoneNumber: "18662867625", password: "jqsjsssjp1")
+//API.shared.recommendPlaylist()
 
 //API.shared.rankings(completionHandler: { (rankings) in
 //    let newDic = rankings.split(num: 10)
@@ -92,8 +94,19 @@ public let KEY_R_C_BRACE: Int32 = 124
 //    print(songs)
 //}
 
+//var player : AVPlayer?
+//
+//API.shared.getSongUrl(id: "422790564") { (urlStr) in
+////    DispatchQueue.global().async {
+//    let playerItem = AVPlayerItem(url: URL.init(string: urlStr)!)
+//    print(urlStr)
+//    player = AVPlayer(playerItem: playerItem)
+//    player?.play()
+//
+////    }
+//}
 
-
+//RunLoop.main.run()
 QSMusicController().start()
 
 

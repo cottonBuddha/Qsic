@@ -92,7 +92,7 @@ class QSMenuWidget : QSWidget {
             mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
         }
     }
-    
+        
     override func handleWithKeyEvent(keyCode:Int32) {
         switch keyCode {
         case KEY_UP:

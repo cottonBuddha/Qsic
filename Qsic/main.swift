@@ -106,6 +106,10 @@ public let KEY_R_C_BRACE: Int32 = 124
 ////    }
 //}
 
+//API.shared.songDetail(rankingId: "3779629") { (models) in
+//    print(models)
+//}
+//
 //RunLoop.main.run()
 QSMusicController().start()
 

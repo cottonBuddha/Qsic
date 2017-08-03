@@ -46,7 +46,7 @@ class API {
         //歌手专辑
         "albumOfArtist" : "http://music.163.com/api/artist/albums",
         //歌曲详情
-        "songDetail" : "http://music.163.com/api/song/detail",
+        "songDetail" : "https://music.163.com/api/song/detail",
         //排行榜
         "ranking" : "http://music.163.com/discover/toplist",
         //专辑歌曲
@@ -194,19 +194,19 @@ class API {
             
             let index = idResultStr.index(idResultStr.endIndex, offsetBy: -1)
             idResultStr = idResultStr.substring(to: index)
-                
+            let params = ["ids":"[\(idResultStr)]"]
+            
+            self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
+                if data != nil {
+                    let models = generateSongModels(data: data!)
+                    completionHandler(models)
+                } else {
+                    
+                }
+            }
+
             }
         
-        let params = ["ids":"[\(idResultStr)]"]
-        
-        self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
-            if data != nil {
-                let models = generateSongModels(data: data!)
-                completionHandler(models)
-            } else {
-                
-            }
-        }
 
     }
 

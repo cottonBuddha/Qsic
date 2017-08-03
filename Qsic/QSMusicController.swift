@@ -17,6 +17,7 @@ enum MenuType : Int {
     case Album
     case SongOrAlbum
     case Ranking
+    case Search
 }
 
 class QSMusicController {
@@ -26,6 +27,7 @@ class QSMusicController {
     private var menu : QSMenuWidget?
     private var menuStack : [QSMenuModel] = []
     private var getchThread : Thread?
+    private var searchBar : QSSearchWidget?
     
     var mainwin : QSMainWindow = QSMainWindow.init()
 
@@ -108,9 +110,15 @@ class QSMusicController {
                 self.push(menuModel: dataModel)
             }
         case 3:
-            print("")
+//            self.menu?.scanStrAtIndex(index: item.code)
+            searchBar = QSSearchWidget.init(startX: 3, startY: 9)
+            self.mainwin.addSubWidget(widget: searchBar!)
+            searchBar?.getInputContent(completionHandler: { (content) in
+                
+            })
         case 4:
             print("")
+            
         default:
             break
         }
@@ -149,7 +157,7 @@ class QSMusicController {
     
     func handleRankingSelection(item:RankingModel) {
         API.shared.songDetail(rankingId: item.id) { (models) in
-            let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Ranking, items: models, currentItemCode: 0)
+            let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
     }

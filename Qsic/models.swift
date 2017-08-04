@@ -56,13 +56,19 @@ public class ArtistModel: MenuItemModel {
 public func generateArtistModles(data:Data) -> [ArtistModel] {
     if let dic = data.jsonDic() as? NSDictionary {
         var artists : [ArtistModel] = []
-        if let arr = dic["artists"] as? NSArray{
-            var code = 0
-            arr.forEach {
-                let artist = ArtistModel.init(itemDic: $0 as! Dictionary<String, Any>, code: code)
-                artists.append(artist)
-                code = code + 1
-            }
+        var jsonArr : NSArray = []
+        
+        if let arr = dic["artists"] as? NSArray {
+            jsonArr = arr
+        } else if let arr = (dic["result"] as? NSDictionary)?["artists"] as? NSArray {
+            jsonArr = arr
+        }
+
+        var code = 0
+        jsonArr.forEach {
+            let artist = ArtistModel.init(itemDic: $0 as! Dictionary<String, Any>, code: code)
+            artists.append(artist)
+            code = code + 1
         }
         return artists
     }
@@ -106,6 +112,8 @@ public func generateSongModels(data:Data) -> [SongModel] {
             songArr = albumDic["songs"] as! NSArray
         } else if let arr = dic["recommend"] as? NSArray {
             songArr = arr//这里的dic命名,包括jsondic方法，要改一下
+        } else if let arr = (dic["result"] as? NSDictionary)?["songs"] as? NSArray {
+            songArr = arr
         }
     }
     
@@ -117,19 +125,22 @@ public func generateSongModels(data:Data) -> [SongModel] {
         itemDic["id"] = item["id"]
         itemDic["mp3Url"] = item["mp3Url"]
         itemDic["quality"] = "hMusic"
+        var artistStr = ""
+        var albumName = ""
         if let albumDic = item["album"] as? [String:Any] {
             
-            let artists = albumDic["artists"] as! [Any]
-            var artistStr = ""
-            artists.forEach {
-                let artDic = $0 as! [String:Any]
-                artistStr.append(artDic["name"] as! String)
-                artistStr.append(" ")
+            if let artists = albumDic["artists"] as? [Any] {
+                artists.forEach {
+                    let artDic = $0 as! [String:Any]
+                    artistStr.append(artDic["name"] as! String)
+                    artistStr.append(" ")
+                }
+                albumName = albumDic["name"] as! String
             }
-            
-            itemDic["artist"] = artistStr
-            itemDic["album"] = albumDic["name"]
         }
+        
+        itemDic["artist"] = artistStr
+        itemDic["album"] = albumName
         
         let song = SongModel.init(itemDic: itemDic, code: code)
         songModels.append(song)
@@ -156,26 +167,32 @@ public class AlbumModel:MenuItemModel {
 public func generateAlbumModels(data:Data) -> [AlbumModel] {
     if let dic = data.jsonDic() as? NSDictionary {
         var albums : [AlbumModel] = []
+        var jsonArr : NSArray = []
         if let arr = dic["hotAlbums"] as? NSArray{
-            var code = 0
-            arr.forEach {
-                let albumDic = $0 as! [String:Any]
-                let name = albumDic["name"] as! String
-                let id = (albumDic["id"] as! NSNumber).stringValue
-                var artists : String = ""
-                if let arr = dic["artists"] as? NSArray{
-                    var code = 0
-                    arr.forEach {
-                        let artistDic = $0 as! [String:Any]
-                        artists.append(artistDic["name"] as! String)
-                        code = code + 1
-                    }
-                }
-                let album = AlbumModel.init(name: name, id: id, artist: artists, code: code)
-                albums.append(album)
-                code = code + 1
-            }
+            jsonArr = arr
+        } else if let arr = (dic["result"] as? NSDictionary)?["albums"] as? NSArray{
+            jsonArr = arr
         }
+        
+        var code = 0
+        jsonArr.forEach {
+            let albumDic = $0 as! [String:Any]
+            let name = albumDic["name"] as! String
+            let id = (albumDic["id"] as! NSNumber).stringValue
+            var artists : String = ""
+            if let arr = dic["artists"] as? NSArray{
+                var code = 0
+                arr.forEach {
+                    let artistDic = $0 as! [String:Any]
+                    artists.append(artistDic["name"] as! String)
+                    code = code + 1
+                }
+            }
+            let album = AlbumModel.init(name: name, id: id, artist: artists, code: code)
+            albums.append(album)
+            code = code + 1
+        }
+        
         return albums
     }
     

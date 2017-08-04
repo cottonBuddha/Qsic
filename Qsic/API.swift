@@ -9,6 +9,12 @@
 import Foundation
 import CFNetwork
 
+enum SearchType : Int{
+    case Song = 1
+    case Album = 10
+    case Artist = 100
+}
+
 class API {
     
     private static let sharedInstance = API()
@@ -29,7 +35,8 @@ class API {
         "Content-Type": "application/x-www-form-urlencoded",
         "Host": "music.163.com",
         "Referer": "http://music.163.com/",
-        "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
+        "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36",
+        "Set-Cookie": "appver=1.5.2"
     ]
     
     let urlDic = [
@@ -52,7 +59,9 @@ class API {
         //专辑歌曲
         "songsOfAlbum" : "http://music.163.com/api/album/",
         //推荐
-        "recommend" :"https://music.163.com/weapi/v1/discovery/recommend/songs"
+        "recommend" : "https://music.163.com/weapi/v1/discovery/recommend/songs",
+        //搜索
+        "search" : "http://music.163.com/api/search/get"
     ]
     
     var finish : Bool = false
@@ -84,14 +93,19 @@ class API {
         dataTask.resume()
     }
     
-    func POST(urlStr:String, params:[String:Any]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
+    func POST(urlStr:String, params:[String:Any]?,encrypt:Bool = true, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
         let url : URL = URL.init(string: urlStr)!
 
         var request = URLRequest.init(url: url)
         request.allHTTPHeaderFields = self.headerDic
 
         request.httpMethod = "POST"
-        if (params != nil) && (params!.count > 0){
+        
+        if params == nil {
+             request.httpBody = nil
+        }
+        
+        if encrypt {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: params!, options: .init(rawValue: 0))
                 let jsonStr = String.init(data: jsonData, encoding: String.Encoding.utf8)
@@ -100,7 +114,13 @@ class API {
             } catch {
                 request.httpBody = nil
             }
+        } else {
             
+            do {
+                request.httpBody = self.dicToBodyData(dic: params as! [String : String])
+            } catch {
+                
+            }
         }
 
         let session = URLSession.shared
@@ -256,18 +276,32 @@ class API {
     }
     
     //搜索
-    func search(type:String,completionHandler : @escaping ([SongModel])->()) {
-        
+    func search(type:SearchType = .Song,content:String,completionHandler : @escaping (SearchType,[MenuItemModel])->()) {
+        let urlStr = self.urlDic["search"];
+        let params = ["s":content, "limit":"60", "type":"\(type.rawValue)", "offset":"0"] as [String : Any];
+        self.POST(urlStr: urlStr!, params: params ,encrypt: false) { (data, response, error) in
+            var models : [MenuItemModel] = []
+            switch type {
+            case .Song :
+                models = generateSongModels(data:data!)
+            case .Album:
+                models = generateAlbumModels(data: data!)
+            case .Artist:
+                models = generateArtistModles(data: data!)
+            }
+            completionHandler(type,models)
+            
+        }
     }
     
-    func getSongUrl(id:String,completionHandler : @escaping (String)->()) {
+    func getSongUrl(id:String,completionHandler : @escaping (String?)->()) {
         let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             //print(data?.jsonDic() ?? "jqs")
             if let dic = data?.jsonDic() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 let dataDic = dataArr.lastObject as! NSDictionary
-                completionHandler(dataDic["url"] as! String)
+                completionHandler(dataDic["url"] as? String)
             }
         }
     }
@@ -283,6 +317,15 @@ class API {
         let bodyStr = "params="+escape(encContent!)+"&"+"encSecKey="+escape(encSec!)
         let bodyData = bodyStr.data(using: String.Encoding.utf8)
         return bodyData
+    }
+    
+    func dicToBodyData(dic:[String:String]) -> Data? {
+        var bodyStr = ""
+        dic.forEach {
+            let paramStr = $0.key + "=" + $0.value + "&"
+            bodyStr.append(paramStr)
+        }
+        return bodyStr.data(using: String.Encoding.utf8)
     }
     
     //16位随机字符串

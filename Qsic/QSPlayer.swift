@@ -36,7 +36,7 @@ class QSPlayer {
     
     func playSong(songId:String) {
         API.shared.getSongUrl(id: songId) { (urlStr) in
-            let playerItem = AVPlayerItem(url: URL.init(string: urlStr)!)
+            let playerItem = AVPlayerItem(url: URL.init(string: urlStr!)!)
             self.player = AVPlayer.init(playerItem: playerItem)
             self.player?.play()
             self.isPlaying = true

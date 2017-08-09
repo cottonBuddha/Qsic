@@ -271,4 +271,54 @@ public func generateRankingModels() -> [RankingModel] {
     return itemArr
 }
 
-//songdetail
+//搜索类型
+public class SearchModel:MenuItemModel {
+    var content : String = ""
+    var type : SearchType = SearchType.Song
+    
+    init(itemTitle:String, content:String, code:Int) {
+        self.content = content
+        super.init(title: itemTitle, code: code)
+    }
+}
+
+
+public func generateSearchTypeModels(content:String) -> [SearchModel] {
+    let menuData = [("歌曲",0),
+                    ("歌手",1),
+                    ("专辑",2)]
+    var itemArr : [SearchModel] = []
+    menuData.forEach {
+        let model = SearchModel.init(itemTitle: $0.0, content: content, code: $0.1)
+        itemArr.append(model)
+    }
+    
+    return itemArr
+}
+
+//帮助
+public func generateHelpModels() -> [MenuItemModel] {
+
+    let helpData = [
+                    "↑"+6.space+"上移动",
+                    "↓"+6.space+"下移动",
+                    "←"+6.space+"上一页",
+                    "→"+6.space+"下一页",
+                    "↵"+6.space+"选中",
+                    "space"+2.space+"播放/暂停",
+                    "/"+6.space+"返回上一级菜单",
+                    ">"+6.space+"下一首",
+                    "<"+6.space+"上一首",
+                    "h"+6.space+"首页",
+                    "p"+6.space+"播放列表",
+                    "↑"+6.space+"上移动"
+                                       ]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    helpData.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}

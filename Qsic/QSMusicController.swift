@@ -18,17 +18,18 @@ enum MenuType : Int {
     case SongOrAlbum
     case Ranking
     case Search
+    case Help
 }
 
 class QSMusicController {
     
-    private var ic : Int32?
     private var navtitle : QSNaviTitleWidget?
     private var menu : QSMenuWidget?
     private var menuStack : [QSMenuModel] = []
     private var getchThread : Thread?
     private var searchBar : QSSearchWidget?
-    
+    private var loginWidget : QSLoginWidget?
+
     var mainwin : QSMainWindow = QSMainWindow.init()
 
     func start() {
@@ -57,7 +58,7 @@ class QSMusicController {
                         ("榜单",1),
                         ("歌手",2),
                         ("搜索",3),
-                        ("帮助",4)];
+                        ("帮助",4)]
         
         var menuItems : [MenuItemModel] = []
         menuData.forEach {
@@ -82,6 +83,8 @@ class QSMusicController {
                     self.handleRankingSelection(item: item as! RankingModel)
                 case MenuType.Album:
                     self.handleAlbumSelection(item: item as! AlbumModel)
+                case MenuType.Search:
+                    self.handleSearchTypeSelection(item: item as! SearchModel)
                 default:
                     break
                 }
@@ -95,9 +98,27 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-            API.shared.recommendPlaylist(completionHandler: { (models) in
-                let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
-                self.push(menuModel: dataModel)
+            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
+                if models.count > 0 {
+                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    self.push(menuModel: dataModel)
+                } else {
+                    self.loginWidget = QSLoginWidget.init(startX: 3, startY: 9)
+                    self.mainwin.addSubWidget(widget: self.loginWidget!)
+                    self.loginWidget?.getInputContent(completionHandler: { (account, password) in
+                        API.shared.login(account: account, password: password, completionHandler: { (accountName) in
+                            if accountName != "" {
+                                self.navtitle?.titleStack.removeFirst()
+                                self.navtitle?.titleStack.insert(accountName, at: 0)
+                                self.navtitle?.drawWidget()
+                                self.loginWidget?.showSuccess()
+                            } else {
+                                self.loginWidget?.showFaliure()
+                            }
+                        })
+                    })
+                }
+                
             })
         case 1:
             API.shared.rankings(completionHandler: { (rankings) in
@@ -112,12 +133,17 @@ class QSMusicController {
         case 3:
 //            self.menu?.scanStrAtIndex(index: item.code)
             searchBar = QSSearchWidget.init(startX: 3, startY: 9)
-            self.mainwin.addSubWidget(widget: searchBar!)
-            searchBar?.getInputContent(completionHandler: { (content) in
-                
+            mainwin.addSubWidget(widget: searchBar!)
+            searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
+                self.mainwin.removeSubWidget(widget: self.searchBar!)
+                let models = generateSearchTypeModels(content: content)
+                let menuModel = QSMenuModel.init(title: "搜索", type: MenuType.Search, items: models, currentItemCode: 0)
+                self.push(menuModel: menuModel)
             })
         case 4:
-            print("")
+            let models = generateHelpModels()
+            let menuModel = QSMenuModel.init(title: "帮助", type: MenuType.Help, items: models, currentItemCode: 0)
+            self.push(menuModel: menuModel)
             
         default:
             break
@@ -157,7 +183,7 @@ class QSMusicController {
     
     func handleRankingSelection(item:RankingModel) {
         API.shared.songDetail(rankingId: item.id) { (models) in
-            let dataModel = QSMenuModel.init(title: "排名", type: MenuType.Song, items: models, currentItemCode: 0)
+            let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
     }
@@ -169,12 +195,41 @@ class QSMusicController {
         }
     }
     
+    func handleSearchTypeSelection(item:SearchModel) {
+        var searchType = SearchType.Song
+        switch item.code {
+        case 0:
+            searchType = SearchType.Song
+        case 1:
+            searchType = SearchType.Artist
+        case 2:
+            searchType = SearchType.Album
+        default:
+            break
+        }
+        API.shared.search(type: searchType, content: item.content) { (type, models) in
+            switch type {
+            case .Song:
+                let menuModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
+                self.push(menuModel: menuModel)
+            case .Artist:
+                let menuModel = QSMenuModel.init(title: "歌手", type: MenuType.Artist, items: models, currentItemCode: 0)
+                self.push(menuModel: menuModel)
+            case .Album:
+                let menuModel = QSMenuModel.init(title: "专辑", type: MenuType.Album, items: models, currentItemCode: 0)
+                self.push(menuModel: menuModel)
+
+            }
+        }
+
+    }
+    
     @objc func listenToInstructions() {
-        
+        var ic : Int32 = 0
         repeat {
             ic = getch()
-            self.menu?.handleWithKeyEvent(keyCode: ic!)
-            self.handleWithKeyEvent(keyCode: ic!)
+            self.menu?.handleWithKeyEvent(keyCode: ic)
+            self.handleWithKeyEvent(keyCode: ic)
         } while ic != KEY_Q_LOW
         
         self.mainwin.endWin()
@@ -203,4 +258,5 @@ class QSMusicController {
         }
 
     }
+    
 }

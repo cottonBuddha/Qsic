@@ -8,7 +8,37 @@
 
 import Foundation
 
+typealias QRange = (Int,Int)
+
 extension String {
+    
+    var count : Int {
+        return self.characters.count
+    }
+    
+    var upper : String {
+        return self.uppercased()
+    }
+    
+    var lower : String {
+        return self.lowercased()
+    }
+    
+    func removeLast() -> String {
+        return self.subStr(range: (0,self.characters.count - 1))
+    }
+    
+    func removeFirst() -> String {
+        return self.subStr(range: (1,self.characters.count))
+    }
+    
+    func subStr(range:QRange) -> String{
+        let lowerIndex = self.index(self.startIndex, offsetBy: range.0)
+        let upperIndex = self.index(self.startIndex, offsetBy: range.1)
+        let range:Range = Range.init(uncheckedBounds: (lower: lowerIndex, upper: upperIndex))
+        return self.substring(with: range)
+    }
+
     
     func matchRegExp(_ pattern:String) -> [String] {
         let regular = try! NSRegularExpression.init(pattern: pattern, options: .caseInsensitive)
@@ -76,5 +106,11 @@ extension Array {
     
 }
 
-
+extension Int {
+    var space : String {
+        get{
+            return String.init(repeating: " ", count: self)
+        }
+    }
+}
 

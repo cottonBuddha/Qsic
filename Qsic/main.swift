@@ -111,7 +111,34 @@ public let KEY_R_C_BRACE: Int32 = 124
 //}
 //
 
+//API.shared.search(type: .Song, content: "周杰伦") { (type, models) in
+//    print(models)
+//}
 
+
+//API.shared.recommendPlaylist { (models) in
+//    print(models)
+//}
+
+//API.shared.phoneLogin(phoneNumber: "18662867625", password: "jqsjsssjp1") { (name) in
+//    print(name)
+//}
+
+//RunLoop.main.run()
+
+
+//let i = getch()
+//print(i)
+
+//let str = readLine()
+//print(str)
+
+public enum InputType : Int {
+    case Order
+    case Content
+}
+
+public var INPUT_TYPE = InputType.Order
 
 QSMusicController().start()
 

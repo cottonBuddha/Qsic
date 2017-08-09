@@ -9,7 +9,7 @@
 import Foundation
 import CFNetwork
 
-enum SearchType : Int{
+public enum SearchType : Int{
     case Song = 1
     case Album = 10
     case Artist = 100
@@ -61,7 +61,7 @@ class API {
         //推荐
         "recommend" : "https://music.163.com/weapi/v1/discovery/recommend/songs",
         //搜索
-        "search" : "http://music.163.com/api/search/get"
+        "search" : "https://music.163.com/api/search/get"
     ]
     
     var finish : Bool = false
@@ -79,10 +79,6 @@ class API {
 
         let url = components!.url!
         let session = URLSession.shared
-        let jar = HTTPCookieStorage.shared
-        let cookieHeaderField = ["Set-Cookie": "appver=1.5.2"]
-        let cookies = HTTPCookie.cookies(withResponseHeaderFields: cookieHeaderField, for: url)
-        jar.setCookies(cookies, for: url, mainDocumentURL: url)
         var request = URLRequest.init(url: url)
         request.allHTTPHeaderFields = self.headerDic
         
@@ -131,32 +127,31 @@ class API {
         dataTask.resume()
     }
     
-    
-    
     //登录
-    func login(username:String, password:String) {
+    func login(account:String, password:String, completionHandler : @escaping (_ userName:String)->()) {
         let url = self.urlDic["login"]
-        let loginfo = ["username":username,"password":password,"rememberLogin":"true"]
-        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
-
-            let dic = data?.jsonDic()
-            print(dic ?? "没有")
-            
-            
+        if account.matchRegExp("^1(3[4-9]|4[7]|5[0-27-9]|7[08]|8[2-478])\\d{8}$").count > 0 {
+            phoneLogin(phoneNumber: account, password: password, completionHandler: completionHandler)
+        } else {
+            let loginfo = ["username":account,"password":password,"rememberLogin":"true"]
+            self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+                var accountName : String = ""
+                if let arr = data?.jsonDic() as? NSArray {
+                    if let profile = (arr.firstObject as? NSDictionary)?["profile"] as? NSDictionary {
+                        accountName = profile["nickName"] as! String
+                    }
+                }
+                completionHandler(accountName)
+            }
         }
     }
     
     //手机登录
-    func phoneLogin(phoneNumber:String, password:String) {
+    func phoneLogin(phoneNumber:String, password:String, completionHandler : @escaping (_ userName:String)->()) {
         let url = self.urlDic["phoneLogin"]
         let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
         let loginfo = ["phone":phoneNumber,"password":passwordMD5,"rememberLogin":"true"]
-        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
-            
-            let dic = data?.jsonDic()
-            print(dic ?? "没有")
-            
-        }
+            completionHandler("")
     }
     
     //签到
@@ -183,7 +178,7 @@ class API {
                 csrf = $0.value
             }
         }
-        let params = ["limit":20, "csrf_token":csrf] as [String : Any]
+        let params = ["limit":20, "csrf_token":""] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
@@ -305,6 +300,19 @@ class API {
             }
         }
     }
+    
+    func deleteCookie() {
+
+        let phoneUrl = self.urlDic["phoneLogin"]
+        let cookieJar = HTTPCookieStorage.shared
+        let cookies = cookieJar.cookies(for: URL.init(string: phoneUrl!)!)
+        //print(cookies)
+        cookies?.forEach {
+            cookieJar.deleteCookie($0)
+        }
+
+    }
+    
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"

@@ -38,7 +38,7 @@ class QSWidget {
     }
     
     internal func initWidgetOnSuperwidget(superwidget:QSWidget) {
-        wmove(superwidget.window, 0, 0)
+//        wmove(superwidget.window, 0, 0)
         self.startX = superwidget.startX + self.startX
         self.startY = superwidget.startY + self.startY
         if self.width == Int(COLS) {

@@ -72,7 +72,7 @@ class QSMenuWidget : QSWidget {
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
         }
         
-        move(0, 0)
+//        wmove(self.superWidget?.window, 0, 0)
     }
     
     func presentMenuWithModel(menuModel:QSMenuModel) {

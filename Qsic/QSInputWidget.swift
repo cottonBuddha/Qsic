@@ -9,28 +9,30 @@
 import Foundation
 class QSInputWidget: QSWidget {
     
-    convenience init(startX:Int, startY:Int) {
-        self.init(startX: startX, startY: startY, width: 16, height: 1)
-        start_color()
+//    convenience init(startX:Int, startY:Int) {
+//        self.init(startX: startX, startY: startY, width: 40, height: 1)
+//    }
+    
+    override init(startX: Int, startY: Int, width: Int, height: Int) {
+        super.init(startX: startX, startY: startY, width: width, height: height)
     }
-
+    
     func input() -> String{
         wmove(self.window, 0, 0)
-        wrefresh(self.window)
-
-        addstr("在这里")
-
         curs_set(1)
-        INPUT_TYPE = InputType.Content
-        
+
         var ic : Int32 = 0
+        
         var content : String = ""
+        var condition = true
         var icStrArr = [String]()
         var icStrCount : Int = 0
         repeat {
-            ic = getch()
-            
+            ic = wgetch(self.window)
+            wmove(self.window, 0, 0)
+            condition = ic != 10
             if ic != 127 {
+                
                 let str = String(ic,radix:2)
                 if str.hasPrefix("1110") && str.count == 8 {
                     icStrArr.append(str.subStr(range: (4,str.characters.count)))
@@ -56,46 +58,26 @@ class QSInputWidget: QSWidget {
                 
                 let char = Character.init(UnicodeScalar.init(UInt32(ic))!)
                 content.append(char)
-                
-//                wmove(self.window, 0, 0)
-//                addstr(self.eraseLineStr)
-//                wmove(self.window, 10, 8)
-//                move(9, 10)
-//                addstr(self.eraseLineStr)
-//                move(9, 10)
                 wmove(self.window, 0, 0)
-                addstr(content)
-                wrefresh(self.window)
+                waddstr(self.window, content)
+                
             } else {
                 if content.count > 0 {
                     content = content.subStr(range: (0,content.characters.count - 1))
                 }
-//                wmove(self.window, 0, 8)
                 let cStrArr = content.cString(using: String.Encoding.utf8)
                 let str = String.init(cString: cStrArr!)
+                werase(self.window)
+                wmove(self.window, 0, 0)
+                waddstr(self.window, str)
                 
-//                wmove(self.window, 0, 0)
-//                addstr(self.eraseLineStr)
-//                wmove(self.window, 10, 8)
-//                move(9, 10)
-//                wmove(self.window, 1, 1)
-
-//                addstr(self.eraseLineStr)
-                move(9, 10)
-//                wmove(self.window, 0, 0)
-                addstr(str)
-                wrefresh(self.window)
             }
             
-        } while ic != 10
+        } while condition
         
         curs_set(0)
-        INPUT_TYPE = InputType.Order
-        
+
         return content
     }
     
-    
-    
-
 }

@@ -98,11 +98,11 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
-                if models.count > 0 {
-                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
-                    self.push(menuModel: dataModel)
-                } else {
+//            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
+//                if models.count > 0 {
+//                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+//                    self.push(menuModel: dataModel)
+//                } else {
                     self.loginWidget = QSLoginWidget.init(startX: 3, startY: 9)
                     self.mainwin.addSubWidget(widget: self.loginWidget!)
                     self.loginWidget?.getInputContent(completionHandler: { (account, password) in
@@ -117,9 +117,9 @@ class QSMusicController {
                             }
                         })
                     })
-                }
-                
-            })
+//                }
+            
+//            })
         case 1:
             API.shared.rankings(completionHandler: { (rankings) in
                 let datamodel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)

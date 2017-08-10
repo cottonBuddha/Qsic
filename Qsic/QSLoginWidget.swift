@@ -9,8 +9,8 @@
 import Foundation
 class QSLoginWidget: QSWidget {
     
-    var account : String = ""
-    var password : String = ""
+    var accountInput : QSInputWidget?
+    var passwordInput : QSInputWidget?
     
     convenience init(startX:Int, startY:Int) {
         self.init(startX: startX, startY: startY, width: Int(COLS - startX - 1), height: 3)
@@ -26,22 +26,19 @@ class QSLoginWidget: QSWidget {
         mvwaddstr(self.window, 0, 0, "需要登录~")
         mvwaddstr(self.window, 1, 0, "账号:")
         mvwaddstr(self.window, 2, 0, "密码:")
-        wmove(self.window, 1, 6)
     }
     
     func getInputContent(completionHandler:(String,String)->()) {
-        echo()
-        var accountChars : [Int8] = Array<Int8>.init(repeating: 0, count: 30)
-        wgetstr(self.window, &accountChars)
-        let account = String.init(cString: accountChars)
         
-        wmove(self.window, 2, 6)
-        var passwordChars : [Int8] = Array<Int8>.init(repeating: 0, count: 30)
-        wgetstr(self.window, &passwordChars)
-        let password = String.init(cString: passwordChars)
+        accountInput = QSInputWidget.init(startX: 6, startY: 1, width: 40, height: 1)
+        self.addSubWidget(widget: accountInput!)
+        let account = accountInput?.input()
         
-        completionHandler(account,password)
-        noecho()
+        passwordInput = QSInputWidget.init(startX: 6, startY: 2, width: 40, height: 1)
+        self.addSubWidget(widget: passwordInput!)
+        let password = passwordInput?.input()
+        
+        completionHandler(account!,password!)
     }
 
     func showSuccess() {

@@ -107,10 +107,25 @@ extension Array {
 }
 
 extension Int {
+
     var space : String {
-        get{
+        get {
             return String.init(repeating: " ", count: self)
         }
     }
 }
+
+
+
+extension CountableRange where Bound == Int {
+    
+    var random : Int {
+        get {
+            let count = UInt32(self.upperBound - self.lowerBound)
+            return  Int(arc4random_uniform(count)) + self.lowerBound
+        }
+    }
+
+}
+
 

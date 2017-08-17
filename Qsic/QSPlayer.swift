@@ -9,7 +9,19 @@
 import Foundation
 import AVFoundation
 
+public enum PlayMode : Int {
+    case SingleCycle
+    case OrderCycle
+    case ShuffleCycle
+}
+
+enum IndexType : Int {
+    case Next = 1
+    case Previous = -1
+}
+
 class QSPlayer {
+    
     private static let sharedInstance = QSPlayer()
     
     open class var shared: QSPlayer {
@@ -18,48 +30,50 @@ class QSPlayer {
         }
     }
     
+    var listName : String = ""
     var songList : [SongModel] = []
     var currentIndex : Int = 0
-    var player : AVPlayer?
+    var urls : [String] = []
     
     var isPlaying : Bool = false
     var isPause : Bool = false
     
-    private init() {
-        player = AVPlayer.init()
+    var playMode : PlayMode = .OrderCycle
+    
+    var player : QSAudioStreamer?
+    
+    func play(songList:[SongModel]) {
+        self.songList = songList
+        play()
     }
     
-    func playCurrentIndexSong(index:Int) {
-        let songModel = self.songList[index]
-        self.playSong(songId: songModel.id)
-    }
-    
-    func playSong(songId:String) {
-        API.shared.getSongUrl(id: songId) { (urlStr) in
-            let playerItem = AVPlayerItem(url: URL.init(string: urlStr!)!)
-            self.player = AVPlayer.init(playerItem: playerItem)
-            self.player?.play()
-            self.isPlaying = true
+    func play() {
+        let ids = getAllSongId(songList: songList)
+        API.shared.getSongUrls(ids: ids) { (urls) in
+            self.urls = urls!
+            let url = self.urls[self.currentIndex]
+            self.player = QSAudioStreamer.init(url: URL.init(string: url)!)
         }
+    }
+    
+    func getAllSongId(songList:[SongModel]) -> [String] {
+        var urls : [String] = []
+        songList.forEach {
+            urls.append($0.id)
+        }
+        return urls
     }
 
     func next() {
-        if currentIndex + 1 >= self.songList.count {
-            return
-        }
-        currentIndex = currentIndex + 1
-        let songId = self.songList[currentIndex].id
-        self.playSong(songId: songId)
+        let nextIndex = getIndex(type: .Next)
+        let url = urls[nextIndex]
+        playSong(url: url)
     }
     
     func previous() {
-        if currentIndex <= 0 {
-            return
-        }
-
-        currentIndex = currentIndex - 1
-        let songId = self.songList[currentIndex].id
-        self.playSong(songId: songId)
+        let previousIndex = getIndex(type: .Previous)
+        let url = urls[previousIndex]
+        playSong(url: url)
     }
     
     func pause() {
@@ -72,6 +86,33 @@ class QSPlayer {
         self.player?.play()
     }
     
+    func playSong(url:String) {
+        player = QSAudioStreamer.init(url: URL.init(string: url)!)
+    }
     
+    
+    private func getIndex(type:IndexType) -> Int {
+        var nextIndex : Int = 0
+        if playMode == .OrderCycle {
+            
+            nextIndex = currentIndex + type.rawValue
+            if nextIndex > self.urls.count {
+                nextIndex = 0
+            }
+            
+            if nextIndex < 0 {
+                nextIndex = self.urls.count - 1
+            }
+            
+        } else if playMode == .SingleCycle {
+            nextIndex = currentIndex
+            
+        } else if playMode == .ShuffleCycle {
+            nextIndex = (0..<urls.count).random
+        
+        }
+        
+        return nextIndex
+    }
     
 }

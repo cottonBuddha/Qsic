@@ -178,7 +178,7 @@ class QSMusicController {
     var player : AVAudioPlayer?
     func handleSongSelection(item:SongModel) {
         QSPlayer.shared.songList = self.menuStack.last?.items as! [SongModel]
-        QSPlayer.shared.playCurrentIndexSong(index: item.code)
+        QSPlayer.shared.play()
     }
     
     func handleRankingSelection(item:RankingModel) {

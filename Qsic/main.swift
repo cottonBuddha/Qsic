@@ -97,13 +97,13 @@ public let KEY_R_C_BRACE: Int32 = 124
 //var player : AVPlayer?
 //
 //API.shared.getSongUrl(id: "422790564") { (urlStr) in
-////    DispatchQueue.global().async {
-//    let playerItem = AVPlayerItem(url: URL.init(string: urlStr)!)
+//    DispatchQueue.global().async {
+//    let playerItem = AVPlayerItem(url: URL.init(string: urlStr!)!)
 //    print(urlStr)
 //    player = AVPlayer(playerItem: playerItem)
 //    player?.play()
 //
-////    }
+//    }
 //}
 
 //API.shared.songDetail(rankingId: "3779629") { (models) in
@@ -133,13 +133,17 @@ public let KEY_R_C_BRACE: Int32 = 124
 //let str = readLine()
 //print(str)
 
-public enum InputType : Int {
-    case Order
-    case Content
-}
+//185904
+//let mp3String = "http://baxiang.qiniudn.com/chengdu.mp3"
+//let url = URL.init(string: mp3String)
+//
+//QSAudioPlayer.init(url: url!)
 
-public var INPUT_TYPE = InputType.Order
-
+//API.shared.getSongUrls(ids: ["185904","422790564"]) { (urls) in
+//    print(urls ?? "")
+//}
+//
+//RunLoop.main.run()
 QSMusicController().start()
 
 

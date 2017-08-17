@@ -19,6 +19,7 @@ public class MenuItemModel {
 }
 
 public class QSMenuModel {
+    var id : String = "0"
     var title : String = ""
     var type : Int = 0
     var items : [MenuItemModel] = []

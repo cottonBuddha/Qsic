@@ -301,21 +301,22 @@ class API {
         }
     }
     
-    func getSongUrls(ids:[String],completionHandler : @escaping ([String]?)->()) {
+    func getSongUrls(ids:[String],completionHandler : @escaping ([String:String]?)->()) {
         let idsStr = "[" + ids.joined(separator: ",") + "]"
         let params = ["br": 128000, "csrf_token":"", "ids":idsStr] as [String : Any]
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             //print(data?.jsonDic() ?? "jqs")
-            var urls : [String] = []
+            var idAndUrlPairs : [String:String] = [:]
             if let dic = data?.jsonDic() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 dataArr.forEach {
                     let dataDic = $0 as! NSDictionary
-                    if let url = dataDic["url"] as? String {
-                        urls.append(url)
-                    }
+                    let id = (dataDic["id"] as? NSNumber)?.stringValue
+                    let url = dataDic["url"] as? String
+                    
+                    idAndUrlPairs.updateValue(url!, forKey: id!)
                 }
-                completionHandler(urls)
+                completionHandler(idAndUrlPairs)
             }
         }
     }

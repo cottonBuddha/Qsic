@@ -66,7 +66,15 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         AudioFileStreamClose(audioFileStreamID!)
     }
 
-    
+    func playNext(url:String) {
+        self.session.invalidateAndCancel()
+        flush()
+        packets.removeAll()
+        self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+        let task = self.session.dataTask(with: URL.init(string: url)!)
+        task.resume()
+        play()
+    }
     
     func play() {
         if self.outputQueue != nil {
@@ -81,7 +89,21 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     }
     
     func stop() {
-        
+        if self.outputQueue != nil {
+            AudioQueueStop(outputQueue!, false)
+        }
+    }
+    
+    func flush() {
+        if self.outputQueue != nil {
+            AudioQueueFlush(outputQueue!)
+        }
+    }
+    
+    func reset() {
+        if self.outputQueue != nil {
+            AudioQueueReset(outputQueue!)
+        }
     }
     
     fileprivate func storePackets(numberOfPackets: UInt32, numberOfBytes: UInt32, data: UnsafeRawPointer, packetDescription: UnsafeMutablePointer<AudioStreamPacketDescription>) {
@@ -93,7 +115,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
             self.packets.append(packetData)
         }
         
-        if readHead == 0 && Double(packets.count) > self.framePerSecond * 3 {
+        if readHead == 0 && Double(packets.count) > self.framePerSecond * 3 && self.outputQueue != nil {
             AudioQueueStart(self.outputQueue!, nil)
             self.enqueueDataWithPacketsCount(packetCount: Int(self.framePerSecond * 3))
         }
@@ -178,6 +200,7 @@ func audioFileStreamPropertyListenerProc(clientData:UnsafeMutableRawPointer, aud
             this.createAudioQueue(audioStreamDescription: audioStreamDescription)
         }
     }
+    
 }
 
 func audioFileStreamPacketsProc(clientData:UnsafeMutableRawPointer, numberBytes:UInt32, numberPackets:UInt32, ioData:UnsafeRawPointer, packetDescription:UnsafeMutablePointer<AudioStreamPacketDescription>) {

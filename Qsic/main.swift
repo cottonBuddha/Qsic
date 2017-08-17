@@ -143,7 +143,12 @@ public let KEY_R_C_BRACE: Int32 = 124
 //    print(urls ?? "")
 //}
 //
+
+//API.shared.getSongsOfAlbum(albumId: "18896") { (songModels) in
+//    QSPlayer.shared.play(songList: songModels)
+//}
 //RunLoop.main.run()
+
 QSMusicController().start()
 
 

@@ -8,7 +8,6 @@
 
 import Foundation
 import Darwin
-import AVFoundation
 
 enum MenuType : Int {
     case Home
@@ -175,9 +174,9 @@ class QSMusicController {
         }
     }
     
-    var player : AVAudioPlayer?
     func handleSongSelection(item:SongModel) {
         QSPlayer.shared.songList = self.menuStack.last?.items as! [SongModel]
+        QSPlayer.shared.currentIndex = item.code
         QSPlayer.shared.play()
     }
     

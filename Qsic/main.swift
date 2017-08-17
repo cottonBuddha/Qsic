@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 
+public let KEY_SPACE: Int32 = 32
 public let KEY_COMMA: Int32 = 39
 public let KEY_DOT: Int32 = 46
 public let KEY_SLASH: Int32 = 47

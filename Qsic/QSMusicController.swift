@@ -28,7 +28,8 @@ class QSMusicController {
     private var getchThread : Thread?
     private var searchBar : QSSearchWidget?
     private var loginWidget : QSLoginWidget?
-
+    private var player : QSPlayer = QSPlayer.shared
+    
     var mainwin : QSMainWindow = QSMainWindow.init()
 
     func start() {
@@ -175,9 +176,9 @@ class QSMusicController {
     }
     
     func handleSongSelection(item:SongModel) {
-        QSPlayer.shared.songList = self.menuStack.last?.items as! [SongModel]
-        QSPlayer.shared.currentIndex = item.code
-        QSPlayer.shared.play()
+        player.songList = self.menuStack.last?.items as! [SongModel]
+        player.currentIndex = item.code
+        player.play()
     }
     
     func handleRankingSelection(item:RankingModel) {
@@ -220,7 +221,6 @@ class QSMusicController {
 
             }
         }
-
     }
     
     @objc func listenToInstructions() {
@@ -252,6 +252,12 @@ class QSMusicController {
         switch keyCode {
         case KEY_SLASH:
             self.pop()
+        case KEY_SPACE:
+            if player.isPlaying {
+                player.pause()
+            } else {
+                player.resume()
+            }
         default:
             break
         }

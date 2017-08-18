@@ -19,7 +19,7 @@ enum IndexType : Int {
     case Previous = -1
 }
 
-class QSPlayer {
+class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     private static let sharedInstance = QSPlayer()
     
@@ -39,7 +39,7 @@ class QSPlayer {
     
     var playMode : PlayMode = .OrderCycle
     
-    var player : QSAudioStreamer?
+    var streamer : QSAudioStreamer?
     
     func play(songList:[SongModel]) {
         self.songList = songList
@@ -50,8 +50,7 @@ class QSPlayer {
         
         let id = songList[currentIndex].id
         if urlDic[id] != nil {
-//            playSong(url: urlDic[id]!)
-            player?.playNext(url: urlDic[id]!)
+            playSong(url: urlDic[id]!)
         } else {
             let ids = getAllSongId(songList: songList)
             API.shared.getSongUrls(ids: ids) { (urlDic) in
@@ -85,48 +84,78 @@ class QSPlayer {
         playSong(url: url!)
     }
     
+    func singleCycle() {
+        
+    }
+    
     func pause() {
         self.isPlaying = false
-        self.player?.pause()
+        self.streamer?.pause()
     }
     
     func resume() {
         self.isPlaying = true
-        self.player?.play()
+        self.streamer?.play()
     }
     
     func playSong(url:String) {
-        if player != nil {
-            player?.stop()
-            
-        } else {
-            player = QSAudioStreamer.init(url: URL.init(string: url)!)
+        if streamer != nil {
+            streamer?.stop()
+            streamer = nil
         }
+        streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
+        streamer?.delegate = self
     }
     
     
     private func getIndex(type:IndexType) -> Int {
-        var nextIndex : Int = 0
-        if playMode == .OrderCycle {
+
+        if playMode == .OrderCycle || playMode == .SingleCycle {
             
-            nextIndex = currentIndex + type.rawValue
-            if nextIndex > self.urlDic.count {
-                nextIndex = 0
+            currentIndex = currentIndex + type.rawValue
+            if currentIndex > self.urlDic.count {
+                currentIndex = 0
             }
             
-            if nextIndex < 0 {
-                nextIndex = self.urlDic.count - 1
+            if currentIndex < 0 {
+                currentIndex = self.urlDic.count - 1
             }
-            
-        } else if playMode == .SingleCycle {
-            nextIndex = currentIndex
             
         } else if playMode == .ShuffleCycle {
-//            nextIndex = (0..<urls.count).random
+            currentIndex = (0..<urlDic.count).random
         
         }
-        
-        return nextIndex
+
+        return currentIndex
     }
     
+    func playingDidEnd() {
+//        if playMode == .OrderCycle || playMode == .ShuffleCycle {
+//            next()
+//        } else {
+//            singleCycle()
+//        }
+    }
+    
+    func playingDidStart() {
+
+    }
+    
+    func handleWithKeyEvent(keyCode:Int32) {
+        switch keyCode {
+        case KEY_SPACE:
+            if isPlaying {
+                pause()
+            } else {
+                resume()
+            }
+        case KEY_L_C_BRACE:
+            previous()
+        case KEY_R_C_BRACE:
+            next()
+        default:
+            break
+        }
+        
+    }
 }

@@ -9,7 +9,8 @@
 import Foundation
 import Darwin
 
-class QSMenuWidget : QSWidget {
+class QSMenuWidget : QSWidget,KeyEventProtocol {
+
     
     var title : String = ""
     
@@ -93,7 +94,7 @@ class QSMenuWidget : QSWidget {
         }
     }
         
-    override func handleWithKeyEvent(keyCode:Int32) {
+    func handleWithKeyEvent(keyCode:Int32) {
         switch keyCode {
         case KEY_UP:
             self.currentItemCode = self.currentItemCode - 1

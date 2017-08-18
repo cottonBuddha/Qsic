@@ -89,10 +89,6 @@ class QSWidget {
         delwin(self.window)
     }
     
-    public func handleWithKeyEvent(keyCode:Int32) {
-        
-    }
-    
 }
 
 extension QSWidget : Equatable {

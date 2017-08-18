@@ -116,16 +116,15 @@ extension Int {
 }
 
 
+extension CountableRange where Bound == Int {
+    
+    var random : Int {
+        get {
+            let count = UInt32(self.upperBound - self.lowerBound)
+            return  Int(arc4random_uniform(count)) + self.lowerBound
+        }
+    }
 
-//extension CountableRange where Bound == Int {
-//    
-//    var random : Int {
-//        get {
-//            let count = UInt32(self.upperBound - self.lowerBound)
-//            return  Int(arc4random_uniform(count)) + self.lowerBound
-//        }
-//    }
-//
-//}
+}
 
 

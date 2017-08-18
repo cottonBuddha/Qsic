@@ -20,6 +20,11 @@ enum MenuType : Int {
     case Help
 }
 
+public protocol KeyEventProtocol {
+    func handleWithKeyEvent(keyCode:Int32)
+}
+
+
 class QSMusicController {
     
     private var navtitle : QSNaviTitleWidget?
@@ -229,6 +234,7 @@ class QSMusicController {
             ic = getch()
             self.menu?.handleWithKeyEvent(keyCode: ic)
             self.handleWithKeyEvent(keyCode: ic)
+            self.player.handleWithKeyEvent(keyCode: ic)
         } while ic != KEY_Q_LOW
         
         self.mainwin.endWin()
@@ -252,12 +258,6 @@ class QSMusicController {
         switch keyCode {
         case KEY_SLASH:
             self.pop()
-        case KEY_SPACE:
-            if player.isPlaying {
-                player.pause()
-            } else {
-                player.resume()
-            }
         default:
             break
         }

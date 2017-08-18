@@ -39,8 +39,8 @@ public let KEY_W_LOW: Int32 = 119
 public let KEY_X_LOW: Int32 = 120
 public let KEY_Y_LOW: Int32 = 121
 public let KEY_Z_LOW: Int32 = 122
-public let KEY_L_C_BRACE: Int32 = 123
-public let KEY_R_C_BRACE: Int32 = 124
+public let KEY_L_C_BRACE: Int32 = 91
+public let KEY_R_C_BRACE: Int32 = 93
 
 
 //API.shared.GET(urlStr: "http://music.163.com/api/playlist/detail", params: ["id":"3779629"]) { (data, response, error) in

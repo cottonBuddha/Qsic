@@ -16,7 +16,7 @@ enum Status : Int {
     case Paused
 }
 
-public protocol AudioStreamerProtocol {
+public protocol AudioStreamerProtocol : NSObjectProtocol{
     
     func playingDidStart()
     
@@ -36,6 +36,8 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
     var loaded = false
     var stopped = false
+    
+    weak var delegate: AudioStreamerProtocol?
     
     var framePerSecond: Double {
         get {
@@ -61,7 +63,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
     deinit {
         if self.outputQueue != nil {
-            AudioQueueReset(outputQueue!)
+            AudioQueueDispose(outputQueue!, true)
         }
         AudioFileStreamClose(audioFileStreamID!)
     }
@@ -90,7 +92,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
     func stop() {
         if self.outputQueue != nil {
-            AudioQueueStop(outputQueue!, false)
+            AudioQueueStop(outputQueue!, true)
         }
     }
     
@@ -228,6 +230,9 @@ func audioQueueRunningListener(clientData: UnsafeMutableRawPointer?, inAQ: Audio
         var running: UInt32 = 0
         status = AudioQueueGetProperty(inAQ, propertyID, &running, &dataSize)
         this.stopped = running == 0
+        if this.delegate != nil && this.delegate!.responds(to: Selector("playingDidEnd")) {
+            this.delegate!.playingDidEnd()
+        }
     }
 }
 

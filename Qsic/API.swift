@@ -130,7 +130,7 @@ class API {
     //登录
     func login(account:String, password:String, completionHandler : @escaping (_ userName:String)->()) {
         let url = self.urlDic["login"]
-        if account.matchRegExp("^1(3[4-9]|4[7]|5[0-27-9]|7[08]|8[2-478])\\d{8}$").count > 0 {
+        if account.matchRegExp("^1[0-9]{10}$").count > 0 {
             phoneLogin(phoneNumber: account, password: password, completionHandler: completionHandler)
         } else {
             let loginfo = ["username":account,"password":password,"rememberLogin":"true"]
@@ -151,9 +151,17 @@ class API {
         let url = self.urlDic["phoneLogin"]
         let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
         let loginfo = ["phone":phoneNumber,"password":passwordMD5,"rememberLogin":"true"]
-            completionHandler("")
+        self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
+            
+            var accountName : String = ""
+            if let dic = data?.jsonDic() as? NSDictionary {
+                if let profile = dic["profile"] as? NSDictionary {
+                    accountName = profile["nickname"] as! String
+                }
+            }
+            completionHandler(accountName)
+        }
     }
-    
     //签到
     func dailySignin(type:String) {
         
@@ -312,9 +320,9 @@ class API {
                 dataArr.forEach {
                     let dataDic = $0 as! NSDictionary
                     let id = (dataDic["id"] as? NSNumber)?.stringValue
-                    let url = dataDic["url"] as? String
-                    
-                    idAndUrlPairs.updateValue(url!, forKey: id!)
+                    if let url = dataDic["url"] as? String {
+                        idAndUrlPairs.updateValue(url, forKey: id!)
+                    }
                 }
                 completionHandler(idAndUrlPairs)
             }

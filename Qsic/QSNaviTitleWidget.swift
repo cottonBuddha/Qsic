@@ -45,4 +45,11 @@ class QSNaviTitleWidget: QSWidget {
         mvwaddstr(self.window, 0, 0, self.eraseLineStr)
         mvwaddstr(self.window, 0, 0, subStr)
         wrefresh(self.window)
-    }}
+    }
+
+    func erase() {
+        mvwaddstr(self.window, 0, 0, self.eraseLineStr)
+        wrefresh(self.window)
+    }
+}
+

@@ -27,6 +27,8 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     
     var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
     
+    private var progress: QSProgressWidget?
+    
     private var currentItemCode : Int = 0 {
         didSet {
             let lastCode = dataModel.items.count - 1
@@ -65,9 +67,9 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         }
         
         for index in 0..<self.splitItems[self.currentPageIndex].count {
-            init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_BLACK))
+            init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_MAGENTA))
             
-            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
+//            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
 
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
@@ -118,6 +120,21 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         default:
           break
         }
+    }
+    
+    func showProgress() {
+        guard progress == nil else { return }
+        let startX = self.dataModel.items[self.currentItemCode].title.lengthInCurses()
+        progress = QSProgressWidget.init(startX: startX, startY: self.currentItemCode, type: .FireFly)
+        self.addSubWidget(widget: progress!)
+        progress!.load()
+    }
+    
+    func hideProgress() {
+        guard progress != nil else { return }
+        self.removeSubWidget(widget: progress!)
+        progress!.end()
+        progress = nil
     }
     
 }

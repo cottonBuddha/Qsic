@@ -12,7 +12,6 @@ import AVFoundation
 public let KEY_SPACE: Int32 = 32
 public let KEY_COMMA: Int32 = 39
 public let KEY_DOT: Int32 = 46
-public let KEY_SLASH: Int32 = 47
 public let KEY_A_LOW: Int32 = 97
 public let KEY_B_LOW: Int32 = 98
 public let KEY_C_LOW: Int32 = 99
@@ -39,9 +38,19 @@ public let KEY_W_LOW: Int32 = 119
 public let KEY_X_LOW: Int32 = 120
 public let KEY_Y_LOW: Int32 = 121
 public let KEY_Z_LOW: Int32 = 122
-public let KEY_L_C_BRACE: Int32 = 91
-public let KEY_R_C_BRACE: Int32 = 93
 
+public let KEY_L_ANGLE_EN: Int32 = 44
+public let KEY_R_ANGLE_EN: Int32 = 46
+public let KEY_L_ANGLE_ZH: Int32 = 140
+public let KEY_R_ANGLE_ZH: Int32 = 130
+
+public let EN_L_C_BRACE: Int32 = 91
+public let EN_R_C_BRACE: Int32 = 93
+public let ZH_L_C_BRACE: Int32 = 144
+public let ZH_R_C_BRACE: Int32 = 145
+
+public let KEY_SLASH_EN: Int32 = 47
+public let KEY_SLASH_ZH: Int32 = 129
 
 //API.shared.GET(urlStr: "http://music.163.com/api/playlist/detail", params: ["id":"3779629"]) { (data, response, error) in
 //
@@ -144,11 +153,24 @@ public let KEY_R_C_BRACE: Int32 = 93
 //    print(urls ?? "")
 //}
 //
-
-//API.shared.getSongsOfAlbum(albumId: "18896") { (songModels) in
-//    QSPlayer.shared.play(songList: songModels)
+//private var player : QSPlayer = QSPlayer.shared
+//
+//API.shared.getSongsOfAlbum(albumId: "3176105") { (songModels) in
+//    player.songList = songModels
+//    player.currentIndex = 0
+//    player.play()
 //}
+//
 //RunLoop.main.run()
+//print("Ain\u{2019}t this a beautiful day")
+//initscr()
+//keypad(stdscr, true)
+//noecho()
+//raw()
+////QSProgress().fireFliesShining()
+//
+//getch()
+//endwin()
 
 QSMusicController().start()
 

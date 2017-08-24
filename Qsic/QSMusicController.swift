@@ -50,6 +50,7 @@ class QSMusicController {
         self.getchThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
         self.getchThread?.start()
         
+        self.mainwin.addSubWidget(widget: player.dancer!)
         RunLoop.main.run()
     }
     
@@ -103,35 +104,24 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-//            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
-//                if models.count > 0 {
-//                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
-//                    self.push(menuModel: dataModel)
-//                } else {
-                    self.loginWidget = QSLoginWidget.init(startX: 3, startY: 9)
-                    self.mainwin.addSubWidget(widget: self.loginWidget!)
-                    self.loginWidget?.getInputContent(completionHandler: { (account, password) in
-                        API.shared.login(account: account, password: password, completionHandler: { (accountName) in
-                            if accountName != "" {
-                                self.navtitle?.titleStack.removeFirst()
-                                self.navtitle?.titleStack.insert(accountName, at: 0)
-                                self.navtitle?.drawWidget()
-                                self.loginWidget?.showSuccess()
-                            } else {
-                                self.loginWidget?.showFaliure()
-                            }
-                        })
-                    })
-//                }
-            
-//            })
+            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
+                if models.count > 0 {
+                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    self.push(menuModel: dataModel)
+                } else {
+                    
+                }
+                
+            })
         case 1:
             API.shared.rankings(completionHandler: { (rankings) in
                 let datamodel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
                 self.push(menuModel: datamodel)
             })
         case 2:
+            self.menu?.showProgress()
             API.shared.artists { (artists) in
+                self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
@@ -228,15 +218,36 @@ class QSMusicController {
         }
     }
     
+    func handleLoginCommandKey() {
+        self.loginWidget = QSLoginWidget.init(startX: 3, startY: 9)
+        self.mainwin.addSubWidget(widget: self.loginWidget!)
+        self.loginWidget?.getInputContent(completionHandler: { (account, password) in
+            API.shared.login(account: account, password: password, completionHandler: { (accountName) in
+                if accountName != "" {
+                    self.navtitle?.titleStack.removeFirst()
+                    self.navtitle?.titleStack.insert(accountName, at: 0)
+                    self.navtitle?.drawWidget()
+                    self.loginWidget?.showSuccess()
+                } else {
+                    self.loginWidget?.showFaliure()
+                }
+            })
+        })
+    }
+    
+    
     @objc func listenToInstructions() {
         var ic : Int32 = 0
         repeat {
             ic = getch()
+            mvaddstr(2, 2, "\(ic)")
             self.menu?.handleWithKeyEvent(keyCode: ic)
             self.handleWithKeyEvent(keyCode: ic)
             self.player.handleWithKeyEvent(keyCode: ic)
         } while ic != KEY_Q_LOW
-        
+        curs_set(1)
+        menu?.eraseMenu()
+        navtitle?.erase()
         self.mainwin.endWin()
     }
     
@@ -256,8 +267,10 @@ class QSMusicController {
     
     func handleWithKeyEvent(keyCode:Int32) {
         switch keyCode {
-        case KEY_SLASH:
+        case KEY_SLASH_EN, KEY_SLASH_ZH:
             self.pop()
+        case KEY_D_LOW:
+            self.handleLoginCommandKey()
         default:
             break
         }

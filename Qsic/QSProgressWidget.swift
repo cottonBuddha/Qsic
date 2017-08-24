@@ -7,3 +7,114 @@
 //
 
 import Foundation
+enum ProgressType: Int {
+    case MKBar
+    case Dance
+    case FireFly
+    case Ing
+}
+class QSProgressWidget: QSWidget  {
+    
+    private var timer: Timer?
+
+    private var progressType: ProgressType!
+    
+    private let bars = ["-","\\","|","/"]
+    private let faces = ["＼（￣︶￣）／","╰（￣▽￣）╭"]
+    private let ings = ["",".","..","..."]
+    private let fireFlies = ["⠁","⠂","⠄","⡀","⢀","⠠","⠐","⠈"]
+
+    convenience init(startX:Int, startY:Int, type:ProgressType) {
+        var width = 1
+        switch type {
+        case .MKBar , .FireFly:
+            width = 1
+        case .Dance:
+            width = 14
+        case .Ing:
+            width = 4
+        }
+        self.init(startX: startX, startY: startY, width: width, height: 1)
+        progressType = type
+    }
+    
+    override init(startX: Int, startY: Int, width: Int, height: Int) {
+        super.init(startX: startX, startY: startY, width: width, height: height)
+    }
+    
+    override func drawWidget() {
+        super.drawWidget()
+        wrefresh(self.window)
+    }
+    
+    func load() {
+        DispatchQueue.main.async {
+            self.play(type: self.progressType)
+        }
+    }
+    
+    func end() {
+        self.timer?.invalidate()
+        self.timer = nil
+    }
+    
+    func pause() {
+        DispatchQueue.main.async {
+            let type:ProgressType = self.progressType
+            var item = "[PAUSE]"
+            var eraseCount: Int = 1
+            switch type {
+            case .Dance:
+                item = "╭(￣３￣)╯"
+                eraseCount = 14
+            default: break
+                
+            }
+            if self.timer != nil {
+                self.end()
+            }
+            mvwaddstr(self.window, 0, 0, eraseCount.space)
+            mvwaddstr(self.window, 0, 0, item)
+            wrefresh(self.window)
+        }
+    }
+
+    private func play(type:ProgressType) {
+        
+        var timeInterval: TimeInterval = 1
+        var eraseCount: Int = 1
+        var items: [String] = []
+        switch type {
+        case .MKBar:
+            timeInterval = 0.13
+            items = bars
+        case .Dance:
+            timeInterval = 0.5
+            eraseCount = 14
+            items = faces
+        case .FireFly:
+            timeInterval = 0.08
+            items = fireFlies
+        case .Ing:
+            timeInterval = 0.4
+            eraseCount = 4
+            items = ings
+        }
+        
+        var i = 0
+
+        timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true, block: { (timer) in
+            mvwaddstr(self.window, 0, 0, eraseCount.space)
+            mvwaddstr(self.window, 0, 0, items[i])
+            wrefresh(self.window)
+            i = i + 1
+            
+            if i > items.count - 1 {
+                i = 0
+            }
+        })
+    }
+    
+    
+    
+}

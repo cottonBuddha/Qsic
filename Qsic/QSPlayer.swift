@@ -50,7 +50,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     var streamer : QSAudioStreamer?
     
-    var volumeValue : Float32 = 6
+    var volumeValue : Float32 = 0.5
     
     private override init() {
         super.init()
@@ -67,8 +67,20 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             isPlaying = true
         }
         let id = songList[currentIndex].id
-        if urlDic[id] != nil {
-            playSong(url: urlDic[id]!)
+        if let url = urlDic[id] {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMddHHmmss"
+            let deadTimeStr = url.components(separatedBy: "/")[3]
+            guard deadTimeStr.characters.count == 14 else { return }
+            let deadTime = dateFormatter.date(from: deadTimeStr)
+            let currentTime = Date.init()
+            let result = deadTime?.compare(currentTime)
+            if result == ComparisonResult.orderedDescending {
+                playSong(url: url)
+            } else {
+                urlDic.removeAll()
+                play()
+            }
         } else {
             let ids = getAllSongId(songList: songList)
             if ids.count <= 60 {
@@ -125,14 +137,14 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     func volumeUp() {
         if streamer != nil {
-            volumeValue = volumeValue + 0.5 > 15 ? 15 : volumeValue + 0.5
+            volumeValue = volumeValue + 0.1 > 1 ? 1 : volumeValue + 0.1
             streamer?.setVolume(value: volumeValue)
         }
     }
     
     func volumeDown() {
         if streamer != nil {
-            volumeValue = volumeValue - 0.5 < 0 ? 0 : volumeValue - 0.5
+            volumeValue = volumeValue - 0.1 < 0 ? 0 : volumeValue - 0.1
             streamer?.setVolume(value: volumeValue)
         }
     }
@@ -181,10 +193,15 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
 
     }
     
+    func handleNetworkError(error: Error) {
+        print(error)
+    }
+    
     func handleWithKeyEvent(keyCode:Int32) {
 //        DispatchQueue.main.async {
             switch keyCode {
             case KEY_SPACE:
+                guard songList.count > 0 else { return }
                 if self.isPlaying {
                     self.pause()
                 } else {

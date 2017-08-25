@@ -97,6 +97,11 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     }
         
     func handleWithKeyEvent(keyCode:Int32) {
+        
+        if progress != nil, progress!.isLoading {
+            return
+        }
+        
         switch keyCode {
         case KEY_UP:
             self.currentItemCode = self.currentItemCode - 1

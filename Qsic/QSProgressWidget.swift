@@ -15,14 +15,15 @@ enum ProgressType: Int {
 }
 class QSProgressWidget: QSWidget  {
     
-    private var timer: Timer?
-
     private var progressType: ProgressType!
     
     private let bars = ["-","\\","|","/"]
-    private let faces = ["＼（￣︶￣）／","╰（￣▽￣）╭"]
+    private let faces = ["＼（￣︶￣）／","╭（￣▽￣）╭"]
     private let ings = ["",".","..","..."]
     private let fireFlies = ["⠁","⠂","⠄","⡀","⢀","⠠","⠐","⠈"]
+
+    private var timer: Timer?
+    var isLoading: Bool = false
 
     convenience init(startX:Int, startY:Int, type:ProgressType) {
         var width = 1
@@ -49,17 +50,20 @@ class QSProgressWidget: QSWidget  {
     
     func load() {
         DispatchQueue.main.async {
+            self.isLoading = true
             self.play(type: self.progressType)
         }
     }
     
     func end() {
+        self.isLoading = false
         self.timer?.invalidate()
         self.timer = nil
     }
     
     func pause() {
         DispatchQueue.main.async {
+            self.isLoading = false
             let type:ProgressType = self.progressType
             var item = "[PAUSE]"
             var eraseCount: Int = 1
@@ -104,6 +108,7 @@ class QSProgressWidget: QSWidget  {
         var i = 0
 
         timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true, block: { (timer) in
+            curs_set(0)
             mvwaddstr(self.window, 0, 0, eraseCount.space)
             mvwaddstr(self.window, 0, 0, items[i])
             wrefresh(self.window)

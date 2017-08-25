@@ -9,10 +9,6 @@
 import Foundation
 class QSInputWidget: QSWidget {
     
-//    convenience init(startX:Int, startY:Int) {
-//        self.init(startX: startX, startY: startY, width: 40, height: 1)
-//    }
-    
     override init(startX: Int, startY: Int, width: Int, height: Int) {
         super.init(startX: startX, startY: startY, width: width, height: height)
     }
@@ -28,6 +24,7 @@ class QSInputWidget: QSWidget {
         var icStrArr = [String]()
         var icStrCount : Int = 0
         repeat {
+            curs_set(1)
             ic = wgetch(self.window)
             wmove(self.window, 0, 0)
             condition = ic != 10

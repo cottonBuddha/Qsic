@@ -104,18 +104,6 @@ public let KEY_SLASH_ZH: Int32 = 129
 //    print(songs)
 //}
 
-//var player : AVPlayer?
-//
-//API.shared.getSongUrl(id: "422790564") { (urlStr) in
-//    DispatchQueue.global().async {
-//    let playerItem = AVPlayerItem(url: URL.init(string: urlStr!)!)
-//    print(urlStr)
-//    player = AVPlayer(playerItem: playerItem)
-//    player?.play()
-//
-//    }
-//}
-
 //API.shared.songDetail(rankingId: "3779629") { (models) in
 //    print(models)
 //}
@@ -152,14 +140,15 @@ public let KEY_SLASH_ZH: Int32 = 129
 //API.shared.getSongUrls(ids: ["185904","422790564"]) { (urls) in
 //    print(urls ?? "")
 //}
-//
+
 //private var player : QSPlayer = QSPlayer.shared
 //
-//API.shared.getSongsOfAlbum(albumId: "3176105") { (songModels) in
+//API.shared.getSongsOfAlbum(albumId: "18895") { (songModels) in
 //    player.songList = songModels
 //    player.currentIndex = 0
 //    player.play()
 //}
+//
 //
 //RunLoop.main.run()
 //print("Ain\u{2019}t this a beautiful day")

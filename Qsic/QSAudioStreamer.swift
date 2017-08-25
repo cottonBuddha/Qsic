@@ -21,19 +21,21 @@ public protocol AudioStreamerProtocol : NSObjectProtocol{
     func playingDidStart()
     
     func playingDidEnd()
+    
+    func handleNetworkError(error:Error)
 }
 
 
 class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
     var url: URL?
-    var session : URLSession!
+    var session: URLSession!
     var audioFileStreamID: AudioFileStreamID? = nil
     var packets = [Data]()
     var outputQueue: AudioQueueRef?
     var streamDescription: AudioStreamBasicDescription?
     var readHead: Int = 0
-    var volumeValue: Float32 = 6
+    var volumeValue: Float32 = 0.5
     var isPlaying = false
     var taskFinish = false
     var stopped = false
@@ -94,7 +96,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
     func stop() {
         if self.outputQueue != nil {
-            AudioQueueStop(outputQueue!, false)
+            AudioQueueStop(outputQueue!, true)
         }
     }
     
@@ -146,7 +148,6 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         self.streamDescription = audioStreamDescription
         var status: OSStatus = 0
         let selfPointer = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
-//        AudioQueueNewOutput(&audioStreamDescription, audioQueueOutputCallback as! AudioQueueOutputCallback, nil, nil, nil, 0, &self.outputQueue)
         status = AudioQueueNewOutput(&audioStreamDescription, audioQueueOutputCallback, selfPointer, CFRunLoopGetCurrent(), CFRunLoopMode.commonModes.rawValue, 0, &self.outputQueue)
         if self.outputQueue != nil {
             AudioQueueSetParameter(self.outputQueue!, kAudioQueueParam_Volume, volumeValue)
@@ -208,6 +209,10 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if error == nil {
             taskFinish = true
+        } else {
+            if delegate != nil {
+                delegate?.handleNetworkError(error: error!)
+            }
         }
     }
 }

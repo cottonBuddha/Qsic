@@ -9,7 +9,7 @@
 import Foundation
 import Darwin
 
-enum MenuType : Int {
+enum MenuType: Int {
     case Home
     case Artist
     case Song
@@ -24,7 +24,6 @@ public protocol KeyEventProtocol {
     func handleWithKeyEvent(keyCode:Int32)
 }
 
-
 class QSMusicController {
     
     private var navtitle : QSNaviTitleWidget?
@@ -34,6 +33,7 @@ class QSMusicController {
     private var searchBar : QSSearchWidget?
     private var loginWidget : QSLoginWidget?
     private var player : QSPlayer = QSPlayer.shared
+    private var isHintOn: Bool = false
     
     var mainwin : QSMainWindow = QSMainWindow.init()
 
@@ -104,12 +104,14 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
+            self.menu?.showProgress()
             API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
+                self.menu?.hideProgress()
                 if models.count > 0 {
                     let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    
+                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 10)
                 }
                 
             })
@@ -126,15 +128,7 @@ class QSMusicController {
                 self.push(menuModel: dataModel)
             }
         case 3:
-//            self.menu?.scanStrAtIndex(index: item.code)
-            searchBar = QSSearchWidget.init(startX: 3, startY: 9)
-            mainwin.addSubWidget(widget: searchBar!)
-            searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
-                self.mainwin.removeSubWidget(widget: self.searchBar!)
-                let models = generateSearchTypeModels(content: content)
-                let menuModel = QSMenuModel.init(title: "搜索", type: MenuType.Search, items: models, currentItemCode: 0)
-                self.push(menuModel: menuModel)
-            })
+            self.handleSearchCommandKey()
         case 4:
             let models = generateHelpModels()
             let menuModel = QSMenuModel.init(title: "帮助", type: MenuType.Help, items: models, currentItemCode: 0)
@@ -177,7 +171,9 @@ class QSMusicController {
     }
     
     func handleRankingSelection(item:RankingModel) {
+        self.menu?.showProgress()
         API.shared.songDetail(rankingId: item.id) { (models) in
+            self.menu?.hideProgress()
             let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
@@ -219,10 +215,17 @@ class QSMusicController {
     }
     
     func handleLoginCommandKey() {
-        self.loginWidget = QSLoginWidget.init(startX: 3, startY: 9)
+        if player.isPlaying {
+            player.dancer?.pause()
+        }
+        let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+        self.loginWidget = QSLoginWidget.init(startX: 3, startY: startY)
         self.mainwin.addSubWidget(widget: self.loginWidget!)
         self.loginWidget?.getInputContent(completionHandler: { (account, password) in
             API.shared.login(account: account, password: password, completionHandler: { (accountName) in
+                if self.player.isPlaying {
+                    self.player.dancer?.load()
+                }
                 if accountName != "" {
                     self.navtitle?.titleStack.removeFirst()
                     self.navtitle?.titleStack.insert(accountName, at: 0)
@@ -235,12 +238,41 @@ class QSMusicController {
         })
     }
     
+    func handleSearchCommandKey() {
+        
+        if player.isPlaying {
+            player.dancer?.pause()
+        }
+        
+        let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+        searchBar = QSSearchWidget.init(startX: 3, startY: startY)
+        mainwin.addSubWidget(widget: searchBar!)
+        searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
+            if self.player.isPlaying {
+                self.player.dancer?.load()
+            }
+            self.searchBar?.eraseSelf()
+            self.mainwin.removeSubWidget(widget: self.searchBar!)
+            let models = generateSearchTypeModels(content: content)
+            let menuModel = QSMenuModel.init(title: "搜索", type: MenuType.Search, items: models, currentItemCode: 0)
+            self.push(menuModel: menuModel)
+        })
+    }
+    
+    func handlePlayListCommandKey() {
+        if player.songList.count > 0 {
+            let menuModel = QSMenuModel.init(title: "播放列表", type: MenuType.Song, items: player.songList, currentItemCode: player.currentIndex)
+            self.push(menuModel: menuModel)
+        } else {
+            beep()
+        }
+    }
     
     @objc func listenToInstructions() {
         var ic : Int32 = 0
         repeat {
             ic = getch()
-            mvaddstr(2, 2, "\(ic)")
+            
             self.menu?.handleWithKeyEvent(keyCode: ic)
             self.handleWithKeyEvent(keyCode: ic)
             self.player.handleWithKeyEvent(keyCode: ic)
@@ -248,7 +280,9 @@ class QSMusicController {
         curs_set(1)
         menu?.eraseMenu()
         navtitle?.erase()
-        self.mainwin.endWin()
+        DispatchQueue.main.async {
+            self.mainwin.endWin()
+        }
     }
     
     func push(menuModel:QSMenuModel) {
@@ -266,15 +300,57 @@ class QSMusicController {
     }
     
     func handleWithKeyEvent(keyCode:Int32) {
+        
+        if isHintOn {
+            self.hideHint()
+        }
+        
+        if loginWidget != nil, loginWidget!.isResultShow {
+            loginWidget!.hide()
+            self.removeLoginWidget()
+        }
+        
         switch keyCode {
         case KEY_SLASH_EN, KEY_SLASH_ZH:
             self.pop()
+        case KEY_S_LOW:
+            self.handleSearchCommandKey()
         case KEY_D_LOW:
             self.handleLoginCommandKey()
+        case KEY_F_LOW:
+            self.handlePlayListCommandKey()
+        case KEY_G_LOW:
+//            system("open https://github.com/cottonBuddha/Qsic")
+            let task = Process.init()
+            task.launchPath = "/bin/bash"
+            task.arguments = ["-c","open https://github.com/cottonBuddha/Qsic"]
+            task.launch()
         default:
             break
         }
-
+    }
+    
+    var contentLength = 0
+    var lineNum = 0
+    func showHint(with content: String, at lineNum: Int) {
+        isHintOn = true
+        contentLength = content.lengthInCurses()
+        self.lineNum = lineNum
+        mvwaddstr(self.mainwin.window, Int32(lineNum), 3, content)
+        refresh()
+    }
+    
+    func hideHint() {
+        isHintOn = false
+        mvwaddstr(self.mainwin.window, Int32(lineNum), 3, contentLength.space)
+        contentLength = 0
+        refresh()
+    }
+    
+    func removeLoginWidget() {
+        guard loginWidget != nil else { return }
+        loginWidget?.hide()
+        loginWidget = nil
     }
     
 }

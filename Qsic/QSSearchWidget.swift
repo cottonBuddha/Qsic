@@ -9,7 +9,8 @@
 import Foundation
 class QSSearchWidget: QSWidget {
     
-    var inputWidget : QSInputWidget?
+    var inputWidget: QSInputWidget?
+    var contentLength: Int = 0
     
     convenience init(startX:Int, startY:Int) {
         self.init(startX: startX, startY: startY, width: Int(COLS - startX - 1), height: 1)
@@ -30,7 +31,13 @@ class QSSearchWidget: QSWidget {
         inputWidget = QSInputWidget.init(startX: 8, startY: 0, width: 20, height: 1)
         self.addSubWidget(widget: inputWidget!)
         let content = inputWidget?.input()
+        contentLength = content!.lengthInCurses()
         completionHandler(content!)
+    }
+    
+    func eraseSelf() {
+        mvwaddstr(self.window, 0, 0, (8+contentLength).space)
+        wrefresh(self.window)
     }
 
 }

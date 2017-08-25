@@ -308,11 +308,16 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "↵"+6.space+"选中",
                     "space"+2.space+"播放/暂停",
                     "/"+6.space+"返回上一级菜单",
-                    ">"+6.space+"下一首",
-                    "<"+6.space+"上一首",
-                    "h"+6.space+"首页",
-                    "p"+6.space+"播放列表",
-                    "↑"+6.space+"上移动"
+                    "."+6.space+"下一首",
+                    ","+6.space+"上一首",
+                    "["+6.space+"音量-",
+                    "]"+6.space+"音量+",
+                    "a"+6.space+"添加到收藏",
+                    "s"+6.space+"搜索",
+                    "d"+6.space+"登录",
+                    "f"+6.space+"播放列表",
+                    "g"+6.space+"github",
+                    "h"+6.space+"隐藏dancer"
                                        ]
     var index : Int = 0
     var models : [MenuItemModel] = []

@@ -10,7 +10,8 @@ import Foundation
 
 class QSNaviTitleWidget: QSWidget {
     
-    var titleStack : [String] = []
+    var titleStack: [String] = []
+    var currentSong: String?
     
     override init(startX: Int, startY: Int, width: Int, height: Int) {
         super.init(startX: startX, startY: startY, width: width, height: height)
@@ -41,7 +42,10 @@ class QSNaviTitleWidget: QSWidget {
             return
         }
         let index = naviStr.index(naviStr.endIndex, offsetBy: -1)
-        let subStr = naviStr.substring(to: index)
+        var subStr = naviStr.substring(to: index)
+        if currentSong != nil {
+            subStr = subStr + "[\(currentSong!)]"
+        }
         mvwaddstr(self.window, 0, 0, self.eraseLineStr)
         mvwaddstr(self.window, 0, 0, subStr)
         wrefresh(self.window)
@@ -51,5 +55,6 @@ class QSNaviTitleWidget: QSWidget {
         mvwaddstr(self.window, 0, 0, self.eraseLineStr)
         wrefresh(self.window)
     }
+    
 }
 

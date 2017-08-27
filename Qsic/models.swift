@@ -55,7 +55,7 @@ public class ArtistModel: MenuItemModel {
 }
 
 public func generateArtistModles(data:Data) -> [ArtistModel] {
-    if let dic = data.jsonDic() as? NSDictionary {
+    if let dic = data.jsonObject() as? NSDictionary {
         var artists : [ArtistModel] = []
         var jsonArr : NSArray = []
         
@@ -104,7 +104,7 @@ public func generateSongModels(data:Data) -> [SongModel] {
     var songArr : NSArray = []
     var songModels : [SongModel] = []
 
-    if let dic = data.jsonDic() as? NSDictionary {
+    if let dic = data.jsonObject() as? NSDictionary {
         if let arr = dic["hotSongs"] as? NSArray{
             songArr = arr 
         } else if let arr = dic["songs"] as? NSArray {
@@ -166,7 +166,7 @@ public class AlbumModel:MenuItemModel {
 }
 
 public func generateAlbumModels(data:Data) -> [AlbumModel] {
-    if let dic = data.jsonDic() as? NSDictionary {
+    if let dic = data.jsonObject() as? NSDictionary {
         var albums : [AlbumModel] = []
         var jsonArr : NSArray = []
         if let arr = dic["hotAlbums"] as? NSArray{
@@ -316,8 +316,11 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "s"+6.space+"搜索",
                     "d"+6.space+"登录",
                     "f"+6.space+"播放列表",
-                    "g"+6.space+"github",
-                    "h"+6.space+"隐藏dancer"
+                    "g"+6.space+"可至github进行反馈，帮助Qsic变更好",
+                    "h"+6.space+"隐藏dancer",
+                    "1"+6.space+"单曲循环",
+                    "2"+6.space+"顺序播放",
+                    "3"+6.space+"随机播放"
                                        ]
     var index : Int = 0
     var models : [MenuItemModel] = []

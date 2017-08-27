@@ -82,7 +82,7 @@ extension String {
 
 extension Data {
     
-    func jsonDic() -> Any? {
+    func jsonObject() -> Any? {
         if let dic = try? JSONSerialization.jsonObject(with: self, options: .allowFragments) as! [String : Any] {
             return dic
         } else {
@@ -124,11 +124,29 @@ extension Array {
 
 extension Int {
 
-    var space : String {
+    var space: String {
         get {
             return String.init(repeating: " ", count: self)
         }
     }
+    
+    var m: Int {
+        get {
+            return self * 60
+        }
+    }
+    
+    var h: Int {
+        get {
+            return self * 60 * 60
+        }
+    }
+    
+    func delay(task: @escaping () -> Void) {
+        let delayTime = DispatchTime.now() + .seconds(self)
+        DispatchQueue.main.asyncAfter(deadline: delayTime, execute: task)
+    }
+    
 }
 
 

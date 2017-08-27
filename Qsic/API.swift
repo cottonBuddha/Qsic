@@ -129,6 +129,7 @@ class API {
     
     //登录
     func login(account:String, password:String, completionHandler : @escaping (_ userName:String)->()) {
+
         let url = self.urlDic["login"]
         if account.matchRegExp("^1[0-9]{10}$").count > 0 {
             phoneLogin(phoneNumber: account, password: password, completionHandler: completionHandler)
@@ -136,7 +137,7 @@ class API {
             let loginfo = ["username":account,"password":password,"rememberLogin":"true"]
             self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
                 var accountName : String = ""
-                if let arr = data?.jsonDic() as? NSArray {
+                if let arr = data?.jsonObject() as? NSArray {
                     if let profile = (arr.firstObject as? NSDictionary)?["profile"] as? NSDictionary {
                         accountName = profile["nickName"] as! String
                     }
@@ -148,13 +149,16 @@ class API {
     
     //手机登录
     func phoneLogin(phoneNumber:String, password:String, completionHandler : @escaping (_ userName:String)->()) {
+
         let url = self.urlDic["phoneLogin"]
         let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
         let loginfo = ["phone":phoneNumber,"password":passwordMD5,"rememberLogin":"true"]
+        
         self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
             
             var accountName : String = ""
-            if let dic = data?.jsonDic() as? NSDictionary {
+
+            if let dic = data?.jsonObject() as? NSDictionary {
                 if let profile = dic["profile"] as? NSDictionary {
                     accountName = profile["nickname"] as! String
                 }
@@ -301,7 +305,7 @@ class API {
         let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             //print(data?.jsonDic() ?? "jqs")
-            if let dic = data?.jsonDic() as? NSDictionary {
+            if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 let dataDic = dataArr.lastObject as! NSDictionary
                 completionHandler(dataDic["url"] as? String)
@@ -313,9 +317,9 @@ class API {
         let idsStr = "[" + ids.joined(separator: ",") + "]"
         let params = ["br": 128000, "csrf_token":"", "ids":idsStr] as [String : Any]
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
-            //print(data?.jsonDic() ?? "jqs")
+
             var idAndUrlPairs : [String:String] = [:]
-            if let dic = data?.jsonDic() as? NSDictionary {
+            if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 dataArr.forEach {
                     let dataDic = $0 as! NSDictionary

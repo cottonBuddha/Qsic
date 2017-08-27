@@ -18,6 +18,7 @@ enum MenuType: Int {
     case Ranking
     case Search
     case Help
+    case PlayList
 }
 
 public protocol KeyEventProtocol {
@@ -51,11 +52,14 @@ class QSMusicController {
         self.getchThread?.start()
         
         self.mainwin.addSubWidget(widget: player.dancer!)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.songChanged), name:Notification.Name(rawValue: kNotificationSongHasChanged), object: nil)
+        
         RunLoop.main.run()
     }
     
     func initNaviTitle() -> QSNaviTitleWidget {
-        let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: 40, height: 1)
+        let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: Int(COLS - 3 - 1), height: 1)
         return naviTitle
     }
     
@@ -72,7 +76,8 @@ class QSMusicController {
             menuItems.append(item)
         }
         
-        let dataModel = QSMenuModel.init(title: "棉花爱音乐", type:MenuType.Home, items: menuItems, currentItemCode: 0)
+        let nickName = UserDefaults.standard.value(forKey: UD_USER_NICKNAME) as? String ?? "网易云音乐"
+        let dataModel = QSMenuModel.init(title: nickName, type:MenuType.Home, items: menuItems, currentItemCode: 0)
         self.menuStack.append(dataModel)
         let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) { (type,item) in
             if let menuType = MenuType.init(rawValue: type) {
@@ -83,7 +88,7 @@ class QSMusicController {
                     self.handleArtistSelection(item: item as! ArtistModel)
                 case MenuType.SongOrAlbum:
                     self.handleSongOrAlbumSelection(item: item as! SongOrAlbumModel)
-                case MenuType.Song:
+                case MenuType.Song, MenuType.PlayList:
                     self.handleSongSelection(item: item as! SongModel)
                 case MenuType.Ranking:
                     self.handleRankingSelection(item: item as! RankingModel)
@@ -167,6 +172,9 @@ class QSMusicController {
     func handleSongSelection(item:SongModel) {
         player.songList = self.menuStack.last?.items as! [SongModel]
         player.currentIndex = item.code
+        if player.currentSongId != nil && player.currentSongId! == player.songList[player.currentIndex].id {
+            return
+        }
         player.play()
     }
     
@@ -222,6 +230,7 @@ class QSMusicController {
         self.loginWidget = QSLoginWidget.init(startX: 3, startY: startY)
         self.mainwin.addSubWidget(widget: self.loginWidget!)
         self.loginWidget?.getInputContent(completionHandler: { (account, password) in
+
             API.shared.login(account: account, password: password, completionHandler: { (accountName) in
                 if self.player.isPlaying {
                     self.player.dancer?.load()
@@ -230,6 +239,7 @@ class QSMusicController {
                     self.navtitle?.titleStack.removeFirst()
                     self.navtitle?.titleStack.insert(accountName, at: 0)
                     self.navtitle?.drawWidget()
+                    UserDefaults.standard.set(accountName, forKey: UD_USER_NICKNAME)
                     self.loginWidget?.showSuccess()
                 } else {
                     self.loginWidget?.showFaliure()
@@ -240,11 +250,16 @@ class QSMusicController {
     
     func handleSearchCommandKey() {
         
+        guard menuStack.last?.type == MenuType.Home.rawValue else {
+            beep()
+            return
+        }
+        
         if player.isPlaying {
             player.dancer?.pause()
         }
         
-        let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+        let startY = 9
         searchBar = QSSearchWidget.init(startX: 3, startY: startY)
         mainwin.addSubWidget(widget: searchBar!)
         searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
@@ -260,8 +275,8 @@ class QSMusicController {
     }
     
     func handlePlayListCommandKey() {
-        if player.songList.count > 0 {
-            let menuModel = QSMenuModel.init(title: "播放列表", type: MenuType.Song, items: player.songList, currentItemCode: player.currentIndex)
+        if player.songList.count > 0 && menuStack.last?.type != MenuType.PlayList.rawValue{
+            let menuModel = QSMenuModel.init(title: "播放列表", type: MenuType.PlayList, items: player.songList, currentItemCode: player.currentIndex)
             self.push(menuModel: menuModel)
         } else {
             beep()
@@ -272,16 +287,18 @@ class QSMusicController {
         var ic : Int32 = 0
         repeat {
             ic = getch()
-            
+//            mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
             self.menu?.handleWithKeyEvent(keyCode: ic)
             self.handleWithKeyEvent(keyCode: ic)
             self.player.handleWithKeyEvent(keyCode: ic)
-        } while ic != KEY_Q_LOW
+        } while ic != CMD_QUIT
         curs_set(1)
         menu?.eraseMenu()
         navtitle?.erase()
         DispatchQueue.main.async {
             self.mainwin.endWin()
+            NotificationCenter.default.removeObserver(self)
+            exit(0)
         }
     }
     
@@ -310,17 +327,20 @@ class QSMusicController {
             self.removeLoginWidget()
         }
         
+        if menu?.progress != nil, menu!.progress!.isLoading {
+            return
+        }
+        
         switch keyCode {
-        case KEY_SLASH_EN, KEY_SLASH_ZH:
+        case CMD_BACK.0, CMD_BACK.1:
             self.pop()
-        case KEY_S_LOW:
+        case CMD_SEARCH:
             self.handleSearchCommandKey()
-        case KEY_D_LOW:
+        case CMD_LOGIN:
             self.handleLoginCommandKey()
-        case KEY_F_LOW:
+        case CMD_PLAY_LIST:
             self.handlePlayListCommandKey()
-        case KEY_G_LOW:
-//            system("open https://github.com/cottonBuddha/Qsic")
+        case CMD_GITHUB:
             let task = Process.init()
             task.launchPath = "/bin/bash"
             task.arguments = ["-c","open https://github.com/cottonBuddha/Qsic"]
@@ -351,6 +371,11 @@ class QSMusicController {
         guard loginWidget != nil else { return }
         loginWidget?.hide()
         loginWidget = nil
+    }
+    
+    @objc func songChanged() {
+        navtitle?.currentSong = player.songList[player.currentIndex].title
+        navtitle?.drawWidget()
     }
     
 }

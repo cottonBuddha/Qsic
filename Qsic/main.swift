@@ -7,50 +7,6 @@
 //
 
 import Foundation
-import AVFoundation
-
-public let KEY_SPACE: Int32 = 32
-public let KEY_COMMA: Int32 = 39
-public let KEY_DOT: Int32 = 46
-public let KEY_A_LOW: Int32 = 97
-public let KEY_B_LOW: Int32 = 98
-public let KEY_C_LOW: Int32 = 99
-public let KEY_D_LOW: Int32 = 100
-public let KEY_E_LOW: Int32 = 101
-public let KEY_F_LOW: Int32 = 102
-public let KEY_G_LOW: Int32 = 103
-public let KEY_H_LOW: Int32 = 104
-public let KEY_I_LOW: Int32 = 105
-public let KEY_J_LOW: Int32 = 106
-public let KEY_K_LOW: Int32 = 107
-public let KEY_L_LOW: Int32 = 108
-public let KEY_M_LOW: Int32 = 109
-public let KEY_N_LOW: Int32 = 110
-public let KEY_O_LOW: Int32 = 111
-public let KEY_P_LOW: Int32 = 112
-public let KEY_Q_LOW: Int32 = 113
-public let KEY_R_LOW: Int32 = 114
-public let KEY_S_LOW: Int32 = 115
-public let KEY_T_LOW: Int32 = 116
-public let KEY_U_LOW: Int32 = 117
-public let KEY_V_LOW: Int32 = 118
-public let KEY_W_LOW: Int32 = 119
-public let KEY_X_LOW: Int32 = 120
-public let KEY_Y_LOW: Int32 = 121
-public let KEY_Z_LOW: Int32 = 122
-
-public let KEY_L_ANGLE_EN: Int32 = 44
-public let KEY_R_ANGLE_EN: Int32 = 46
-public let KEY_L_ANGLE_ZH: Int32 = 140
-public let KEY_R_ANGLE_ZH: Int32 = 130
-
-public let EN_L_C_BRACE: Int32 = 91
-public let EN_R_C_BRACE: Int32 = 93
-public let ZH_L_C_BRACE: Int32 = 144
-public let ZH_R_C_BRACE: Int32 = 145
-
-public let KEY_SLASH_EN: Int32 = 47
-public let KEY_SLASH_ZH: Int32 = 129
 
 //API.shared.GET(urlStr: "http://music.163.com/api/playlist/detail", params: ["id":"3779629"]) { (data, response, error) in
 //
@@ -148,8 +104,15 @@ public let KEY_SLASH_ZH: Int32 = 129
 //    player.currentIndex = 0
 //    player.play()
 //}
+
+//API.shared.getSongUrl(id: "28700274") { (url) in
+//    player.playSong(url: url!)
+//}
 //
-//
+//3.delay {
+//    player.next()
+//}
+
 //RunLoop.main.run()
 //print("Ain\u{2019}t this a beautiful day")
 //initscr()

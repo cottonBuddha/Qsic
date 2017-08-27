@@ -39,7 +39,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     var isPlaying = false
     var taskFinish = false
     var stopped = false
-    
+
     weak var delegate: AudioStreamerProtocol?
     
     var framePerSecond: Double {
@@ -54,31 +54,24 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     init(url: URL) {
         super.init()
         self.url = url
-
-        let clientData = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
-        
-        AudioFileStreamOpen(clientData, audioFileStreamPropertyListenerProc, audioFileStreamPacketsProc, kAudioFileMP3Type, &audioFileStreamID)
+        let selfPointer = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
+        AudioFileStreamOpen(selfPointer, audioFileStreamPropertyListenerProc, audioFileStreamPacketsProc, kAudioFileMP3Type, &audioFileStreamID)
         self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
 
         let task = self.session.dataTask(with: url)
         task.resume()
     }
     
-    deinit {
+    func releaseStreamer() {
         if self.outputQueue != nil {
             AudioQueueDispose(outputQueue!, true)
         }
+        self.session.invalidateAndCancel()
         AudioFileStreamClose(audioFileStreamID!)
     }
-
-    func playNext(url:String) {
-        self.session.invalidateAndCancel()
-        flush()
-        packets.removeAll()
-        self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
-        let task = self.session.dataTask(with: URL.init(string: url)!)
-        task.resume()
-        play()
+    
+    deinit {
+//        mvaddstr(1, 1, "关了")
     }
     
     func play() {
@@ -112,6 +105,16 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         }
     }
     
+    func replay() {
+        reset()
+        self.outputQueue = nil
+        self.readHead = 0
+        DispatchQueue.main.async {
+            self.createAudioQueue(audioStreamDescription: self.streamDescription!)
+            self.enqueueDataWithPacketsCount(packetCount: Int(self.framePerSecond * 3))
+        }
+    }
+    
     func setVolume(value:Float32) {
         self.volumeValue = value
         if self.outputQueue != nil {
@@ -129,9 +132,12 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         }
         
         if readHead == 0 && Double(packets.count) > self.framePerSecond * 3 && self.outputQueue != nil {
-            isPlaying = true
             AudioQueueStart(self.outputQueue!, nil)
             self.enqueueDataWithPacketsCount(packetCount: Int(self.framePerSecond * 3))
+            isPlaying = true
+            if delegate != nil {
+                delegate!.playingDidStart()
+            }
         }
     }
     
@@ -195,10 +201,10 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         readHead += packetCount
         if (readHead == packets.count && taskFinish && packetCount == 0 && isPlaying) {
             AudioQueueStop(outputQueue!, true)
-                if delegate != nil {
-                    isPlaying = false
-                    delegate!.playingDidEnd()
-                }
+            isPlaying = false
+            if delegate != nil {
+                delegate!.playingDidEnd()
+            }
         }
     }
 

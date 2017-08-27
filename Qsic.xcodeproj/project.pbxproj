@@ -11,6 +11,7 @@
 		43490B3C1F1FAC6E0034281B /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43490B3B1F1FAC6E0034281B /* models.swift */; };
 		43490B3E1F23AC600034281B /* QSPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43490B3D1F23AC600034281B /* QSPlayer.swift */; };
 		4353F4271F38C48500A4B118 /* QSInputWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4353F4261F38C48500A4B118 /* QSInputWidget.swift */; };
+		43640F121F528A1000A8B088 /* config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43640F111F528A1000A8B088 /* config.swift */; };
 		43CBD4D21F0FD97A005D6766 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D11F0FD97A005D6766 /* main.swift */; };
 		43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */; };
 		43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD4DC1F10B901005D6766 /* QSWidget.swift */; };
@@ -47,8 +48,8 @@
 		431F73E81F336F4600DA9513 /* QSSearchWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSSearchWidget.swift; sourceTree = "<group>"; };
 		43490B3B1F1FAC6E0034281B /* models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
 		43490B3D1F23AC600034281B /* QSPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSPlayer.swift; sourceTree = "<group>"; };
-		435327C01F30B1DE00DF725D /* Qsic-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Qsic-Bridging-Header.h"; sourceTree = "<group>"; };
 		4353F4261F38C48500A4B118 /* QSInputWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSInputWidget.swift; sourceTree = "<group>"; };
+		43640F111F528A1000A8B088 /* config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = config.swift; sourceTree = "<group>"; };
 		43CBD4CE1F0FD97A005D6766 /* Qsic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Qsic; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CBD4D11F0FD97A005D6766 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		43CBD4D81F0FDADB005D6766 /* QSMenuWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMenuWidget.swift; sourceTree = "<group>"; };
@@ -117,9 +118,9 @@
 				43CBD4E71F1B665E005D6766 /* API.swift */,
 				FCE2946F1F1C70A100097942 /* extension.swift */,
 				43490B3B1F1FAC6E0034281B /* models.swift */,
+				43640F111F528A1000A8B088 /* config.swift */,
 				FC5DA8B51F2040B4000485DA /* SMP */,
 				FC5DA8BB1F2040B4000485DA /* SwCrypt */,
-				435327C01F30B1DE00DF725D /* Qsic-Bridging-Header.h */,
 			);
 			path = Qsic;
 			sourceTree = "<group>";
@@ -214,6 +215,7 @@
 				43CBD4D91F0FDADB005D6766 /* QSMenuWidget.swift in Sources */,
 				43CBD4DD1F10B901005D6766 /* QSWidget.swift in Sources */,
 				4353F4271F38C48500A4B118 /* QSInputWidget.swift in Sources */,
+				43640F121F528A1000A8B088 /* config.swift in Sources */,
 				431F73E91F336F4600DA9513 /* QSSearchWidget.swift in Sources */,
 				FC68BAEE1F452C1400D71C5E /* QSAudioStreamer.swift in Sources */,
 				43DA4BF51F3217040038B39D /* QSLoginWidget.swift in Sources */,
@@ -332,7 +334,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Qsic/Qsic-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -344,7 +345,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Qsic/Qsic-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

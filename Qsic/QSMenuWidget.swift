@@ -27,7 +27,7 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     
     var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
     
-    private var progress: QSProgressWidget?
+    var progress: QSProgressWidget?
     
     private var currentItemCode : Int = 0 {
         didSet {
@@ -67,8 +67,6 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         }
         
         for index in 0..<self.splitItems[self.currentPageIndex].count {
-            init_pair(1, Int16(COLOR_CYAN), Int16(COLOR_MAGENTA))
-            
 //            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
 
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
@@ -103,25 +101,34 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         }
         
         switch keyCode {
-        case KEY_UP:
+        case CMD_UP:
             self.currentItemCode = self.currentItemCode - 1
             self.refreshMenu()
-        case KEY_DOWN:
+        case CMD_DOWN:
             self.currentItemCode = self.currentItemCode + 1
             self.refreshMenu()
-        case KEY_LEFT:
+        case CMD_LEFT:
             let prePageIndex = self.currentPageIndex - 1
             self.currentItemCode = prePageIndex * self.dataModel.rowsNum
             self.refreshMenu()
-        case KEY_RIGHT:
+        case CMD_RIGHT:
             let nextPageIndex = self.currentPageIndex + 1
             self.currentItemCode = nextPageIndex * self.dataModel.rowsNum
             self.refreshMenu()
-        case 10:
+        case CMD_ENTER:
             if self.selected != nil {
                 self.selected!(self.type, self.dataModel.items[self.currentItemCode])
             }
-            
+//        case CMD_PLAY_PREVIOUS.0, CMD_PLAY_PREVIOUS.1:
+//            if self.type == MenuType.Song.rawValue {
+//                self.currentItemCode = self.currentItemCode - 1
+//                self.refreshMenu()
+//            }
+//        case CMD_PLAY_NEXT.0, CMD_PLAY_NEXT.1:
+//            if self.type == MenuType.Song.rawValue {
+//                self.currentItemCode = self.currentItemCode + 1
+//                self.refreshMenu()
+//            }
         default:
           break
         }
@@ -137,8 +144,8 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     
     func hideProgress() {
         guard progress != nil else { return }
-        self.removeSubWidget(widget: progress!)
         progress!.end()
+        self.removeSubWidget(widget: progress!)
         progress = nil
     }
     

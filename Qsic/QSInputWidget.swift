@@ -27,9 +27,9 @@ class QSInputWidget: QSWidget {
             curs_set(1)
             ic = wgetch(self.window)
             wmove(self.window, 0, 0)
-            condition = ic != 10
+            condition = ic != CMD_ENTER
             if ic != 127 {
-                
+                if ic == CMD_ENTER { break }
                 let str = String(ic,radix:2)
                 if str.hasPrefix("1110") && str.count == 8 {
                     icStrArr.append(str.subStr(range: (4,str.characters.count)))

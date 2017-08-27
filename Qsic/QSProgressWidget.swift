@@ -50,6 +50,7 @@ class QSProgressWidget: QSWidget  {
     
     func load() {
         DispatchQueue.main.async {
+            if self.isLoading { return }
             self.isLoading = true
             self.play(type: self.progressType)
         }
@@ -119,7 +120,4 @@ class QSProgressWidget: QSWidget  {
             }
         })
     }
-    
-    
-    
 }

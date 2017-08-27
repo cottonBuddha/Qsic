@@ -23,11 +23,7 @@ class QSWidget {
     
     //wclear()函数在item上会留下之前屏幕的记录，所以只能用空白字符串手动清除
     lazy var eraseLineStr : String = {
-        var str = ""
-        for i in (0..<self.width) {
-            str.append(" ")
-        }
-        return str
+        return self.width.space
     }()
     
     public init(startX:Int, startY:Int, width:Int, height:Int) {
@@ -38,15 +34,12 @@ class QSWidget {
     }
     
     internal func initWidgetOnSuperwidget(superwidget:QSWidget) {
-//        wmove(superwidget.window, 0, 0)
         self.startX = superwidget.startX + self.startX
         self.startY = superwidget.startY + self.startY
         if self.width == Int(COLS) {
             self.width = superwidget.width - self.startX
         }
         self.window = subwin(superwidget.window, Int32(self.height), Int32(self.width), Int32(self.startY), Int32(self.startX))
-        //        wborder(self.window, 0, 0, 0, 0, 0, 0, 0, 0)
-        
     }
     
     public func drawWidget() {

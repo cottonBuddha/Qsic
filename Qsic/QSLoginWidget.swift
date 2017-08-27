@@ -46,6 +46,9 @@ class QSLoginWidget: QSWidget {
         passwordLength = password!.lengthInCurses()
         
         completionHandler(account!,password!)
+//        mvaddstr(0, 0, account!)
+//        mvaddstr(1, 0, password!)
+
     }
 
     private func eraseSelf() {

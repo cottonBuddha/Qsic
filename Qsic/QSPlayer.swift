@@ -19,6 +19,8 @@ enum IndexType : Int {
     case Previous = -1
 }
 
+let kNotificationSongHasChanged = "notificationSongHasChanged"
+
 class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     private static let sharedInstance = QSPlayer()
@@ -30,10 +32,11 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     var dancer: QSProgressWidget?
-    
-//    var listId : String = ""
-    var songList : [SongModel] = []
-    var currentIndex : Int = 0
+
+    var currentSongId: String?
+    var songList: [SongModel] = []
+    var currentIndex: Int = 0
+    var isPlayingDidStart: Bool = false
     private var urlDic : [String:String] = [:]
     
     var isPlaying : Bool = false {
@@ -46,11 +49,11 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         }
     }
     
-    var playMode : PlayMode = .OrderCycle
+    var playMode: PlayMode = .OrderCycle
     
-    var streamer : QSAudioStreamer?
+    var streamer: QSAudioStreamer?
     
-    var volumeValue : Float32 = 0.5
+    var volumeValue: Float32 = 0.5
     
     private override init() {
         super.init()
@@ -63,10 +66,11 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func play() {
-        if !isPlaying {
-            isPlaying = true
-        }
+
+        guard songList.count > 0 else { return }
         let id = songList[currentIndex].id
+        NotificationCenter.default.post(Notification.init(name:
+            Notification.Name(rawValue: kNotificationSongHasChanged)))
         if let url = urlDic[id] {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyyMMddHHmmss"
@@ -77,6 +81,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             let result = deadTime?.compare(currentTime)
             if result == ComparisonResult.orderedDescending {
                 playSong(url: url)
+                currentSongId = id
             } else {
                 urlDic.removeAll()
                 play()
@@ -88,6 +93,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
                     self.urlDic = urlDic!
                     if let url = self.urlDic[id] {
                         self.playSong(url: url)
+                        self.currentSongId = id
                     } else {
                         //to do sth
                     }
@@ -96,6 +102,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
                 API.shared.getSongUrl(id: ids[currentIndex], completionHandler: { (url) in
                     self.urlDic[id] = url
                     self.playSong(url: url!)
+                    self.currentSongId = id
                 })
             }
         }
@@ -110,29 +117,35 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
 
     func next() {
+//        guard isPlayingDidStart else { return }
         pause()
         self.currentIndex = getIndex(type: .Next)
         play()
     }
     
     func previous() {
+//        guard isPlayingDidStart else { return }
         pause()
         self.currentIndex = getIndex(type: .Previous)
         play()
     }
     
-    func singleCycle() {
-        
+    func replay() {
+        self.streamer?.replay()
     }
     
     func pause() {
         self.isPlaying = false
-        self.streamer?.pause()
+        if self.streamer != nil {
+            self.streamer?.pause()
+        }
     }
     
     func resume() {
         self.isPlaying = true
-        self.streamer?.play()
+        if self.streamer != nil {
+            self.streamer?.play()
+        }
     }
     
     func volumeUp() {
@@ -150,13 +163,19 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func playSong(url:String) {
-        if streamer != nil {
-            streamer?.stop()
-            streamer = nil
-        }
-        streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
-        streamer?.delegate = self
-        streamer?.setVolume(value: volumeValue)
+//        DispatchQueue.main.async {
+
+            if self.streamer != nil {
+                self.streamer?.stop()
+                self.streamer?.releaseStreamer()
+                self.streamer = nil
+            }
+            self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
+            self.streamer?.delegate = self
+            self.streamer?.setVolume(value: self.volumeValue)
+            
+            self.isPlaying = true
+//        }
     }
     
     
@@ -175,49 +194,54 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             
         } else if playMode == .ShuffleCycle {
 //            currentIndex = (0..<urlDic.count).random
-        
         }
 
         return currentIndex
     }
     
     func playingDidEnd() {
+        isPlayingDidStart = false
         if playMode == .OrderCycle || playMode == .ShuffleCycle {
             next()
         } else {
-            singleCycle()
+            replay()
         }
     }
     
     func playingDidStart() {
-
+        isPlayingDidStart = true
     }
     
     func handleNetworkError(error: Error) {
-        print(error)
+//        print(error)
     }
     
     func handleWithKeyEvent(keyCode:Int32) {
-//        DispatchQueue.main.async {
-            switch keyCode {
-            case KEY_SPACE:
-                guard songList.count > 0 else { return }
-                if self.isPlaying {
-                    self.pause()
-                } else {
-                    self.resume()
-                }
-            case KEY_L_ANGLE_EN, KEY_L_ANGLE_ZH:
-                self.previous()
-            case KEY_R_ANGLE_EN, KEY_R_ANGLE_ZH:
-                self.next()
-            case EN_L_C_BRACE, ZH_L_C_BRACE:
-                self.volumeDown()
-            case EN_R_C_BRACE, ZH_R_C_BRACE:
-                self.volumeUp()
-            default:
-                break
+        guard self.songList.count > 0 else { return }
+        switch keyCode {
+        case CMD_PLAY_PAUSE:
+            guard songList.count > 0 else { return }
+            if self.isPlaying {
+                self.pause()
+            } else {
+                self.resume()
             }
-//        }
+        case CMD_PLAY_PREVIOUS.0, CMD_PLAY_PREVIOUS.1:
+            self.previous()
+        case CMD_PLAY_NEXT.0, CMD_PLAY_NEXT.1:
+            self.next()
+        case CMD_VOLUME_MINUS.0, CMD_VOLUME_MINUS.1:
+            self.volumeDown()
+        case CMD_VOLUME_ADD.0, CMD_VOLUME_ADD.1:
+            self.volumeUp()
+        case CMD_PLAYMODE_SINGLE:
+            self.playMode = .SingleCycle
+        case CMD_PLAYMODE_ORDER:
+            self.playMode = .OrderCycle
+        case CMD_PLAYMODE_SHUFFLE:
+            self.playMode = .ShuffleCycle
+        default:
+            break
+        }
     }
 }

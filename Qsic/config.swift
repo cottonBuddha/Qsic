@@ -84,6 +84,10 @@ public let KEY_DOT: Int32 = 46
  */public let CMD_QUIT = KEY_Q_LOW
 
 /**
+ 退出且退出登录
+ */public let CMD_QUIT_LOGOUT = KEY_W_LOW
+
+/**
  返回上一级菜单
  */public let CMD_BACK = (KEY_SLASH_ZH,KEY_SLASH_EN)
 
@@ -145,8 +149,9 @@ public let KEY_DOT: Int32 = 46
 
 
 /**
- 
+ 相关设置的key
  */
+public let UD_POP_HINT = "UD_POP_HINT"
 public let UD_HIDE_DANCER = "UD_HIDE_DANCER"
 public let UD_USER_NICKNAME = "UD_USER_NICKNAME"
 

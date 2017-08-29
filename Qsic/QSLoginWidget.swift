@@ -15,8 +15,6 @@ class QSLoginWidget: QSWidget {
     var accountLength: Int = 0
     var passwordLength: Int = 0
     
-    var isResultShow: Bool = false
-    
     convenience init(startX:Int, startY:Int) {
         self.init(startX: startX, startY: startY, width: Int(COLS - startX - 1), height: 3)
     }
@@ -46,34 +44,9 @@ class QSLoginWidget: QSWidget {
         passwordLength = password!.lengthInCurses()
         
         completionHandler(account!,password!)
-//        mvaddstr(0, 0, account!)
-//        mvaddstr(1, 0, password!)
-
-    }
-
-    private func eraseSelf() {
-        mvwaddstr(self.window, 0, 0, 10.space)
-        mvwaddstr(self.window, 1, 0, (6 + accountLength).space)
-        mvwaddstr(self.window, 2, 0, (6 + passwordLength).space)
-        wrefresh(self.window)
-    }
-    
-    func showSuccess() {
-        isResultShow = true
-        eraseSelf()
-        mvwaddstr(self.window, 1, 0, "登录成功")
-        wrefresh(self.window)
-    }
-    
-    func showFaliure() {
-        isResultShow = true
-        eraseSelf()
-        mvwaddstr(self.window, 1, 0, "登录失败")
-        wrefresh(self.window)
     }
     
     func hide() {
-        isResultShow = false
         eraseSelf()
     }
     

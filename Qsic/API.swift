@@ -41,7 +41,7 @@ class API {
     
     let urlDic = [
         //登录
-        "login" : "https://music.163.com/weapi/login",
+        "login" : "https://music.163.com/weapi/login?csrf_token=",
         //手机登录
         "phoneLogin" : "https://music.163.com/weapi/login/cellphone",
         //签到
@@ -134,7 +134,8 @@ class API {
         if account.matchRegExp("^1[0-9]{10}$").count > 0 {
             phoneLogin(phoneNumber: account, password: password, completionHandler: completionHandler)
         } else {
-            let loginfo = ["username":account,"password":password,"rememberLogin":"true"]
+            let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
+            let loginfo = ["username":account,"password":passwordMD5,"rememberLogin":"true"]
             self.POST(urlStr: url!, params: loginfo) { (data, response, error) in
                 var accountName : String = ""
                 if let arr = data?.jsonObject() as? NSArray {
@@ -166,6 +167,7 @@ class API {
             completionHandler(accountName)
         }
     }
+    
     //签到
     func dailySignin(type:String) {
         
@@ -190,7 +192,7 @@ class API {
                 csrf = $0.value
             }
         }
-        let params = ["limit":20, "csrf_token":""] as [String : Any]
+        let params = ["limit":20, "csrf_token":csrf] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
@@ -233,8 +235,6 @@ class API {
             }
 
             }
-        
-
     }
 
     //歌手
@@ -342,9 +342,7 @@ class API {
         cookies?.forEach {
             cookieJar.deleteCookie($0)
         }
-
     }
-    
     
     let modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7"
     let nonce = "0CoJUm6Qyw8W8jud"
@@ -427,8 +425,8 @@ class API {
         return prefix + encText
     }
     
-    public func escape(_ string: String) -> String {
-        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+    private func escape(_ string: String) -> String {
+        let generalDelimitersToEncode = ":#[]@"
         let subDelimitersToEncode = "!$&'()*+,;="
         
         var allowedCharacterSet = CharacterSet.urlQueryAllowed
@@ -452,6 +450,24 @@ class API {
         }
         
         return escaped
+    }
+    
+    func clearLoginCookie(completionHandler:()->()) {
+        let phoneUrl = self.urlDic["phoneLogin"]
+        let loginUrl = self.urlDic["login"]
+
+        let cookies0 = HTTPCookieStorage.shared.cookies(for: URL.init(string: phoneUrl!)!)
+        let cookies1 = HTTPCookieStorage.shared.cookies(for: URL.init(string: loginUrl!)!)
+        
+        cookies0?.forEach {
+            HTTPCookieStorage.shared.deleteCookie($0)
+        }
+
+        cookies1?.forEach {
+            HTTPCookieStorage.shared.deleteCookie($0)
+        }
+        
+        completionHandler()
     }
 
 }

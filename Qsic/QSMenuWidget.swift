@@ -67,33 +67,27 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         }
         
         for index in 0..<self.splitItems[self.currentPageIndex].count {
-//            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
 
+//            let bcolor = init_color(0, 1, 0, 0)
+//            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
+            
         }
-        
-//        wmove(self.superWidget?.window, 0, 0)
     }
     
     func presentMenuWithModel(menuModel:QSMenuModel) {
-        self.eraseMenu()
+        self.eraseSelf()
         self.setUpMenu(dataModel: menuModel)
         self.currentItemCode = menuModel.currentItemCode
         self.drawWidget()
     }
     
     func refreshMenu() {
-        self.eraseMenu()
+        self.eraseSelf()
         self.drawWidget()
     }
     
-    func eraseMenu() {//在展示下一组数据之前，要清空当前menu
-        for index in 0..<self.dataModel.rowsNum {
-            mvwaddstr(self.window, Int32(index), 0, self.eraseLineStr)
-        }
-    }
-        
     func handleWithKeyEvent(keyCode:Int32) {
         
         if progress != nil, progress!.isLoading {

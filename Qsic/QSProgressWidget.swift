@@ -63,31 +63,28 @@ class QSProgressWidget: QSWidget  {
     }
     
     func pause() {
-        DispatchQueue.main.async {
+//        DispatchQueue.main.async {
             self.isLoading = false
             let type:ProgressType = self.progressType
             var item = "[PAUSE]"
-            var eraseCount: Int = 1
             switch type {
             case .Dance:
                 item = "╭(￣３￣)╯"
-                eraseCount = 14
             default: break
                 
             }
             if self.timer != nil {
                 self.end()
             }
-            mvwaddstr(self.window, 0, 0, eraseCount.space)
+            self.eraseSelf()
             mvwaddstr(self.window, 0, 0, item)
             wrefresh(self.window)
-        }
+//        }
     }
 
     private func play(type:ProgressType) {
         
         var timeInterval: TimeInterval = 1
-        var eraseCount: Int = 1
         var items: [String] = []
         switch type {
         case .MKBar:
@@ -95,14 +92,12 @@ class QSProgressWidget: QSWidget  {
             items = bars
         case .Dance:
             timeInterval = 0.5
-            eraseCount = 14
             items = faces
         case .FireFly:
             timeInterval = 0.08
             items = fireFlies
         case .Ing:
             timeInterval = 0.4
-            eraseCount = 4
             items = ings
         }
         
@@ -110,7 +105,7 @@ class QSProgressWidget: QSWidget  {
 
         timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true, block: { (timer) in
             curs_set(0)
-            mvwaddstr(self.window, 0, 0, eraseCount.space)
+            self.eraseSelf()
             mvwaddstr(self.window, 0, 0, items[i])
             wrefresh(self.window)
             i = i + 1
@@ -120,10 +115,5 @@ class QSProgressWidget: QSWidget  {
             }
         })
     }
-    
-    func eraseSelf() {
-        werase(self.window)
-//        mvwaddstr(self.window, 0, 0, 15.space)
-//        wrefresh(self.window)
-    }
+
 }

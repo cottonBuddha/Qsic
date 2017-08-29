@@ -15,16 +15,9 @@ class QSWidget {
     var startY : Int
     var width : Int
     var height : Int
-    
     var window : OpaquePointer?
-    
     weak var superWidget : QSWidget?
     var subWidgets : [QSWidget]?
-    
-    //wclear()函数在item上会留下之前屏幕的记录，所以只能用空白字符串手动清除
-    lazy var eraseLineStr : String = {
-        return self.width.space
-    }()
     
     public init(startX:Int, startY:Int, width:Int, height:Int) {
         self.startX = startX
@@ -80,6 +73,10 @@ class QSWidget {
     
     public func destroyWindow() {
         delwin(self.window)
+    }
+    
+    public func eraseSelf() {
+        werase(self.window)
     }
     
 }

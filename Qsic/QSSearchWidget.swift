@@ -34,10 +34,5 @@ class QSSearchWidget: QSWidget {
         contentLength = content!.lengthInCurses()
         completionHandler(content!)
     }
-    
-    func eraseSelf() {
-        mvwaddstr(self.window, 0, 0, (8+contentLength).space)
-        wrefresh(self.window)
-    }
 
 }

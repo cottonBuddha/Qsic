@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Darwin.ncurses
+import Darwin
 
 enum MenuType: Int {
     case Home
@@ -50,7 +50,7 @@ class QSMusicController {
         
         self.getchThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
         self.getchThread?.start()
-
+        
         self.mainwin.addSubWidget(widget: player.dancer!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.songChanged), name:Notification.Name(rawValue: kNotificationSongHasChanged), object: nil)
@@ -206,7 +206,9 @@ class QSMusicController {
         default:
             break
         }
+        self.menu?.showProgress()
         API.shared.search(type: searchType, content: item.content) { (type, models) in
+            self.menu?.hideProgress()
             switch type {
             case .Song:
                 let menuModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
@@ -223,9 +225,16 @@ class QSMusicController {
     }
     
     func handleLoginCommandKey() {
+        
+        guard menuStack.last?.type == MenuType.Home.rawValue else {
+            beep()
+            return
+        }
+        
         if player.isPlaying {
             player.dancer?.pause()
         }
+
         let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
         self.loginWidget = QSLoginWidget.init(startX: 3, startY: startY)
         self.mainwin.addSubWidget(widget: self.loginWidget!)
@@ -235,14 +244,15 @@ class QSMusicController {
                 if self.player.isPlaying {
                     self.player.dancer?.load()
                 }
+                self.removeLoginWidget()
                 if accountName != "" {
                     self.navtitle?.titleStack.removeFirst()
                     self.navtitle?.titleStack.insert(accountName, at: 0)
                     self.navtitle?.drawWidget()
                     UserDefaults.standard.set(accountName, forKey: UD_USER_NICKNAME)
-                    self.loginWidget?.showSuccess()
+                    self.showHint(with: "登录成功！", at: 10)
                 } else {
-                    self.loginWidget?.showFaliure()
+                    self.showHint(with: "登录失败！", at: 10)
                 }
             })
         })
@@ -281,24 +291,33 @@ class QSMusicController {
         } else {
             beep()
         }
-
     }
     
     @objc func listenToInstructions() {
         var ic : Int32 = 0
         repeat {
             ic = getch()
+            if isHintOn && ic != CMD_PLAYMODE_SINGLE && ic != CMD_PLAYMODE_ORDER && ic != CMD_PLAYMODE_SHUFFLE{
+                self.hideHint()
+                continue
+            }
 //            mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
             self.menu?.handleWithKeyEvent(keyCode: ic)
             self.handleWithKeyEvent(keyCode: ic)
             self.player.handleWithKeyEvent(keyCode: ic)
-        } while ic != CMD_QUIT
+        } while (ic != CMD_QUIT && ic != CMD_QUIT_LOGOUT)
+        
         curs_set(1)
-        menu?.eraseMenu()
-        navtitle?.erase()
-        player.dancer?.eraseSelf()
-
+        if ic == CMD_QUIT_LOGOUT {
+            API.shared.clearLoginCookie {
+                UserDefaults.standard.removeObject(forKey: UD_USER_NICKNAME)
+            }
+        }
+        
         DispatchQueue.main.async {
+            self.menu?.eraseSelf()
+            self.navtitle?.eraseSelf()
+            self.player.dancer?.eraseSelf()
             self.mainwin.end()
             NotificationCenter.default.removeObserver(self)
             exit(0)
@@ -321,15 +340,6 @@ class QSMusicController {
     
     func handleWithKeyEvent(keyCode:Int32) {
         
-        if isHintOn {
-            self.hideHint()
-        }
-        
-        if loginWidget != nil, loginWidget!.isResultShow {
-            loginWidget!.hide()
-            self.removeLoginWidget()
-        }
-        
         if menu?.progress != nil, menu!.progress!.isLoading {
             return
         }
@@ -348,6 +358,18 @@ class QSMusicController {
             task.launchPath = "/bin/bash"
             task.arguments = ["-c","open https://github.com/cottonBuddha/Qsic"]
             task.launch()
+        case CMD_PLAYMODE_SINGLE:
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+            showHint(with: "设置为:单曲循环", at: startY)
+            beep()
+        case CMD_PLAYMODE_ORDER:
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+            showHint(with: "设置为:顺序播放", at: startY)
+            beep()
+        case CMD_PLAYMODE_SHUFFLE:
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+            showHint(with: "设置为:随机播放", at: startY)
+            beep()
         default:
             break
         }
@@ -367,6 +389,7 @@ class QSMusicController {
         isHintOn = false
         mvwaddstr(self.mainwin.window, Int32(lineNum), 3, contentLength.space)
         contentLength = 0
+        move(0, 0)
         refresh()
     }
     

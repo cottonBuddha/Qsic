@@ -46,13 +46,8 @@ class QSNaviTitleWidget: QSWidget {
         if currentSong != nil {
             subStr = subStr + "[\(currentSong!)]"
         }
-        mvwaddstr(self.window, 0, 0, self.eraseLineStr)
+        self.eraseSelf()
         mvwaddstr(self.window, 0, 0, subStr)
-        wrefresh(self.window)
-    }
-
-    func erase() {
-        mvwaddstr(self.window, 0, 0, self.eraseLineStr)
         wrefresh(self.window)
     }
     

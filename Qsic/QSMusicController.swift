@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Darwin
+import Darwin.ncurses
 
 enum MenuType: Int {
     case Home
@@ -50,7 +50,7 @@ class QSMusicController {
         
         self.getchThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
         self.getchThread?.start()
-        
+
         self.mainwin.addSubWidget(widget: player.dancer!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.songChanged), name:Notification.Name(rawValue: kNotificationSongHasChanged), object: nil)
@@ -281,6 +281,7 @@ class QSMusicController {
         } else {
             beep()
         }
+
     }
     
     @objc func listenToInstructions() {
@@ -295,8 +296,10 @@ class QSMusicController {
         curs_set(1)
         menu?.eraseMenu()
         navtitle?.erase()
+        player.dancer?.eraseSelf()
+
         DispatchQueue.main.async {
-            self.mainwin.endWin()
+            self.mainwin.end()
             NotificationCenter.default.removeObserver(self)
             exit(0)
         }

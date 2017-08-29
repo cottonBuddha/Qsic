@@ -17,14 +17,16 @@ class QSMainWindow: QSWidget {
         self.window = initscr()
         keypad(stdscr, true)
         noecho()
-        raw()
-//        start_color()
+        cbreak()
+        //        start_color()
         curs_set(0)
         refresh()
+        
+        
     }
     
-    func endWin() {
-        endWin()
+    func end() {
+        endwin()
     }
     
 }

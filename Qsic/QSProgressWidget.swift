@@ -120,4 +120,10 @@ class QSProgressWidget: QSWidget  {
             }
         })
     }
+    
+    func eraseSelf() {
+        werase(self.window)
+//        mvwaddstr(self.window, 0, 0, 15.space)
+//        wrefresh(self.window)
+    }
 }

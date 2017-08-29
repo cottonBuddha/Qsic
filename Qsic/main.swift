@@ -112,7 +112,67 @@ import Foundation
 //3.delay {
 //    player.next()
 //}
+//private var eventHandlerRef: EventHandlerRef? = nil
+//private var forwardKey: EventHotKeyRef? = nil
+//private var backwardKey: EventHotKeyRef? = nil
+//private var playPauseKey: EventHotKeyRef? = nil
+//
+//var eventType = EventTypeSpec.init(eventClass: OSType.init(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
+//
+//func registerHotKey() {
+//    
+//    let forwardKeyID = EventHotKeyID.init(signature: OSType.init(1), id: UInt32(7))
+//    let backwardKeyID = EventHotKeyID.init(signature: OSType.init(62), id: UInt32(62))
+//    let playPauseKeyID = EventHotKeyID.init(signature: OSType.init(64), id: UInt32(64))
 
+
+//    InstallEventHandler(GetApplicationEventTarget(), eventHandle, 1, &eventType, nil, nil)
+    
+//    InstallEventHandler(GetApplicationEventTarget(), {(nextHanlder, theEvent, userData) -> OSStatus in
+////        DispatchQueue.main.async {
+//            var hotKey = EventHotKeyID()
+//            print("进来了")
+//            GetEventParameter(theEvent, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &hotKey)
+//            if hotKey.id == 6 {
+//                print("往后")
+//            }
+//            
+//            if hotKey.id == 64 {
+//                print("暂停")
+//                
+//            }
+//            
+//            if hotKey.id == 65 {
+//                print("往前")
+//                
+//            }
+//        
+////        }
+//        return 0
+//
+//    }, 1, &eventType, nil, nil)
+
+    
+//    let s = RegisterEventHotKey(7, UInt32(kEventHotKeyExclusive), forwardKeyID, GetApplicationEventTarget(), 0, &forwardKey)
+////    RegisterEventHotKey(62, 0, backwardKeyID, GetApplicationEventTarget(), 0, &backwardKey)
+////    RegisterEventHotKey(64, 0, playPauseKeyID, GetApplicationEventTarget(), 0, &playPauseKey)
+//    UnregisterEventHotKey(forwardKey)
+//
+//}
+//
+//func eventHandle(_: EventHandlerCallRef?, _: EventRef?, _: UnsafeMutableRawPointer?) -> OSStatus {
+//    print("哈哈哈哈哈哈")
+//
+//    return 0
+//}
+
+
+
+
+
+
+//registerHotKey()
+//var j = NX_KEYTYPE_PLAY
 //RunLoop.main.run()
 //print("Ain\u{2019}t this a beautiful day")
 //initscr()
@@ -123,7 +183,6 @@ import Foundation
 //
 //getch()
 //endwin()
-
 QSMusicController().start()
 
 

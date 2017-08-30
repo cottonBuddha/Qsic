@@ -77,6 +77,11 @@ class QSWidget {
     
     public func eraseSelf() {
         werase(self.window)
+        wrefresh(self.window)
+    }
+    
+    deinit {
+        destroyWindow()
     }
     
 }

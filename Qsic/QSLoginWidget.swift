@@ -16,7 +16,7 @@ class QSLoginWidget: QSWidget {
     var passwordLength: Int = 0
     
     convenience init(startX:Int, startY:Int) {
-        self.init(startX: startX, startY: startY, width: Int(COLS - startX - 1), height: 3)
+        self.init(startX: startX, startY: startY, width: Int(COLS - Int32(startX + 1)), height: 3)
     }
     
     override func drawWidget() {

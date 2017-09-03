@@ -13,7 +13,7 @@ class QSSearchWidget: QSWidget {
     var contentLength: Int = 0
     
     convenience init(startX:Int, startY:Int) {
-        self.init(startX: startX, startY: startY, width: Int(COLS - startX - 1), height: 1)
+        self.init(startX: startX, startY: startY, width: Int(COLS - Int32(startX + 1)), height: 1)
     }
     
     override func drawWidget() {

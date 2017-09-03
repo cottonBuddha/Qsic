@@ -127,7 +127,7 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-            API.shared.rankings(completionHandler: { (rankings) in
+            API.shared.rankings(completionHandler: { [unowned self] (rankings) in
                 let dataModel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             })
@@ -144,7 +144,7 @@ class QSMusicController {
 
         case 2:
             self.menu?.showProgress()
-            API.shared.artists { (artists) in
+            API.shared.artists { [unowned self] (artists) in
                 self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
@@ -157,7 +157,7 @@ class QSMusicController {
             
         case 4:
             self.menu?.showProgress()
-            API.shared.userList(completionHandler: { (models) in
+            API.shared.userList(completionHandler: { [unowned self] (models) in
                 self.menu?.hideProgress()
                 if models.count > 0 {
                     let dataModel = QSMenuModel.init(title: "收藏", type:MenuType.SongLists, items: models, currentItemCode: 0)
@@ -191,12 +191,12 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-            API.shared.getSongsOfArtist(artistId: item.artistId) { (models) in
+            API.shared.getSongsOfArtist(artistId: item.artistId) { [unowned self] (models) in
                 let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
         case 1:
-            API.shared.getAlbumsOfArtist(artistId: item.artistId, completionHandler: { (models) in
+            API.shared.getAlbumsOfArtist(artistId: item.artistId, completionHandler: { [unowned self] (models) in
                 let dataModel = QSMenuModel.init(title: "专辑", type: MenuType.Album, items: models, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             })
@@ -216,7 +216,7 @@ class QSMusicController {
     
     func handleRankingSelection(item:RankingModel) {
         self.menu?.showProgress()
-        API.shared.songDetail(rankingId: item.id) { (models) in
+        API.shared.songDetail(rankingId: item.id) { [unowned self] (models) in
             self.menu?.hideProgress()
             let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
@@ -224,7 +224,7 @@ class QSMusicController {
     }
     
     func handleAlbumSelection(item:AlbumModel) {
-        API.shared.getSongsOfAlbum(albumId: item.id) { (models) in
+        API.shared.getSongsOfAlbum(albumId: item.id) { [unowned self] (models) in
             let dataModel = QSMenuModel.init(title: item.name, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
@@ -245,7 +245,7 @@ class QSMusicController {
             break
         }
         self.menu?.showProgress()
-        API.shared.search(type: searchType, content: item.content) { (type, models) in
+        API.shared.search(type: searchType, content: item.content) { [unowned self] (type, models) in
             self.menu?.hideProgress()
             switch type {
             case .Song:
@@ -289,7 +289,7 @@ class QSMusicController {
     func handleSongListSecondClassSelection(item:MenuItemModel) {
         //to do API
         self.menu?.showProgress()
-        API.shared.songlists(type: item.title) { (models) in
+        API.shared.songlists(type: item.title) { [unowned self] (models) in
             self.menu?.hideProgress()
             let dataModel = QSMenuModel.init(title: item.title, type: MenuType.SongLists, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
@@ -298,7 +298,7 @@ class QSMusicController {
     
     func handleSongListsSelection(item:SongListModel) {
         self.menu?.showProgress()
-        API.shared.songListDetail(listId: item.id, completionHandler: {
+        API.shared.songListDetail(listId: item.id, completionHandler: { [unowned self]
             (songModels) in
             self.menu?.hideProgress()
             let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: songModels, currentItemCode: 0)
@@ -308,7 +308,7 @@ class QSMusicController {
     
     func handleAddToMyListSelection(item:SongListModel) {
 
-        API.shared.addSongToMyList(tracks: item.idOfTheSongShouldBeAdded, pid: item.id) { (finish) in
+        API.shared.addSongToMyList(tracks: item.idOfTheSongShouldBeAdded, pid: item.id) { [unowned self] (finish) in
             if finish {
                 self.showHint(with: "添加完成，请返回↵", at: 14)
             } else {
@@ -363,7 +363,7 @@ class QSMusicController {
         self.mainwin.addSubWidget(widget: self.loginWidget!)
         self.loginWidget?.getInputContent(completionHandler: { (account, password) in
 
-            API.shared.login(account: account, password: password, completionHandler: { (accountNameAndId) in
+            API.shared.login(account: account, password: password, completionHandler: { [unowned self] (accountNameAndId) in
                 if self.player.isPlaying {
                     self.player.dancer?.load()
                 }
@@ -425,7 +425,7 @@ class QSMusicController {
             return
         }
         let currentItem = lastMenu?.items[lastMenu!.currentItemCode] as! SongModel
-        API.shared.like(id: currentItem.id) { (finish) in
+        API.shared.like(id: currentItem.id) { [unowned self] (finish) in
             if finish {
                 self.showHint(with: "已添加至喜欢↵", at: 14)
             } else {

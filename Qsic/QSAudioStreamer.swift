@@ -1,6 +1,6 @@
 //
 //  QSAudioStreamer.swift
-//  OrbPlayer
+//  Qsic
 //
 //  Created by cottonBuddha on 2017/8/10.
 //  Copyright © 2017年 cottonBuddha. All rights reserved.
@@ -8,13 +8,6 @@
 
 import Foundation
 import AudioToolbox
-
-enum Status : Int {
-    case Stopped
-    case Playing
-    case Waiting
-    case Paused
-}
 
 public protocol AudioStreamerProtocol : NSObjectProtocol{
     
@@ -24,7 +17,6 @@ public protocol AudioStreamerProtocol : NSObjectProtocol{
     
     func handleNetworkError(error:Error)
 }
-
 
 class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     
@@ -258,14 +250,12 @@ func audioFileStreamPacketsProc(clientData:UnsafeMutableRawPointer, numberBytes:
     this.storePackets(numberOfPackets: numberPackets, numberOfBytes: numberBytes, data: ioData, packetDescription: packetDescription)
 }
 
-
 func audioQueueOutputCallback(_ clientData:UnsafeMutableRawPointer?, _ inAQ:AudioQueueRef, _ inBuffer:AudioQueueBufferRef) {
     let this = Unmanaged<QSAudioStreamer>.fromOpaque(UnsafeRawPointer(clientData)!).takeUnretainedValue()
     let status = AudioQueueFreeBuffer(inAQ, inBuffer)
     assert(noErr == status)
     this.enqueueDataWithPacketsCount(packetCount: Int(this.framePerSecond * 5))
 }
-
 
 func audioQueueRunningListener(clientData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, propertyID: AudioQueuePropertyID) {
     

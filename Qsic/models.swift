@@ -115,6 +115,8 @@ public func generateSongModels(data:Data) -> [SongModel] {
             songArr = arr//这里的dic命名,包括jsondic方法，要改一下
         } else if let arr = (dic["result"] as? NSDictionary)?["songs"] as? NSArray {
             songArr = arr
+        } else if let arr = (dic["result"] as? NSDictionary)?["tracks"] as? NSArray {
+            songArr = arr
         }
     }
     
@@ -223,8 +225,59 @@ public func generateSongOrAlbumModels(artistId:String) -> [SongOrAlbumModel] {
     return itemArr
 }
 
+//歌单
+public class SongListModel: MenuItemModel {
+    var name: String = ""
+    var id: String = ""
+    var creator: String = ""
+    var idOfTheSongShouldBeAdded: String = ""
+
+    init(name:String, id:String, creator:String, code:Int) {
+        self.name = name
+        self.id = id
+        self.creator = creator
+        super.init(title: name, code: code)
+    }
+}
+
+public func generateSongListsModels(data: Data) -> [SongListModel] {
+    var lists: [SongListModel] = []
+
+    let dic = data.jsonObject() as? NSDictionary
+    guard dic != nil else { return lists }
+    
+    var playlists: NSArray = []
+    if let result = dic!["result"] as? NSDictionary {
+        if let pl = result["playlists"] as? NSArray {
+            playlists = pl
+        }
+    } else if let pl = dic!["playlists"] as? NSArray {
+        playlists = pl
+    } else if let pl = dic!["playlist"] as? NSArray {
+        playlists = pl
+    } else if let pl = dic!["recommend"] as? NSArray {
+        playlists = pl
+    }
+    
+    var code = 0
+    playlists.forEach({ (element) in
+        let element = element as! NSDictionary
+        let name = element["name"] as! String
+        let id = element["id"] as! NSNumber
+        var creatorName = ""
+        if let creatorInfo = element["creator"] as? NSDictionary {
+            creatorName = creatorInfo["nickname"] as! String
+        }
+        let model = SongListModel.init(name: name, id: id.stringValue, creator: creatorName, code: code)
+        code = code + 1
+        lists.append(model)
+    })
+    
+    return lists
+}
+
 //歌曲榜单
-public class RankingModel:MenuItemModel {
+public class RankingModel: MenuItemModel {
     var name : String = ""
     var id : String = ""
     
@@ -287,7 +340,8 @@ public class SearchModel:MenuItemModel {
 public func generateSearchTypeModels(content:String) -> [SearchModel] {
     let menuData = [("歌曲",0),
                     ("歌手",1),
-                    ("专辑",2)]
+                    ("专辑",2),
+                    ("歌单",3)]
     var itemArr : [SearchModel] = []
     menuData.forEach {
         let model = SearchModel.init(itemTitle: $0.0, content: content, code: $0.1)
@@ -333,3 +387,79 @@ public func generateHelpModels() -> [MenuItemModel] {
     }
     return models
 }
+
+public func generateListClassModels() -> [MenuItemModel] {
+    let classification = [("语种",0),
+                          ("风格",1),
+                          ("场景",2),
+                          ("情感",3),
+                          ("主题",4)]
+    var models : [MenuItemModel] = []
+    classification.forEach {
+        let model = MenuItemModel.init(title: $0.0, code: $0.1)
+        models.append(model)
+    }
+    return models
+}
+
+public func generateSongListModelByLanguages() -> [MenuItemModel] {
+    let languages = ["华语","欧美","日语","韩语","粤语","小语种"]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    languages.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}
+
+public func generateSongListModelByStyle() -> [MenuItemModel] {
+    let styles = ["流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","New Age","古风","后摇","Bossa Nova"]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    styles.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}
+
+public func generateSongListModelByScenario() -> [MenuItemModel] {
+    let scenarioTypes = ["清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧"]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    scenarioTypes.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}
+
+public func generateSongListModelByEmotion() -> [MenuItemModel] {
+    let emotionTypes = ["怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念"]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    emotionTypes.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}
+
+public func generateSongListModelByTheme() -> [MenuItemModel] {
+    let themeTypes = ["影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
+    var index : Int = 0
+    var models : [MenuItemModel] = []
+    themeTypes.forEach {
+        let model = MenuItemModel.init(title: $0, code: index)
+        models.append(model)
+        index = index + 1
+    }
+    return models
+}
+
+

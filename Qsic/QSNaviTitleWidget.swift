@@ -14,7 +14,7 @@ class QSNaviTitleWidget: QSWidget {
     var currentSong: String?
     
     override init(startX: Int, startY: Int, width: Int, height: Int) {
-        super.init(startX: startX, startY: startY, width: width, height: height)
+        super.init(startX: startX, startY: startY, width: width, height: 2)
     }
     
     func push(title:String) {

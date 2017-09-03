@@ -60,6 +60,7 @@ class QSProgressWidget: QSWidget  {
         self.isLoading = false
         self.timer?.invalidate()
         self.timer = nil
+        self.eraseSelf()
     }
     
     func pause() {

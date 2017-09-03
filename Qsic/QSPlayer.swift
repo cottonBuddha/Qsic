@@ -95,7 +95,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
                         self.playSong(url: url)
                         self.currentSongId = id
                     } else {
-                        self.next()
+//                        self.next()
                     }
                 }
             } else {
@@ -214,7 +214,6 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     func handleNetworkError(error: Error) {
 //        print(error)
-        next()
     }
     
     func handleWithKeyEvent(keyCode:Int32) {

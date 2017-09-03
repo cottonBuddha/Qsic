@@ -39,7 +39,8 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     var isPlaying = false
     var taskFinish = false
     var stopped = false
-
+    var isBreaking = false
+    
     weak var delegate: AudioStreamerProtocol?
     
     var framePerSecond: Double {
@@ -57,7 +58,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         let selfPointer = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
         AudioFileStreamOpen(selfPointer, audioFileStreamPropertyListenerProc, audioFileStreamPacketsProc, kAudioFileMP3Type, &audioFileStreamID)
         self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
-
+        
         let task = self.session.dataTask(with: url)
         task.resume()
     }
@@ -71,7 +72,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     }
     
     deinit {
-//        mvaddstr(1, 1, "关了")
+        //        mvaddstr(1, 1, "关了")
     }
     
     func play() {
@@ -127,8 +128,17 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
             let packetStart = packetDescription[i].mStartOffset
             let packetSize = packetDescription[i].mDataByteSize
             let packetData = Data.init(bytes: data.advanced(by: Int(packetStart)), count: Int(packetSize))
-
+            
             self.packets.append(packetData)
+        }
+        
+        if isBreaking && numberOfPackets != 0{
+            let packetCount = Int(self.framePerSecond * 3)
+            if readHead + packetCount <= packets.count {
+                isBreaking = false
+                play()
+                self.enqueueDataWithPacketsCount(packetCount: packetCount)
+            }
         }
         
         if readHead == 0 && Double(packets.count) > self.framePerSecond * 3 && self.outputQueue != nil {
@@ -197,7 +207,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
             packetDescs.append(description)
             copiedSize += packetData.count
         }
-        status = AudioQueueEnqueueBuffer(outputQueue!, buffer!, UInt32(packetCount), packetDescs);
+        status = AudioQueueEnqueueBuffer(outputQueue!, buffer!, UInt32(packetCount), packetDescs)
         readHead += packetCount
         if (readHead == packets.count && taskFinish && packetCount == 0 && isPlaying) {
             AudioQueueStop(outputQueue!, true)
@@ -205,9 +215,12 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
             if delegate != nil {
                 delegate!.playingDidEnd()
             }
+        } else if packetCount == 0 {
+            isBreaking = true
+            pause()
         }
     }
-
+    
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         self.parseData(data: data)
     }
@@ -222,7 +235,6 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         }
     }
 }
-
 
 func audioFileStreamPropertyListenerProc(clientData:UnsafeMutableRawPointer, audioFileStream:AudioFileStreamID, propertyID:AudioFileStreamPropertyID, ioFlag:UnsafeMutablePointer<AudioFileStreamPropertyFlags>) {
     let this = Unmanaged<QSAudioStreamer>.fromOpaque(UnsafeRawPointer(clientData)).takeUnretainedValue()
@@ -260,7 +272,7 @@ func audioQueueRunningListener(clientData: UnsafeMutableRawPointer?, inAQ: Audio
     let this = Unmanaged<QSAudioStreamer>.fromOpaque(UnsafeRawPointer(clientData)!).takeUnretainedValue()
     var status: OSStatus = 0
     var dataSize: UInt32 = 0
-    status = AudioQueueGetPropertySize(inAQ, propertyID, &dataSize);
+    status = AudioQueueGetPropertySize(inAQ, propertyID, &dataSize)
     assert(noErr == status)
     if propertyID == kAudioQueueProperty_IsRunning {
         var running: UInt32 = 0

@@ -15,10 +15,16 @@ enum MenuType: Int {
     case Song
     case Album
     case SongOrAlbum
+    case SongOrList
     case Ranking
     case Search
     case Help
     case PlayList
+    case SongListFirstClass
+    case SongListSecondClass
+    case SongLists
+    case AddToMyList
+    
 }
 
 public protocol KeyEventProtocol {
@@ -66,9 +72,11 @@ class QSMusicController {
     func initHomeMenu() -> QSMenuWidget {
         let menuData = [("推荐",0),
                         ("榜单",1),
-                        ("歌手",2),
-                        ("搜索",3),
-                        ("帮助",4)]
+                        ("歌单",2),
+                        ("歌手",3),
+                        ("收藏",4),
+                        ("搜索",5),
+                        ("帮助",6)]
         
         var menuItems : [MenuItemModel] = []
         menuData.forEach {
@@ -96,6 +104,16 @@ class QSMusicController {
                     self.handleAlbumSelection(item: item as! AlbumModel)
                 case MenuType.Search:
                     self.handleSearchTypeSelection(item: item as! SearchModel)
+                case MenuType.SongListFirstClass:
+                    self.handleSongListFirstClassSelection(item: item)
+                case MenuType.SongListSecondClass:
+                    self.handleSongListSecondClassSelection(item: item)
+                case MenuType.SongLists:
+                    self.handleSongListsSelection(item: item as! SongListModel)
+//                case MenuType.AddToMyList:
+//                    self.handleAddToMyListSelection(item: item as! SongListModel)
+                case MenuType.SongOrList:
+                    self.handleSongOrListSelection(item: item)
                 default:
                     break
                 }
@@ -109,32 +127,39 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
-            self.menu?.showProgress()
-            API.shared.recommendPlaylist(completionHandler: { [unowned self] (models) in
-                self.menu?.hideProgress()
-                if models.count > 0 {
-                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
-                    self.push(menuModel: dataModel)
-                } else {
-                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 10)
-                }
-                
-            })
+            let menuData = [("推荐歌曲",0),("推荐歌单",1)]
+            var menuItems : [MenuItemModel] = []
+            menuData.forEach {
+                let item = MenuItemModel.init(title: $0.0, code: $0.1)
+                menuItems.append(item)
+            }
+            let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongOrList, items: menuItems, currentItemCode: 0)
+            self.push(menuModel: dataModel)
         case 1:
             API.shared.rankings(completionHandler: { (rankings) in
-                let datamodel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
-                self.push(menuModel: datamodel)
+                let dataModel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
+                self.push(menuModel: dataModel)
             })
         case 2:
+            let models = generateListClassModels()
+            let dataModel = QSMenuModel.init(title: "歌单", type: MenuType.SongListFirstClass, items: models, currentItemCode: 0)
+            self.push(menuModel: dataModel)
+        case 3:
             self.menu?.showProgress()
             API.shared.artists { (artists) in
                 self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
-        case 3:
-            self.handleSearchCommandKey()
         case 4:
+            API.shared.userList(completionHandler: { (models) in
+                let datamodel = QSMenuModel.init(title: "收藏", type: MenuType.SongLists, items: models, currentItemCode: 0)
+                self.push(menuModel: datamodel)
+            })
+
+        case 5:
+            self.handleSearchCommandKey()
+        case 6:
             let models = generateHelpModels()
             let menuModel = QSMenuModel.init(title: "帮助", type: MenuType.Help, items: models, currentItemCode: 0)
             self.push(menuModel: menuModel)
@@ -203,6 +228,8 @@ class QSMusicController {
             searchType = SearchType.Artist
         case 2:
             searchType = SearchType.Album
+        case 3:
+            searchType = SearchType.List
         default:
             break
         }
@@ -219,8 +246,93 @@ class QSMusicController {
             case .Album:
                 let menuModel = QSMenuModel.init(title: "专辑", type: MenuType.Album, items: models, currentItemCode: 0)
                 self.push(menuModel: menuModel)
-
+            case .List:
+                let menuModel = QSMenuModel.init(title: "歌单", type: MenuType.SongLists, items: models, currentItemCode: 0)
+                self.push(menuModel: menuModel)
+//                mvaddstr(2, 2, models.first?.title)
             }
+        }
+    }
+    
+    func handleSongListFirstClassSelection(item:MenuItemModel) {
+        let code = item.code
+        var models: [MenuItemModel] = []
+        switch code {
+        case 0:
+            models = generateSongListModelByLanguages()
+        case 1:
+            models = generateSongListModelByStyle()
+        case 2:
+            models = generateSongListModelByScenario()
+        case 3:
+            models = generateSongListModelByEmotion()
+        case 4:
+            models = generateSongListModelByTheme()
+        default :
+            break
+        }
+        let dataModel = QSMenuModel.init(title: item.title, type: MenuType.SongListSecondClass, items: models, currentItemCode: 0)
+        self.push(menuModel: dataModel)
+    }
+    
+    func handleSongListSecondClassSelection(item:MenuItemModel) {
+        //to do API
+        self.menu?.showProgress()
+        API.shared.songlists(type: item.title) { (models) in
+            self.menu?.hideProgress()
+            let dataModel = QSMenuModel.init(title: item.title, type: MenuType.SongLists, items: models, currentItemCode: 0)
+            self.push(menuModel: dataModel)
+        }
+    }
+    
+    func handleSongListsSelection(item:SongListModel) {
+        self.menu?.showProgress()
+        API.shared.songListDetail(listId: item.id, completionHandler: {
+            (songModels) in
+            self.menu?.hideProgress()
+            let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: songModels, currentItemCode: 0)
+            self.push(menuModel: dataModel)
+        })
+    }
+    
+    func handleAddToMyListSelection(item:SongListModel) {
+
+        API.shared.addSongToMyList(tracks: item.idOfTheSongShouldBeAdded, pid: item.id) { (finish) in
+            if finish {
+                self.showHint(with: "添加完成，请返回↵", at: 14)
+            } else {
+                self.showHint(with: "添加失败，请返回↵", at: 14)
+            }
+        }
+    }
+    
+    func handleSongOrListSelection(item:MenuItemModel) {
+        let code = item.code
+        switch code {
+        case 0:
+            self.menu?.showProgress()
+            API.shared.recommendSongs(completionHandler: { [unowned self] (models) in
+                self.menu?.hideProgress()
+                if models.count > 0 {
+                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    self.push(menuModel: dataModel)
+                } else {
+                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                }
+            })
+        case 1:
+            self.menu?.showProgress()
+            API.shared.recommendPlayList(completionHandler: { [unowned self] (models) in
+                self.menu?.hideProgress()
+                if models.count > 0 {
+                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongLists, items: models, currentItemCode: 0)
+                    self.push(menuModel: dataModel)
+                } else {
+                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                }
+            })
+        default:
+            break
         }
     }
     
@@ -235,24 +347,26 @@ class QSMusicController {
             player.dancer?.pause()
         }
 
-        let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
+        let startY = menuStack.last?.type == MenuType.Home.rawValue ? 11 : 14
         self.loginWidget = QSLoginWidget.init(startX: 3, startY: startY)
         self.mainwin.addSubWidget(widget: self.loginWidget!)
         self.loginWidget?.getInputContent(completionHandler: { (account, password) in
 
-            API.shared.login(account: account, password: password, completionHandler: { (accountName) in
+            API.shared.login(account: account, password: password, completionHandler: { (accountNameAndId) in
                 if self.player.isPlaying {
                     self.player.dancer?.load()
                 }
                 self.removeLoginWidget()
-                if accountName != "" {
+                if accountNameAndId.0 != "" {
                     self.navtitle?.titleStack.removeFirst()
-                    self.navtitle?.titleStack.insert(accountName, at: 0)
+                    self.navtitle?.titleStack.insert(accountNameAndId.0, at: 0)
                     self.navtitle?.drawWidget()
-                    UserDefaults.standard.set(accountName, forKey: UD_USER_NICKNAME)
-                    self.showHint(with: "登录成功！", at: 10)
+                    UserDefaults.standard.set(accountNameAndId.0, forKey: UD_USER_NICKNAME)
+                    UserDefaults.standard.set(accountNameAndId.1, forKey: UD_USER_ID)
+
+                    self.showHint(with: "登录成功！", at: 11)
                 } else {
-                    self.showHint(with: "登录失败！", at: 10)
+                    self.showHint(with: "登录失败！", at: 11)
                 }
             })
         })
@@ -269,7 +383,7 @@ class QSMusicController {
             player.dancer?.pause()
         }
         
-        let startY = 9
+        let startY = 11
         searchBar = QSSearchWidget.init(startX: 3, startY: startY)
         mainwin.addSubWidget(widget: searchBar!)
         searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
@@ -293,6 +407,31 @@ class QSMusicController {
         }
     }
     
+    func handleAddToMyListCommandKey() {
+        let lastMenu = menuStack.last
+        guard lastMenu?.type == MenuType.Song.rawValue else {
+            beep()
+            return
+        }
+        let currentItem = lastMenu?.items[lastMenu!.currentItemCode] as! SongModel
+        API.shared.like(id: currentItem.id) { (finish) in
+            if finish {
+                self.showHint(with: "已添加至喜欢↵", at: 14)
+            } else {
+                self.showHint(with: "添加失败↵", at: 14)
+            }
+        }
+
+        
+//        API.shared.userList(completionHandler: { (models) in
+//            models.forEach {
+//                $0.idOfTheSongShouldBeAdded = (lastMenu?.items[lastMenu!.currentItemCode] as! SongModel).id
+//            }
+//            let datamodel = QSMenuModel.init(title: "收藏", type: MenuType.AddToMyList, items: models, currentItemCode: 0)
+//            self.push(menuModel: datamodel)
+//        })
+    }
+    
     @objc func listenToInstructions() {
         var ic : Int32 = 0
         repeat {
@@ -311,6 +450,7 @@ class QSMusicController {
         if ic == CMD_QUIT_LOGOUT {
             API.shared.clearLoginCookie {
                 UserDefaults.standard.removeObject(forKey: UD_USER_NICKNAME)
+                UserDefaults.standard.removeObject(forKey: UD_USER_ID)
             }
         }
         
@@ -359,17 +499,19 @@ class QSMusicController {
             task.arguments = ["-c","open https://github.com/cottonBuddha/Qsic"]
             task.launch()
         case CMD_PLAYMODE_SINGLE:
-            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
-            showHint(with: "设置为:单曲循环", at: startY)
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 11 : 14
+            showHint(with: "设置为:单曲循环↵", at: startY)
             beep()
         case CMD_PLAYMODE_ORDER:
-            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
-            showHint(with: "设置为:顺序播放", at: startY)
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 11 : 14
+            showHint(with: "设置为:顺序播放↵", at: startY)
             beep()
         case CMD_PLAYMODE_SHUFFLE:
-            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 9 : 14
-            showHint(with: "设置为:随机播放", at: startY)
+            let startY = menuStack.last?.type == MenuType.Home.rawValue ? 11 : 14
+            showHint(with: "设置为:随机播放↵", at: startY)
             beep()
+        case CMD_ADD_LIKE:
+            self.handleAddToMyListCommandKey()
         default:
             break
         }

@@ -59,7 +59,6 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         self.drawMenu()
         wrefresh(self.window)
     }
-    
 
     private func drawMenu() {
         guard self.dataModel.items.count > 0 else {

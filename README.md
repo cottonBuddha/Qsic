@@ -2,7 +2,7 @@
 
 一个简洁的(Q的)网易云音乐命令行工具，使用Swift编写，运行于mac OS平台。
 <div style="text-align: center">
-    <img src="https://github.com/cottonBuddha/Qsic/blob/master/demo.jpg" width="557"/>
+    <img src="https://github.com/cottonBuddha/Qsic/blob/master/demo.gif" width="557"/>
 </div>
 
 ## 安装

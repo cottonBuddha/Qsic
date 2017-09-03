@@ -290,7 +290,7 @@ class API {
     //用户歌单
     func userList(completionHandler : @escaping ([SongListModel])->()) {
         let urlStr = self.urlDic["userList"]
-        var userId = "362229580"
+        var userId = ""
         if let id = UserDefaults.standard.value(forKey: UD_USER_ID) as? String {
             userId = id
         }

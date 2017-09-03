@@ -70,10 +70,10 @@ class QSMusicController {
     }
     
     func initHomeMenu() -> QSMenuWidget {
-        let menuData = [("推荐",0),
-                        ("榜单",1),
-                        ("歌单",2),
-                        ("歌手",3),
+        let menuData = [("榜单",0),
+                        ("推荐",1),
+                        ("歌手",2),
+                        ("歌单",3),
                         ("收藏",4),
                         ("搜索",5),
                         ("帮助",6)]
@@ -127,6 +127,12 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
+            API.shared.rankings(completionHandler: { (rankings) in
+                let dataModel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
+                self.push(menuModel: dataModel)
+            })
+            
+        case 1:
             let menuData = [("推荐歌曲",0),("推荐歌单",1)]
             var menuItems : [MenuItemModel] = []
             menuData.forEach {
@@ -135,30 +141,33 @@ class QSMusicController {
             }
             let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongOrList, items: menuItems, currentItemCode: 0)
             self.push(menuModel: dataModel)
-        case 1:
-            API.shared.rankings(completionHandler: { (rankings) in
-                let dataModel = QSMenuModel.init(title: "榜单", type: MenuType.Ranking, items: rankings, currentItemCode: 0)
-                self.push(menuModel: dataModel)
-            })
+
         case 2:
-            let models = generateListClassModels()
-            let dataModel = QSMenuModel.init(title: "歌单", type: MenuType.SongListFirstClass, items: models, currentItemCode: 0)
-            self.push(menuModel: dataModel)
-        case 3:
             self.menu?.showProgress()
             API.shared.artists { (artists) in
                 self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
+
+        case 3:
+            let models = generateListClassModels()
+            let dataModel = QSMenuModel.init(title: "歌单", type: MenuType.SongListFirstClass, items: models, currentItemCode: 0)
+            self.push(menuModel: dataModel)
+            
         case 4:
             API.shared.userList(completionHandler: { (models) in
-                let datamodel = QSMenuModel.init(title: "收藏", type: MenuType.SongLists, items: models, currentItemCode: 0)
-                self.push(menuModel: datamodel)
+                if models.count > 0 {
+                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    self.push(menuModel: dataModel)
+                } else {
+                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                }
             })
 
         case 5:
             self.handleSearchCommandKey()
+            
         case 6:
             let models = generateHelpModels()
             let menuModel = QSMenuModel.init(title: "帮助", type: MenuType.Help, items: models, currentItemCode: 0)
@@ -259,15 +268,15 @@ class QSMusicController {
         var models: [MenuItemModel] = []
         switch code {
         case 0:
-            models = generateSongListModelByLanguages()
+            models = generateSongListModels(type: .Languages)
         case 1:
-            models = generateSongListModelByStyle()
+            models = generateSongListModels(type: .Style)
         case 2:
-            models = generateSongListModelByScenario()
+            models = generateSongListModels(type: .Scenario)
         case 3:
-            models = generateSongListModelByEmotion()
+            models = generateSongListModels(type: .Emotion)
         case 4:
-            models = generateSongListModelByTheme()
+            models = generateSongListModels(type: .Theme)
         default :
             break
         }
@@ -421,7 +430,6 @@ class QSMusicController {
                 self.showHint(with: "添加失败↵", at: 14)
             }
         }
-
         
 //        API.shared.userList(completionHandler: { (models) in
 //            models.forEach {

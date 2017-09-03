@@ -354,8 +354,7 @@ public func generateSearchTypeModels(content:String) -> [SearchModel] {
 //帮助
 public func generateHelpModels() -> [MenuItemModel] {
 
-    let helpData = [
-                    "↑"+6.space+"上移动",
+    let helpData = ["↑"+6.space+"上移动",
                     "↓"+6.space+"下移动",
                     "←"+6.space+"上一页",
                     "→"+6.space+"下一页",
@@ -366,7 +365,7 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "."+6.space+"下一首",
                     "["+6.space+"音量-",
                     "]"+6.space+"音量+",
-//                    "a"+6.space+"添加到收藏",
+                    "a"+6.space+"添加到收藏",
                     "q"+6.space+"退出",
                     "w"+6.space+"退出且登出账户",
                     "s"+6.space+"搜索",
@@ -376,8 +375,7 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "h"+6.space+"隐藏dancer",
                     "1"+6.space+"单曲循环",
                     "2"+6.space+"顺序播放",
-                    "3"+6.space+"随机播放"
-                                       ]
+                    "3"+6.space+"随机播放"]
     var index : Int = 0
     var models : [MenuItemModel] = []
     helpData.forEach {
@@ -402,59 +400,32 @@ public func generateListClassModels() -> [MenuItemModel] {
     return models
 }
 
-public func generateSongListModelByLanguages() -> [MenuItemModel] {
-    let languages = ["华语","欧美","日语","韩语","粤语","小语种"]
-    var index : Int = 0
-    var models : [MenuItemModel] = []
-    languages.forEach {
-        let model = MenuItemModel.init(title: $0, code: index)
-        models.append(model)
-        index = index + 1
-    }
-    return models
+public enum ClassType: Int {
+    case Languages
+    case Style
+    case Scenario
+    case Emotion
+    case Theme
 }
 
-public func generateSongListModelByStyle() -> [MenuItemModel] {
-    let styles = ["流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","New Age","古风","后摇","Bossa Nova"]
-    var index : Int = 0
-    var models : [MenuItemModel] = []
-    styles.forEach {
-        let model = MenuItemModel.init(title: $0, code: index)
-        models.append(model)
-        index = index + 1
+public func generateSongListModels(type:ClassType) -> [MenuItemModel] {
+    var secondClassArr: [String] = []
+    switch type {
+    case .Languages:
+        secondClassArr = ["华语","欧美","日语","韩语","粤语","小语种"]
+    case .Style:
+        secondClassArr = ["流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","New Age","古风","后摇","Bossa Nova"]
+    case .Scenario:
+        secondClassArr = ["清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧"]
+    case .Emotion:
+        secondClassArr = ["怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念"]
+    case .Theme:
+        secondClassArr = ["影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
     }
-    return models
-}
-
-public func generateSongListModelByScenario() -> [MenuItemModel] {
-    let scenarioTypes = ["清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧"]
+    
     var index : Int = 0
     var models : [MenuItemModel] = []
-    scenarioTypes.forEach {
-        let model = MenuItemModel.init(title: $0, code: index)
-        models.append(model)
-        index = index + 1
-    }
-    return models
-}
-
-public func generateSongListModelByEmotion() -> [MenuItemModel] {
-    let emotionTypes = ["怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念"]
-    var index : Int = 0
-    var models : [MenuItemModel] = []
-    emotionTypes.forEach {
-        let model = MenuItemModel.init(title: $0, code: index)
-        models.append(model)
-        index = index + 1
-    }
-    return models
-}
-
-public func generateSongListModelByTheme() -> [MenuItemModel] {
-    let themeTypes = ["影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
-    var index : Int = 0
-    var models : [MenuItemModel] = []
-    themeTypes.forEach {
+    secondClassArr.forEach {
         let model = MenuItemModel.init(title: $0, code: index)
         models.append(model)
         index = index + 1

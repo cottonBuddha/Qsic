@@ -151,8 +151,8 @@ public let KEY_DOT: Int32 = 46
 /**
  相关设置的key
  */
-public let UD_POP_HINT = "UD_POP_HINT"
-public let UD_HIDE_DANCER = "UD_HIDE_DANCER"
+//public let UD_POP_HINT = "UD_POP_HINT"
+//public let UD_HIDE_DANCER = "UD_HIDE_DANCER"
 public let UD_USER_NICKNAME = "UD_USER_NICKNAME"
 public let UD_USER_ID = "UD_USER_ID"
 

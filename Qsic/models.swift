@@ -372,7 +372,7 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "d"+6.space+"登录",
                     "f"+6.space+"播放列表",
                     "g"+6.space+"可至github进行反馈，帮助Qsic变更好",
-                    "h"+6.space+"隐藏dancer",
+//                    "h"+6.space+"隐藏dancer",
                     "1"+6.space+"单曲循环",
                     "2"+6.space+"顺序播放",
                     "3"+6.space+"随机播放"]

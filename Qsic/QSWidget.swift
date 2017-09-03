@@ -45,7 +45,7 @@ class QSWidget {
     
     public func resize() {
         
-        //        resizeterm(Int32, Int32)
+//        resizeterm(Int32, Int32)
     }
     
     public func addSubWidget(widget:QSWidget) {

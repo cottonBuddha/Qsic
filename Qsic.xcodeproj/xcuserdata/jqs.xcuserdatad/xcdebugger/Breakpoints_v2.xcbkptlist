@@ -10,45 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Qsic/QSMenuWidget.swift"
-            timestampString = "525270657.244921"
+            timestampString = "526106209.114333"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "QSMenuWidget"
-            landmarkType = "3">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Qsic.QSMenuWidget.init (startX : Swift.Int, startY : Swift.Int, width : Swift.Int, dataModel : Qsic.QSMenuModel, selected : Swift.Optional&lt;(Swift.Int, Qsic.MenuItemModel) -&gt; ()&gt;) -&gt; Qsic.QSMenuWidget"
-                  moduleName = "Qsic"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
-                  timestampString = "526102175.39982"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "15"
-                  endingLineNumber = "15"
-                  offsetFromSymbolStart = "63">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Qsic.QSMenuWidget.__allocating_init (startX : Swift.Int, startY : Swift.Int, width : Swift.Int, dataModel : Qsic.QSMenuModel, selected : Swift.Optional&lt;(Swift.Int, Qsic.MenuItemModel) -&gt; ()&gt;) -&gt; Qsic.QSMenuWidget"
-                  moduleName = "Qsic"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jqs/an/Qsic/Qsic/QSMenuWidget.swift"
-                  timestampString = "526102175.403366"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0"
-                  offsetFromSymbolStart = "4">
-               </Location>
-            </Locations>
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "dataModel"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

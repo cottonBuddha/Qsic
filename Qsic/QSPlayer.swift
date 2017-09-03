@@ -163,8 +163,6 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func playSong(url:String) {
-//        DispatchQueue.main.async {
-
             if self.streamer != nil {
                 self.streamer?.stop()
                 self.streamer?.releaseStreamer()
@@ -175,7 +173,6 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             self.streamer?.setVolume(value: self.volumeValue)
             
             self.isPlaying = true
-//        }
     }
     
     
@@ -193,7 +190,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             }
             
         } else if playMode == .ShuffleCycle {
-//            currentIndex = (0..<urlDic.count).random
+            currentIndex = (0..<urlDic.count).random
         }
 
         return currentIndex

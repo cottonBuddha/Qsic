@@ -156,9 +156,11 @@ class QSMusicController {
             self.push(menuModel: dataModel)
             
         case 4:
+            self.menu?.showProgress()
             API.shared.userList(completionHandler: { (models) in
+                self.menu?.hideProgress()
                 if models.count > 0 {
-                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    let dataModel = QSMenuModel.init(title: "收藏", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
                     self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
@@ -223,7 +225,7 @@ class QSMusicController {
     
     func handleAlbumSelection(item:AlbumModel) {
         API.shared.getSongsOfAlbum(albumId: item.id) { (models) in
-            let dataModel = QSMenuModel.init(title: "歌曲", type: MenuType.Song, items: models, currentItemCode: 0)
+            let dataModel = QSMenuModel.init(title: item.name, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
     }

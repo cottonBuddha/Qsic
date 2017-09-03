@@ -28,7 +28,6 @@ class QSNaviTitleWidget: QSWidget {
     }
     
     func refreshNaviTitle() {
-
         drawWidget()
     }
     
@@ -36,13 +35,16 @@ class QSNaviTitleWidget: QSWidget {
         super.drawWidget()
         var naviStr : String = ""
         self.titleStack.forEach {
-            naviStr.append($0+"-")
+            if $0.lengthInCurses() > 20 {
+                naviStr.append("↴" + "\n" + "    " + $0)
+            } else {
+                naviStr.append("-" + $0)
+            }
         }
         if self.titleStack.count < 1 {
             return
         }
-        let index = naviStr.index(naviStr.endIndex, offsetBy: -1)
-        var subStr = naviStr.substring(to: index)
+        var subStr = naviStr.removeFirst()
         if currentSong != nil {
             subStr = subStr + "[\(currentSong!)]"
         }

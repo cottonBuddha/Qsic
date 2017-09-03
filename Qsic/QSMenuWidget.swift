@@ -11,23 +11,13 @@ import Darwin
 
 class QSMenuWidget : QSWidget,KeyEventProtocol {
 
-    
     var title : String = ""
-    
     var type : Int = 0
-    
-    var dataModel : QSMenuModel! {
-        didSet {
-            title = dataModel.title
-            type = dataModel.type
-            currentItemCode = dataModel.currentItemCode
-            splitItems = dataModel.items.split(num: dataModel.rowsNum)
-        }
-    }
-    
     var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
-    
     var progress: QSProgressWidget?
+    private var currentPageIndex : Int = 0
+    private var currentRowIndex : Int = 0
+    private var splitItems : [[MenuItemModel]] = []
     
     private var currentItemCode : Int = 0 {
         didSet {
@@ -39,10 +29,14 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
         }
     }
     
-    private var currentPageIndex : Int = 0
-    private var currentRowIndex : Int = 0
-    
-    private var splitItems : [[MenuItemModel]] = []
+    var dataModel : QSMenuModel! {
+        didSet {
+            title = dataModel.title
+            type = dataModel.type
+            currentItemCode = dataModel.currentItemCode
+            splitItems = dataModel.items.split(num: dataModel.rowsNum)
+        }
+    }
     
     public init(startX: Int, startY: Int, width: Int, dataModel: QSMenuModel, selected: ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?) {
         self.selected = selected
@@ -61,12 +55,11 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     }
 
     private func drawMenu() {
-        guard self.dataModel.items.count > 0 else {
-            return
+        if self.dataModel.items.count == 0 {
+            self.dataModel.items = [MenuItemModel.init(title: "什么都没有~ (°ー°〃)", code: 0)]
         }
         
         for index in 0..<self.splitItems[self.currentPageIndex].count {
-
 //            let bcolor = init_color(0, 1, 0, 0)
 //            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)

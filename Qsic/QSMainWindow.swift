@@ -24,7 +24,6 @@ class QSMainWindow: QSWidget {
 //        init_pair(2,Int16(COLOR_BLUE),Int16(COLOR_WHITE));
 //        init_pair(3,Int16(COLOR_RED),Int16(COLOR_CYAN));
 //        bkgd(3)
-
         curs_set(0)
         refresh()
     }

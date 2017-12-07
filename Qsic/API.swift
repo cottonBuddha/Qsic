@@ -64,7 +64,7 @@ class API {
         //分类歌单
         "songList" : "http://music.163.com/api/playlist/list",
         //歌单内容
-        "songListDetail" : "http://music.163.com/api/playlist/detail",
+        "songListDetail" : "https://music.163.com/weapi/v3/playlist/detail",
         //搜索
         "search" : "https://music.163.com/api/search/get",
         //用户歌单
@@ -102,10 +102,8 @@ class API {
     
     func POST(urlStr:String, params:[String:Any]?,encrypt:Bool = true, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) {
         let url : URL = URL.init(string: urlStr)!
-
         var request = URLRequest.init(url: url)
         request.allHTTPHeaderFields = self.headerDic
-
         request.httpMethod = "POST"
         
         if params == nil {
@@ -140,7 +138,6 @@ class API {
     
     //登录
     func login(account:String, password:String, completionHandler : @escaping (_ userNameAndId:(String,String))->()) {
-
         let url = self.urlDic["login"]
         if account.matchRegExp("^1[0-9]{10}$").count > 0 {
             phoneLogin(phoneNumber: account, password: password, completionHandler: completionHandler)
@@ -165,7 +162,6 @@ class API {
     
     //手机登录
     func phoneLogin(phoneNumber:String, password:String, completionHandler : @escaping (_ userNameAndId:(String,String))->()) {
-
         let url = self.urlDic["phoneLogin"]
         let passwordMD5 = CC.digest(password.data(using: String.Encoding.utf8)!, alg: .md5).hexString
         let loginfo = ["phone":phoneNumber,"password":passwordMD5,"rememberLogin":"true"]
@@ -224,6 +220,7 @@ class API {
             }
         }
         let params = ["limit":20, "csrf_token":csrf] as [String : Any]
+        
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongListsModels(data: data!)
             completionHandler(models)
@@ -244,7 +241,16 @@ class API {
     //歌单内容
     func songListDetail(listId:String, completionHandler : @escaping ([SongModel])->()) {
         let urlStr = self.urlDic["songListDetail"]
-        self.GET(urlStr: urlStr!, params: ["id":listId]) { (data, response, error) in
+        let phoneUrl = self.urlDic["phoneLogin"]
+        let cookies = HTTPCookieStorage.shared.cookies(for: URL.init(string: phoneUrl!)!)
+        var csrf = ""
+        cookies?.forEach {
+            if $0.name == "__csrf" {
+                csrf = $0.value
+            }
+        }
+        let params = ["total": true, "id":listId, "csrf_token":csrf] as [String : Any]
+        self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
@@ -263,7 +269,6 @@ class API {
         var idResultStr : String = ""
 
         self.GET(urlStr: rankingUrl!, params: ["id":rankingId]) { (data, response, error) in
-            
             let str = String.init(data: data!, encoding: String.Encoding.utf8)
             let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
             regResult?.forEach {
@@ -291,18 +296,19 @@ class API {
     func userList(completionHandler : @escaping ([SongListModel])->()) {
         let urlStr = self.urlDic["userList"]
         var userId = ""
+        let params = ["uid":userId, "limit":"100"]
         if let id = UserDefaults.standard.value(forKey: UD_USER_ID) as? String {
             userId = id
         }
-        let params = ["uid":userId, "limit":"100"]
+        
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongListsModels(data: data!)
             completionHandler(models)
         }
     }
     
+    //添加歌曲至我的歌单
     func addSongToMyList(tracks:String, pid:String ,completionHandler : @escaping (Bool)->()) {
-
         let urlStr = self.urlDic["addOrRm"]!
         let params = ["tracks":tracks, "pid":pid, "op":"add"]
         
@@ -317,6 +323,7 @@ class API {
         }
     }
     
+    //从我的歌单移除
     func rmSongFromMyList(tracks: String, pid:String ,completionHandler : @escaping (Bool)->()) {
         let urlStr = self.urlDic["addOrRm"]
         let params = ["op":"del", "pid":pid, "tracks":tracks]
@@ -330,9 +337,10 @@ class API {
         }
     }
 
-    
+    //喜欢
     func like(id:String, completionHandler : @escaping (Bool)->()) {
         let urlStr = self.urlDic["like"]
+        
         self.GET(urlStr: urlStr!, params: ["trackId":id, "like":"true"]) { (data, response, error) in
             let obj = data?.jsonObject() as! NSDictionary
             if obj["code"] as! NSNumber == 200 {
@@ -347,6 +355,7 @@ class API {
     func artists(completionHandler : @escaping ([ArtistModel])->()) {
         let urlStr = urlDic["artist"]
         let params = ["offset":"0","limit":"100"]
+        
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
 
             if data != nil {
@@ -361,6 +370,7 @@ class API {
     //歌手热门歌曲
     func getSongsOfArtist(artistId:String,completionHandler : @escaping ([SongModel])->()) {
         let urlStr = self.urlDic["songOfArtist"]! + "/" + artistId
+        
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
@@ -371,6 +381,7 @@ class API {
     func getAlbumsOfArtist(artistId:String, completionHandler : @escaping ([AlbumModel])->()) {
         let urlStr = self.urlDic["albumOfArtist"]! + "/" + artistId
         let params = ["offset":"0","limit":"100"]
+        
         self.GET(urlStr: urlStr, params: params) { (data, response, error) in
             let models = generateAlbumModels(data: data!)
             completionHandler(models)
@@ -380,6 +391,7 @@ class API {
     //专辑歌曲
     func getSongsOfAlbum(albumId:String,completionHandler : @escaping ([SongModel])->()) {
         let urlStr = self.urlDic["songsOfAlbum"]! + "/" + albumId
+        
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
             let models = generateSongModels(data:data!)
             completionHandler(models)
@@ -390,6 +402,7 @@ class API {
     func search(type:SearchType = .Song,content:String,completionHandler : @escaping (SearchType,[MenuItemModel])->()) {
         let urlStr = self.urlDic["search"];
         let params = ["s":content, "limit":"60", "type":"\(type.rawValue)", "offset":"0"] as [String : Any];
+        
         self.POST(urlStr: urlStr!, params: params ,encrypt: false) { (data, response, error) in
             var models : [MenuItemModel] = []
             switch type {
@@ -403,12 +416,13 @@ class API {
                 models = generateSongListsModels(data: data!)
             }
             completionHandler(type,models)
-            
         }
     }
     
+    //获取歌曲url
     func getSongUrl(id:String,completionHandler : @escaping (String?)->()) {
         let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
+        
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             //print(data?.jsonDic() ?? "jqs")
             if let dic = data?.jsonObject() as? NSDictionary {
@@ -419,11 +433,12 @@ class API {
         }
     }
     
+    //批获取
     func getSongUrls(ids:[String],completionHandler : @escaping ([String:String]?)->()) {
         let idsStr = "[" + ids.joined(separator: ",") + "]"
         let params = ["br": 128000, "csrf_token":"", "ids":idsStr] as [String : Any]
+        
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
-
             var idAndUrlPairs : [String:String] = [:]
             if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
@@ -486,7 +501,6 @@ class API {
     //AES加密(pass)
     func aesEncrypt(content:String, secKey:String) -> String?{
         let iv = "0102030405060708".data(using: String.Encoding.utf8)
-        
         let data = try? CC.crypt(.encrypt, blockMode: .cbc, algorithm: .aes, padding: .pkcs7Padding, data: content.data(using: String.Encoding.utf8)!, key: secKey.data(using: String.Encoding.utf8)!, iv: iv!)
         
         if data != nil {
@@ -532,24 +546,19 @@ class API {
     private func escape(_ string: String) -> String {
         let generalDelimitersToEncode = ":#[]@"
         let subDelimitersToEncode = "!$&'()*+,;="
-        
+        let batchSize = 50
+
         var allowedCharacterSet = CharacterSet.urlQueryAllowed
         allowedCharacterSet.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
-        
         var escaped = ""
-        
-        let batchSize = 50
         var index = string.startIndex
         
         while index != string.endIndex {
             let startIndex = index
             let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? string.endIndex
             let range = startIndex..<endIndex
-            
             let substring = string.substring(with: range)
-            
             escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
-            
             index = endIndex
         }
         
@@ -559,7 +568,6 @@ class API {
     func clearLoginCookie(completionHandler:()->()) {
         let phoneUrl = self.urlDic["phoneLogin"]
         let loginUrl = self.urlDic["login"]
-
         let cookies0 = HTTPCookieStorage.shared.cookies(for: URL.init(string: phoneUrl!)!)
         let cookies1 = HTTPCookieStorage.shared.cookies(for: URL.init(string: loginUrl!)!)
         

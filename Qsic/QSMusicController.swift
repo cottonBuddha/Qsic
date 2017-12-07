@@ -23,8 +23,6 @@ enum MenuType: Int {
     case SongListFirstClass
     case SongListSecondClass
     case SongLists
-    case AddToMyList
-    
 }
 
 public protocol KeyEventProtocol {
@@ -110,8 +108,6 @@ class QSMusicController {
                     self.handleSongListSecondClassSelection(item: item)
                 case MenuType.SongLists:
                     self.handleSongListsSelection(item: item as! SongListModel)
-//                case MenuType.AddToMyList:
-//                    self.handleAddToMyListSelection(item: item as! SongListModel)
                 case MenuType.SongOrList:
                     self.handleSongOrListSelection(item: item)
                 default:
@@ -163,7 +159,7 @@ class QSMusicController {
                     let dataModel = QSMenuModel.init(title: "收藏", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
                 }
             })
 
@@ -432,14 +428,6 @@ class QSMusicController {
                 self.showHint(with: "添加失败↵", at: 14)
             }
         }
-        
-//        API.shared.userList(completionHandler: { (models) in
-//            models.forEach {
-//                $0.idOfTheSongShouldBeAdded = (lastMenu?.items[lastMenu!.currentItemCode] as! SongModel).id
-//            }
-//            let datamodel = QSMenuModel.init(title: "收藏", type: MenuType.AddToMyList, items: models, currentItemCode: 0)
-//            self.push(menuModel: datamodel)
-//        })
     }
     
     @objc func listenToInstructions() {
@@ -489,7 +477,6 @@ class QSMusicController {
     }
     
     func handleWithKeyEvent(keyCode:Int32) {
-        
         if menu?.progress != nil, menu!.progress!.isLoading {
             return
         }
@@ -527,8 +514,8 @@ class QSMusicController {
         }
     }
     
-    var contentLength = 0
-    var lineNum = 0
+    private var contentLength = 0
+    private var lineNum = 0
     func showHint(with content: String, at lineNum: Int) {
         isHintOn = true
         contentLength = content.lengthInCurses()

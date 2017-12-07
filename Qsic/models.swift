@@ -100,7 +100,6 @@ public class SongModel:MenuItemModel {
 }
 
 public func generateSongModels(data:Data) -> [SongModel] {
-   
     var songArr : NSArray = []
     var songModels : [SongModel] = []
 
@@ -112,10 +111,10 @@ public func generateSongModels(data:Data) -> [SongModel] {
         } else if let albumDic = dic["album"] as? [String:Any] {
             songArr = albumDic["songs"] as! NSArray
         } else if let arr = dic["recommend"] as? NSArray {
-            songArr = arr//这里的dic命名,包括jsondic方法，要改一下
-        } else if let arr = (dic["result"] as? NSDictionary)?["songs"] as? NSArray {
             songArr = arr
-        } else if let arr = (dic["result"] as? NSDictionary)?["tracks"] as? NSArray {
+        } else if let arr = (dic["playlist"] as? NSDictionary)?["songs"] as? NSArray {
+            songArr = arr
+        } else if let arr = (dic["playlist"] as? NSDictionary)?["tracks"] as? NSArray {
             songArr = arr
         }
     }
@@ -353,7 +352,6 @@ public func generateSearchTypeModels(content:String) -> [SearchModel] {
 
 //帮助
 public func generateHelpModels() -> [MenuItemModel] {
-
     let helpData = ["↑"+6.space+"上移动",
                     "↓"+6.space+"下移动",
                     "←"+6.space+"上一页",

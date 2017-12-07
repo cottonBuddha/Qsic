@@ -64,23 +64,21 @@ class QSProgressWidget: QSWidget  {
     }
     
     func pause() {
-//        DispatchQueue.main.async {
-            self.isLoading = false
-            let type:ProgressType = self.progressType
-            var item = "[PAUSE]"
-            switch type {
-            case .Dance:
-                item = "╭(￣３￣)╯"
-            default: break
-                
-            }
-            if self.timer != nil {
-                self.end()
-            }
-            self.eraseSelf()
-            mvwaddstr(self.window, 0, 0, item)
-            wrefresh(self.window)
-//        }
+        self.isLoading = false
+        let type:ProgressType = self.progressType
+        var item = "[PAUSE]"
+        switch type {
+        case .Dance:
+            item = "╭(￣３￣)╯"
+        default: break
+            
+        }
+        if self.timer != nil {
+            self.end()
+        }
+        self.eraseSelf()
+        mvwaddstr(self.window, 0, 0, item)
+        wrefresh(self.window)
     }
 
     private func play(type:ProgressType) {

@@ -12,10 +12,6 @@ typealias QRange = (Int,Int)
 
 extension String {
     
-    var count : Int {
-        return self.characters.count
-    }
-    
     var upper : String {
         return self.uppercased()
     }
@@ -25,11 +21,11 @@ extension String {
     }
     
     func removeLast() -> String {
-        return self.subStr(range: (0,self.characters.count - 1))
+        return self.subStr(range: (0,self.count - 1))
     }
     
     func removeFirst() -> String {
-        return self.subStr(range: (1,self.characters.count))
+        return self.subStr(range: (1,self.count))
     }
     
     func subStr(range:QRange) -> String{
@@ -42,7 +38,7 @@ extension String {
     
     func matchRegExp(_ pattern:String) -> [String] {
         let regular = try! NSRegularExpression.init(pattern: pattern, options: .caseInsensitive)
-        let result = regular.matches(in: self, options: .reportProgress, range: NSMakeRange(0, self.characters.count))
+        let result = regular.matches(in: self, options: .reportProgress, range: NSMakeRange(0, self.count))
         var resultStr : [String] = []
         result.forEach {
             let range = self.range(from: $0.range)
@@ -64,13 +60,13 @@ extension String {
     
     func lengthInCurses() -> Int {
         
-        guard self.characters.count > 0 else {return 0}
+        guard self.count > 0 else {return 0}
         
         var number = 0
-        for i in 0...self.characters.count - 1 {
+        for i in 0...self.count - 1 {
             let c: unichar = (self as NSString).character(at: i)
             
-            if (c >= 0x4E00) {
+            if (c >= 0x00A4) {
                 number += 2
             }else {
                 number += 1

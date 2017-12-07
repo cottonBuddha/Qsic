@@ -9,12 +9,12 @@
 import Foundation
 import Darwin
 
-class QSMenuWidget : QSWidget,KeyEventProtocol {
+class QSMenuWidget: QSWidget,KeyEventProtocol {
 
     var title : String = ""
     var type : Int = 0
     var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
-    var progress: QSProgressWidget?
+    var progress : QSProgressWidget?
     private var currentPageIndex : Int = 0
     private var currentRowIndex : Int = 0
     private var splitItems : [[MenuItemModel]] = []
@@ -55,7 +55,7 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     }
 
     private func drawMenu() {
-        if self.dataModel.items.count == 0 {
+        if (self.dataModel.items.count == 0) || (self.dataModel == nil) {
             self.dataModel.items = [MenuItemModel.init(title: "什么都没有~ (°ー°〃)", code: 0)]
         }
         
@@ -64,7 +64,6 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
 //            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
-            
         }
     }
     
@@ -123,7 +122,7 @@ class QSMenuWidget : QSWidget,KeyEventProtocol {
     func showProgress() {
         guard progress == nil else { return }
         let startX = self.dataModel.items[self.currentItemCode].title.lengthInCurses()
-        progress = QSProgressWidget.init(startX: startX, startY: self.currentItemCode, type: .FireFly)
+        progress = QSProgressWidget.init(startX: startX, startY: self.currentRowIndex, type: .FireFly)
         self.addSubWidget(widget: progress!)
         progress!.load()
     }

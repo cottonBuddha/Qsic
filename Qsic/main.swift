@@ -8,13 +8,6 @@
 
 import Foundation
 
-//QSMusicController().start()
-
-API.shared.songListDetail(listId: "1992534206") { models in
-
-    print(models)
-}
-
-RunLoop.main.run()
+QSMusicController().start()
 
 

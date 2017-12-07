@@ -249,12 +249,22 @@ class API {
                 csrf = $0.value
             }
         }
-        let params = ["total": true, "id":listId, "csrf_token":csrf] as [String : Any]
+
+        let params = ["id":listId, "total": "true", "csrf_token":csrf, "limit": 1000, "n": 1000, "offset": 0] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
     }
+    
+//    //歌单内容
+//    func songListDetail(listId:String, completionHandler : @escaping ([SongModel])->()) {
+//        let urlStr = self.urlDic["songListDetail"]
+//        self.GET(urlStr: urlStr!, params: ["id":listId]) { (data, response, error) in
+//            let models = generateSongModels(data: data!)
+//            completionHandler(models)
+//        }
+//    }
     
     //榜单
     func rankings(completionHandler : @escaping ([RankingModel])->()) {
@@ -513,7 +523,7 @@ class API {
     //RSA加密(pass)
     func rsaEncrypt(content:String, pubKey:String, modulus:String) -> String?{
         let radix = 16
-        let rText = String.init(content.characters.reversed())
+        let rText = String.init(content.reversed())
         let biText = BInt.init(number: (rText.data(using: String.Encoding.utf8)?.hexString)!, withBase: radix)
         let biEx = BInt.init(number: pubKey, withBase: radix)
         let biMod = BInt.init(number: modulus, withBase: radix)
@@ -525,8 +535,8 @@ class API {
     
     
     private func addPadding(encText:String, modulus:String) -> String {
-        var ml = modulus.characters.count
-        for char in modulus.characters {
+        var ml = modulus.count
+        for char in modulus {
             if char == "0" {
                 ml = ml - 1
             } else {
@@ -534,7 +544,7 @@ class API {
             }
         }
         
-        let num = ml - encText.characters.count
+        let num = ml - encText.count
         var prefix = ""
         (0..<num).forEach { (num) in
             prefix.append(Character.init("0"))

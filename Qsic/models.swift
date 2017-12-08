@@ -112,7 +112,9 @@ public func generateSongModels(data:Data) -> [SongModel] {
             songArr = albumDic["songs"] as! NSArray
         } else if let arr = dic["recommend"] as? NSArray {
             songArr = arr
-        } else if let arr = (dic["playlist"] as? NSDictionary)?["songs"] as? NSArray {
+        } else if let arr = (dic["result"] as? NSDictionary)?["songs"] as? NSArray {
+            songArr = arr
+        } else if let arr = (dic["result"] as? NSDictionary)?["tracks"] as? NSArray {
             songArr = arr
         } else if let arr = (dic["playlist"] as? NSDictionary)?["tracks"] as? NSArray {
             songArr = arr
@@ -367,7 +369,7 @@ public func generateHelpModels() -> [MenuItemModel] {
                     "q"+6.space+"退出",
                     "w"+6.space+"退出且登出账户",
                     "s"+6.space+"搜索",
-                    "d"+6.space+"登录",
+                    "d"+6.space+"登录(仅支持手机号登录)",
                     "f"+6.space+"播放列表",
                     "g"+6.space+"可至github进行反馈，帮助Qsic变更好",
 //                    "h"+6.space+"隐藏dancer",

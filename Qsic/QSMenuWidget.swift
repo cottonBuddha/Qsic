@@ -55,15 +55,15 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
     }
 
     private func drawMenu() {
-        if (self.dataModel.items.count == 0) || (self.dataModel == nil) {
-            self.dataModel.items = [MenuItemModel.init(title: "什么都没有~ (°ー°〃)", code: 0)]
-        }
-        
         for index in 0..<self.splitItems[self.currentPageIndex].count {
 //            let bcolor = init_color(0, 1, 0, 0)
 //            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
+        }
+        
+        if (self.dataModel.items.count == 0) || (self.dataModel == nil) {
+            mvwaddstr(self.window, 0, 0, "什么都没有~ (°ー°〃)")
         }
     }
     
@@ -101,7 +101,7 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
             self.currentItemCode = nextPageIndex * self.dataModel.rowsNum
             self.refreshMenu()
         case CMD_ENTER:
-            if self.selected != nil {
+            if self.selected != nil && self.dataModel != nil && self.dataModel.items.count != 0 {
                 self.selected!(self.type, self.dataModel.items[self.currentItemCode])
             }
 //        case CMD_PLAY_PREVIOUS.0, CMD_PLAY_PREVIOUS.1:

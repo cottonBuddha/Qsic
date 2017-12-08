@@ -120,12 +120,7 @@ class API {
                 request.httpBody = nil
             }
         } else {
-            
-            do {
-                request.httpBody = self.dicToBodyData(dic: params as! [String : String])
-            } catch {
-                
-            }
+            request.httpBody = self.dicToBodyData(dic: params as! [String : String])
         }
 
         let session = URLSession.shared

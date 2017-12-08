@@ -43,7 +43,6 @@ class QSMusicController {
     var mainwin : QSMainWindow = QSMainWindow.init()
 
     func start() {
-        
         self.menu = self.initHomeMenu()
         self.mainwin.addSubWidget(widget: self.menu!)
         
@@ -159,7 +158,7 @@ class QSMusicController {
                     let dataModel = QSMenuModel.init(title: "收藏", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
                 }
             })
 
@@ -324,7 +323,7 @@ class QSMusicController {
                     let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
                 }
             })
         case 1:
@@ -335,7 +334,7 @@ class QSMusicController {
                     let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
                 }
             })
         default:

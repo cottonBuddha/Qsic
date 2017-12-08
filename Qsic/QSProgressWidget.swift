@@ -9,7 +9,7 @@
 import Foundation
 enum ProgressType: Int {
     case MKBar
-    case Dance
+    case Dancer
     case FireFly
     case Ing
 }
@@ -30,7 +30,7 @@ class QSProgressWidget: QSWidget  {
         switch type {
         case .MKBar , .FireFly:
             width = 1
-        case .Dance:
+        case .Dancer:
             width = 14
         case .Ing:
             width = 4
@@ -68,7 +68,7 @@ class QSProgressWidget: QSWidget  {
         let type:ProgressType = self.progressType
         var item = "[PAUSE]"
         switch type {
-        case .Dance:
+        case .Dancer:
             item = "╭(￣３￣)╯"
         default: break
             
@@ -89,7 +89,7 @@ class QSProgressWidget: QSWidget  {
         case .MKBar:
             timeInterval = 0.13
             items = bars
-        case .Dance:
+        case .Dancer:
             timeInterval = 0.5
             items = faces
         case .FireFly:

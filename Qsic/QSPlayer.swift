@@ -57,7 +57,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     private override init() {
         super.init()
-        dancer = QSProgressWidget.init(startX: 0, startY: 0, type: .Dance)
+        dancer = QSProgressWidget.init(startX: 0, startY: 0, type: .Dancer)
     }
     
     func play(songList:[SongModel]) {
@@ -75,7 +75,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyyMMddHHmmss"
             let deadTimeStr = url.components(separatedBy: "/")[3]
-            guard deadTimeStr.characters.count == 14 else { return }
+            guard deadTimeStr.count == 14 else { return }
             let deadTime = dateFormatter.date(from: deadTimeStr)
             let currentTime = Date.init()
             let result = deadTime?.compare(currentTime)

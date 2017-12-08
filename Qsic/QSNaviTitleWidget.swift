@@ -44,7 +44,7 @@ class QSNaviTitleWidget: QSWidget {
         if self.titleStack.count < 1 {
             return
         }
-        var subStr = naviStr.removeFirst()
+        var subStr = naviStr.removeFirstCharacter()
         if currentSong != nil {
             subStr = subStr + "[\(currentSong!)]"
         }

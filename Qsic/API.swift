@@ -267,8 +267,8 @@ class API {
         completionHandler(models)
     }
     
+    //榜单歌曲列表（已不用，改用songListDetail了）
     func songDetail(rankingId:String, completionHandler : @escaping ([SongModel])->()) {
-//        print(Thread.current)
         let rankingUrl = urlDic["ranking"]
         let detailUrl = urlDic["songDetail"]
         var idResultStr : String = ""
@@ -278,12 +278,12 @@ class API {
             let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
             regResult?.forEach {
                 let index = $0.index($0.startIndex, offsetBy: 9)
-                let subStr = $0.substring(from: index)
+                let subStr = String($0[index...])
                 idResultStr.append(subStr + ",")
             }
             
             let index = idResultStr.index(idResultStr.endIndex, offsetBy: -1)
-            idResultStr = idResultStr.substring(to: index)
+            idResultStr = String(idResultStr[..<index])
             let params = ["ids":"[\(idResultStr)]"]
             
             self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
@@ -522,9 +522,9 @@ class API {
         let biText = BInt.init(number: (rText.data(using: String.Encoding.utf8)?.hexString)!, withBase: radix)
         let biEx = BInt.init(number: pubKey, withBase: radix)
         let biMod = BInt.init(number: modulus, withBase: radix)
-        let biRet = mod_exp(biText, biEx, biMod)
+        let biRet = BIntMath.mod_exp(biText, biEx, biMod)
         let encText = biRet.hex
-        
+                
         return addPadding(encText: encText, modulus: modulus)
     }
     
@@ -561,9 +561,8 @@ class API {
         while index != string.endIndex {
             let startIndex = index
             let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? string.endIndex
-            let range = startIndex..<endIndex
-            let substring = string.substring(with: range)
-            escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
+            let subString = String(string[startIndex..<endIndex])
+            escaped += subString.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? subString
             index = endIndex
         }
         

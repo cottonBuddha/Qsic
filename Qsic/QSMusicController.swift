@@ -211,7 +211,7 @@ class QSMusicController {
     
     func handleRankingSelection(item:RankingModel) {
         self.menu?.showProgress()
-        API.shared.songDetail(rankingId: item.id) { [unowned self] (models) in
+        API.shared.songListDetail(listId: item.id) { [unowned self] (models) in
             self.menu?.hideProgress()
             let dataModel = QSMenuModel.init(title: item.title, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
@@ -282,7 +282,6 @@ class QSMusicController {
     }
     
     func handleSongListSecondClassSelection(item:MenuItemModel) {
-        //to do API
         self.menu?.showProgress()
         API.shared.songlists(type: item.title) { [unowned self] (models) in
             self.menu?.hideProgress()

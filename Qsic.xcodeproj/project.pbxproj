@@ -22,13 +22,10 @@
 		43DA4BF51F3217040038B39D /* QSLoginWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DA4BF41F3217040038B39D /* QSLoginWidget.swift */; };
 		FC2276511F22049A009F4C94 /* QSNaviTitleWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2276501F22049A009F4C94 /* QSNaviTitleWidget.swift */; };
 		FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */; };
-		FC5DA8BD1F2040B4000485DA /* MG Basic Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8B61F2040B4000485DA /* MG Basic Math.swift */; };
-		FC5DA8BE1F2040B4000485DA /* MG Benchmark Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8B71F2040B4000485DA /* MG Benchmark Tools.swift */; };
-		FC5DA8BF1F2040B4000485DA /* SMP Bignum Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8B81F2040B4000485DA /* SMP Bignum Extensions.swift */; };
-		FC5DA8C01F2040B4000485DA /* SMP Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8B91F2040B4000485DA /* SMP Core.swift */; };
-		FC5DA8C11F2040B4000485DA /* SMP String Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8BA1F2040B4000485DA /* SMP String Module.swift */; };
 		FC5DA8C21F2040B4000485DA /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA8BC1F2040B4000485DA /* SwCrypt.swift */; };
 		FC68BAEE1F452C1400D71C5E /* QSAudioStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC68BAED1F452C1400D71C5E /* QSAudioStreamer.swift */; };
+		FC8436281FDA61A90043FC98 /* SMP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8436271FDA61A90043FC98 /* SMP.swift */; };
+		FC84362A1FDA63540043FC98 /* SMP Bignum Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8436291FDA63540043FC98 /* SMP Bignum Extensions.swift */; };
 		FCE294701F1C70A100097942 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE2946F1F1C70A100097942 /* extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,13 +58,10 @@
 		43DA4BF41F3217040038B39D /* QSLoginWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSLoginWidget.swift; sourceTree = "<group>"; };
 		FC2276501F22049A009F4C94 /* QSNaviTitleWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSNaviTitleWidget.swift; sourceTree = "<group>"; };
 		FC4B2C541F161E5B001ED9B9 /* QSMusicController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSMusicController.swift; sourceTree = "<group>"; };
-		FC5DA8B61F2040B4000485DA /* MG Basic Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MG Basic Math.swift"; sourceTree = "<group>"; };
-		FC5DA8B71F2040B4000485DA /* MG Benchmark Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MG Benchmark Tools.swift"; sourceTree = "<group>"; };
-		FC5DA8B81F2040B4000485DA /* SMP Bignum Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SMP Bignum Extensions.swift"; sourceTree = "<group>"; };
-		FC5DA8B91F2040B4000485DA /* SMP Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SMP Core.swift"; sourceTree = "<group>"; };
-		FC5DA8BA1F2040B4000485DA /* SMP String Module.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SMP String Module.swift"; sourceTree = "<group>"; };
 		FC5DA8BC1F2040B4000485DA /* SwCrypt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwCrypt.swift; sourceTree = "<group>"; };
 		FC68BAED1F452C1400D71C5E /* QSAudioStreamer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QSAudioStreamer.swift; sourceTree = "<group>"; };
+		FC8436271FDA61A90043FC98 /* SMP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SMP.swift; sourceTree = "<group>"; };
+		FC8436291FDA63540043FC98 /* SMP Bignum Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SMP Bignum Extensions.swift"; sourceTree = "<group>"; };
 		FCE2946F1F1C70A100097942 /* extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,7 +113,7 @@
 				FCE2946F1F1C70A100097942 /* extension.swift */,
 				43490B3B1F1FAC6E0034281B /* models.swift */,
 				43640F111F528A1000A8B088 /* config.swift */,
-				FC5DA8B51F2040B4000485DA /* SMP */,
+				FC84361C1FDA61660043FC98 /* SMP */,
 				FC5DA8BB1F2040B4000485DA /* SwCrypt */,
 			);
 			path = Qsic;
@@ -133,24 +127,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		FC5DA8B51F2040B4000485DA /* SMP */ = {
-			isa = PBXGroup;
-			children = (
-				FC5DA8B61F2040B4000485DA /* MG Basic Math.swift */,
-				FC5DA8B71F2040B4000485DA /* MG Benchmark Tools.swift */,
-				FC5DA8B81F2040B4000485DA /* SMP Bignum Extensions.swift */,
-				FC5DA8B91F2040B4000485DA /* SMP Core.swift */,
-				FC5DA8BA1F2040B4000485DA /* SMP String Module.swift */,
-			);
-			path = SMP;
-			sourceTree = "<group>";
-		};
 		FC5DA8BB1F2040B4000485DA /* SwCrypt */ = {
 			isa = PBXGroup;
 			children = (
 				FC5DA8BC1F2040B4000485DA /* SwCrypt.swift */,
 			);
 			path = SwCrypt;
+			sourceTree = "<group>";
+		};
+		FC84361C1FDA61660043FC98 /* SMP */ = {
+			isa = PBXGroup;
+			children = (
+				FC8436271FDA61A90043FC98 /* SMP.swift */,
+				FC8436291FDA63540043FC98 /* SMP Bignum Extensions.swift */,
+			);
+			path = SMP;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,12 +171,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = cottonBuddha;
 				TargetAttributes = {
 					43CBD4CD1F0FD97A005D6766 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -220,20 +211,17 @@
 				FC68BAEE1F452C1400D71C5E /* QSAudioStreamer.swift in Sources */,
 				43DA4BF51F3217040038B39D /* QSLoginWidget.swift in Sources */,
 				FCE294701F1C70A100097942 /* extension.swift in Sources */,
+				FC8436281FDA61A90043FC98 /* SMP.swift in Sources */,
 				43490B3E1F23AC600034281B /* QSPlayer.swift in Sources */,
 				FC5DA8C21F2040B4000485DA /* SwCrypt.swift in Sources */,
 				43D7178F1F4EFDCE0035A7D6 /* QSProgressWidget.swift in Sources */,
 				43CBD4D21F0FD97A005D6766 /* main.swift in Sources */,
-				FC5DA8BD1F2040B4000485DA /* MG Basic Math.swift in Sources */,
 				FC4B2C551F161E5B001ED9B9 /* QSMusicController.swift in Sources */,
+				FC84362A1FDA63540043FC98 /* SMP Bignum Extensions.swift in Sources */,
 				43CBD4DF1F114322005D6766 /* QSMainWindow.swift in Sources */,
-				FC5DA8C01F2040B4000485DA /* SMP Core.swift in Sources */,
 				FC2276511F22049A009F4C94 /* QSNaviTitleWidget.swift in Sources */,
 				43490B3C1F1FAC6E0034281B /* models.swift in Sources */,
-				FC5DA8BF1F2040B4000485DA /* SMP Bignum Extensions.swift in Sources */,
 				43CBD4E81F1B665E005D6766 /* API.swift in Sources */,
-				FC5DA8C11F2040B4000485DA /* SMP String Module.swift in Sources */,
-				FC5DA8BE1F2040B4000485DA /* MG Benchmark Tools.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +237,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -257,7 +247,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -285,6 +279,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -297,7 +292,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -305,7 +302,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -325,6 +326,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -335,7 +338,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -345,7 +349,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

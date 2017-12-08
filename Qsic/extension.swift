@@ -20,19 +20,18 @@ extension String {
         return self.lowercased()
     }
     
-    func removeLast() -> String {
+    func removeLastCharacter() -> String {
         return self.subStr(range: (0,self.count - 1))
     }
     
-    func removeFirst() -> String {
+    func removeFirstCharacter() -> String {
         return self.subStr(range: (1,self.count))
     }
     
     func subStr(range:QRange) -> String{
         let lowerIndex = self.index(self.startIndex, offsetBy: range.0)
         let upperIndex = self.index(self.startIndex, offsetBy: range.1)
-        let range:Range = Range.init(uncheckedBounds: (lower: lowerIndex, upper: upperIndex))
-        return self.substring(with: range)
+        return String(self[lowerIndex..<upperIndex])
     }
 
     
@@ -43,6 +42,7 @@ extension String {
         result.forEach {
             let range = self.range(from: $0.range)
             let str = self.substring(with: range!)
+//            let str = String(self[range...])
             resultStr.append(str)
         }
         return resultStr

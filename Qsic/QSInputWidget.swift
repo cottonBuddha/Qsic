@@ -32,14 +32,14 @@ class QSInputWidget: QSWidget {
                 if ic == CMD_ENTER { break }
                 let str = String(ic,radix:2)
                 if str.hasPrefix("1110") && str.count == 8 {
-                    icStrArr.append(str.subStr(range: (4,str.characters.count)))
+                    icStrArr.append(str.subStr(range: (4,str.count)))
                     icStrCount = 3
                     continue
                 }
                 
                 if str.hasPrefix("10") && icStrArr.count > 0 {
                     if icStrArr.count < icStrCount {
-                        icStrArr.append(str.subStr(range: (2,str.characters.count)))
+                        icStrArr.append(str.subStr(range: (2,str.count)))
                     }
                     if icStrArr.count == icStrCount {
                         var icStr : String = ""
@@ -60,7 +60,7 @@ class QSInputWidget: QSWidget {
                 
             } else {
                 if content.count > 0 {
-                    content = content.subStr(range: (0,content.characters.count - 1))
+                    content = content.subStr(range: (0,content.count - 1))
                 }
                 let cStrArr = content.cString(using: String.Encoding.utf8)
                 let str = String.init(cString: cStrArr!)

@@ -301,11 +301,10 @@ class API {
     func userList(completionHandler : @escaping ([SongListModel])->()) {
         let urlStr = self.urlDic["userList"]
         var userId = ""
-        let params = ["uid":userId, "limit":"100"]
         if let id = UserDefaults.standard.value(forKey: UD_USER_ID) as? String {
             userId = id
         }
-        
+        let params = ["uid":userId, "limit":"100"]
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
             let models = generateSongListsModels(data: data!)
             completionHandler(models)

@@ -34,7 +34,6 @@ extension String {
         return String(self[lowerIndex..<upperIndex])
     }
 
-    
     func matchRegExp(_ pattern:String) -> [String] {
         let regular = try! NSRegularExpression.init(pattern: pattern, options: .caseInsensitive)
         let result = regular.matches(in: self, options: .reportProgress, range: NSMakeRange(0, self.count))
@@ -156,4 +155,62 @@ extension CountableRange where Bound == Int {
 
 }
 
+extension Dictionary where Key == String {
+    
+    func getString(key: String) -> String {
+        if let str = self[key] as? String {
+            return str
+        }
+        return ""
+    }
+    
+    func optString(key: String) -> String? {
+        if let str = self[key] as? String {
+            return str
+        }
+        return nil
+    }
+    
+    func getNumber(key: String) -> NSNumber {
+        if let num = self[key] as? NSNumber {
+            return num
+        }
+        return 0
+    }
+    
+    func optNumber(key: String) -> NSNumber? {
+        if let num = self[key] as? NSNumber {
+            return num
+        }
+        return nil
+    }
+    
+    func getDictionary(key: String) -> Dictionary {
+        if let dic = self[key] as? Dictionary {
+            return dic
+        }
+        return [:]
+    }
+    
+    func optDictionary(key: String) -> Dictionary? {
+        if let dic = self[key] as? Dictionary {
+            return dic
+        }
+        return nil
+    }
+    
+    func getArray(key: String) -> Array<Any> {
+        if let arr = self[key] as? Array<Any> {
+            return arr
+        }
+        return []
+    }
+    
+    func optArray(key: String) -> Array<Any>? {
+        if let arr = self[key] as? Array<Any> {
+            return arr
+        }
+        return nil
+    }
+}
 

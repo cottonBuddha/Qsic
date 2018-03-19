@@ -32,7 +32,6 @@ class QSLoginWidget: QSWidget {
     }
     
     func getInputContent(completionHandler:(String,String)->()) {
-        
         accountInput = QSInputWidget.init(startX: 6, startY: 1, width: 40, height: 1)
         self.addSubWidget(widget: accountInput!)
         let account = accountInput?.input()

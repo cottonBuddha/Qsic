@@ -42,6 +42,7 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         self.selected = selected
         super.init(startX: startX, startY: startY, width: width, height: dataModel.rowsNum)
         self.setUpMenu(dataModel: dataModel)
+        NotificationCenter.default.addObserver(self, selector: #selector(QSMenuWidget.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
     }
     
     private func setUpMenu(dataModel:QSMenuModel) {
@@ -79,12 +80,12 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         self.drawWidget()
     }
     
-    func handleWithKeyEvent(keyCode:Int32) {
+    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
         
         if progress != nil, progress!.isLoading {
             return
         }
-        
+        let keyCode = keyEventNoti.object as! Int32
         switch keyCode {
         case CMD_UP:
             self.currentItemCode = self.currentItemCode - 1
@@ -132,6 +133,10 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         progress!.end()
         self.removeSubWidget(widget: progress!)
         progress = nil
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
 }

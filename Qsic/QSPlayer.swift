@@ -58,6 +58,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     private override init() {
         super.init()
         dancer = QSProgressWidget.init(startX: 0, startY: 0, type: .Dancer)
+        NotificationCenter.default.addObserver(self, selector: #selector(QSPlayer.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
     }
     
     func play(songList:[SongModel]) {
@@ -213,8 +214,10 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
 //        print(error)
     }
     
-    func handleWithKeyEvent(keyCode:Int32) {
+    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
         guard self.songList.count > 0 else { return }
+        let keyCode = keyEventNoti.object as! Int32
+
         switch keyCode {
         case CMD_PLAY_PAUSE:
             guard songList.count > 0 else { return }
@@ -240,5 +243,9 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         default:
             break
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

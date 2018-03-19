@@ -11,23 +11,25 @@ import Darwin
 
 enum MenuType: Int {
     case Home
-    case Artist
     case Song
-    case Album
-    case SongOrAlbum
-    case SongOrList
-    case Ranking
-    case Search
     case Help
+    case Album
+    case Artist
+    case Search
+    case Ranking
     case PlayList
+    case SongLists
+    case SongOrList
+    case SongOrAlbum
     case SongListFirstClass
     case SongListSecondClass
-    case SongLists
 }
 
 public protocol KeyEventProtocol {
-    func handleWithKeyEvent(keyCode:Int32)
+    func handleWithKeyEvent(keyEventNoti: Notification)
 }
+
+let kNotificationKeyEvent = "NotificationKeyEvent"
 
 class QSMusicController {
     
@@ -57,8 +59,13 @@ class QSMusicController {
         self.mainwin.addSubWidget(widget: player.dancer!)
         
         NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.songChanged), name:Notification.Name(rawValue: kNotificationSongHasChanged), object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
+
         RunLoop.main.run()
+    }
+    
+    @objc func hahah(keyCode:Notification) {
+        print("看一看瞧一瞧：\(String(describing: keyCode.object))")
     }
     
     func initNaviTitle() -> QSNaviTitleWidget {
@@ -342,7 +349,6 @@ class QSMusicController {
     }
     
     func handleLoginCommandKey() {
-        
         guard menuStack.last?.type == MenuType.Home.rawValue else {
             beep()
             return
@@ -378,7 +384,6 @@ class QSMusicController {
     }
     
     func handleSearchCommandKey() {
-        
         guard menuStack.last?.type == MenuType.Home.rawValue else {
             beep()
             return
@@ -437,9 +442,13 @@ class QSMusicController {
                 continue
             }
 //            mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
-            self.menu?.handleWithKeyEvent(keyCode: ic)
-            self.handleWithKeyEvent(keyCode: ic)
-            self.player.handleWithKeyEvent(keyCode: ic)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kNotificationKeyEvent), object: ic)
+            }
+//            print(ic)
+//            self.menu?.handleWithKeyEvent(keyEventNoti: ic)
+//            self.handleWithKeyEvent(keyCode: ic)
+//            self.player.handleWithKeyEvent(keyEventNoti: ic)
         } while (ic != CMD_QUIT && ic != CMD_QUIT_LOGOUT)
         
         curs_set(1)
@@ -474,11 +483,11 @@ class QSMusicController {
         }
     }
     
-    func handleWithKeyEvent(keyCode:Int32) {
+    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
         if menu?.progress != nil, menu!.progress!.isLoading {
             return
         }
-        
+        let keyCode = keyEventNoti.object as! Int32
         switch keyCode {
         case CMD_BACK.0, CMD_BACK.1:
             self.pop()

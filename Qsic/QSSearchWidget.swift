@@ -27,7 +27,6 @@ class QSSearchWidget: QSWidget {
     }
     
     func getInputContent(completionHandler:@escaping (String)->()) {
-
         inputWidget = QSInputWidget.init(startX: 8, startY: 0, width: 20, height: 1)
         self.addSubWidget(widget: inputWidget!)
         let content = inputWidget?.input()

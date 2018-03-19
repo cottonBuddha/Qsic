@@ -58,7 +58,6 @@ extension String {
     }
     
     func lengthInCurses() -> Int {
-        
         guard self.count > 0 else {return 0}
         
         var number = 0
@@ -89,7 +88,6 @@ extension Data {
 extension Array {
     
     func split(num:Int) -> [Array] {
-        
         if num >= self.count {
             return [self]
         }

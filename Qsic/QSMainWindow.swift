@@ -33,5 +33,4 @@ class QSMainWindow: QSWidget {
     func end() {
         endwin()
     }
-    
 }

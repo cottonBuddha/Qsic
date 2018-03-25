@@ -64,16 +64,12 @@ class QSMusicController {
         RunLoop.main.run()
     }
     
-    @objc func hahah(keyCode:Notification) {
-        print("看一看瞧一瞧：\(String(describing: keyCode.object))")
-    }
-    
-    func initNaviTitle() -> QSNaviTitleWidget {
+    private func initNaviTitle() -> QSNaviTitleWidget {
         let naviTitle = QSNaviTitleWidget.init(startX: 3, startY: 1, width: Int(COLS - 3 - 1), height: 1)
         return naviTitle
     }
     
-    func initHomeMenu() -> QSMenuWidget {
+    private func initHomeMenu() -> QSMenuWidget {
         let menuData = [("榜单",0),
                         ("推荐",1),
                         ("歌手",2),
@@ -125,7 +121,7 @@ class QSMusicController {
         return mainMenu
     }
     
-    func handleHomeSelection(item:MenuItemModel) {
+    private func handleHomeSelection(item:MenuItemModel) {
         let code = item.code
         switch code {
         case 0:
@@ -182,14 +178,13 @@ class QSMusicController {
         }
     }
     
-    func handleArtistSelection(item:ArtistModel) {
-        
+    private func handleArtistSelection(item:ArtistModel) {
         let itemModels = generateSongOrAlbumModels(artistId: item.id)
         let dataModel = QSMenuModel.init(title: item.name, type: MenuType.SongOrAlbum, items: itemModels, currentItemCode: 0)
         self.push(menuModel: dataModel)
     }
     
-    func handleSongOrAlbumSelection(item:SongOrAlbumModel) {
+    private func handleSongOrAlbumSelection(item:SongOrAlbumModel) {
         let code = item.code
         switch code {
         case 0:
@@ -207,7 +202,7 @@ class QSMusicController {
         }
     }
     
-    func handleSongSelection(item:SongModel) {
+    private func handleSongSelection(item:SongModel) {
         player.songList = self.menuStack.last?.items as! [SongModel]
         player.currentIndex = item.code
         if player.currentSongId != nil && player.currentSongId! == player.songList[player.currentIndex].id {
@@ -216,7 +211,7 @@ class QSMusicController {
         player.play()
     }
     
-    func handleRankingSelection(item:RankingModel) {
+    private func handleRankingSelection(item:RankingModel) {
         self.menu?.showProgress()
         API.shared.songListDetail(listId: item.id) { [unowned self] (models) in
             self.menu?.hideProgress()
@@ -225,14 +220,14 @@ class QSMusicController {
         }
     }
     
-    func handleAlbumSelection(item:AlbumModel) {
+    private func handleAlbumSelection(item:AlbumModel) {
         API.shared.getSongsOfAlbum(albumId: item.id) { [unowned self] (models) in
             let dataModel = QSMenuModel.init(title: item.name, type: MenuType.Song, items: models, currentItemCode: 0)
             self.push(menuModel: dataModel)
         }
     }
     
-    func handleSearchTypeSelection(item:SearchModel) {
+    private func handleSearchTypeSelection(item:SearchModel) {
         var searchType = SearchType.Song
         switch item.code {
         case 0:
@@ -267,7 +262,7 @@ class QSMusicController {
         }
     }
     
-    func handleSongListFirstClassSelection(item:MenuItemModel) {
+    private func handleSongListFirstClassSelection(item:MenuItemModel) {
         let code = item.code
         var models: [MenuItemModel] = []
         switch code {
@@ -288,7 +283,7 @@ class QSMusicController {
         self.push(menuModel: dataModel)
     }
     
-    func handleSongListSecondClassSelection(item:MenuItemModel) {
+    private func handleSongListSecondClassSelection(item: MenuItemModel) {
         self.menu?.showProgress()
         API.shared.songlists(type: item.title) { [unowned self] (models) in
             self.menu?.hideProgress()
@@ -297,7 +292,7 @@ class QSMusicController {
         }
     }
     
-    func handleSongListsSelection(item:SongListModel) {
+    private func handleSongListsSelection(item: SongListModel) {
         self.menu?.showProgress()
         API.shared.songListDetail(listId: item.id, completionHandler: { [unowned self]
             (songModels) in
@@ -307,7 +302,7 @@ class QSMusicController {
         })
     }
     
-    func handleAddToMyListSelection(item:SongListModel) {
+    private func handleAddToMyListSelection(item: SongListModel) {
 
         API.shared.addSongToMyList(tracks: item.idOfTheSongShouldBeAdded, pid: item.id) { [unowned self] (finish) in
             if finish {
@@ -318,7 +313,7 @@ class QSMusicController {
         }
     }
     
-    func handleSongOrListSelection(item:MenuItemModel) {
+    private func handleSongOrListSelection(item: MenuItemModel) {
         let code = item.code
         switch code {
         case 0:
@@ -348,7 +343,7 @@ class QSMusicController {
         }
     }
     
-    func handleLoginCommandKey() {
+    private func handleLoginCommandKey() {
         guard menuStack.last?.type == MenuType.Home.rawValue else {
             beep()
             return
@@ -383,7 +378,7 @@ class QSMusicController {
         })
     }
     
-    func handleSearchCommandKey() {
+    private func handleSearchCommandKey() {
         guard menuStack.last?.type == MenuType.Home.rawValue else {
             beep()
             return
@@ -408,7 +403,7 @@ class QSMusicController {
         })
     }
     
-    func handlePlayListCommandKey() {
+    private func handlePlayListCommandKey() {
         if player.songList.count > 0 && menuStack.last?.type != MenuType.PlayList.rawValue{
             let menuModel = QSMenuModel.init(title: "播放列表", type: MenuType.PlayList, items: player.songList, currentItemCode: player.currentIndex)
             self.push(menuModel: menuModel)
@@ -417,7 +412,7 @@ class QSMusicController {
         }
     }
     
-    func handleAddToMyListCommandKey() {
+    private func handleAddToMyListCommandKey() {
         let lastMenu = menuStack.last
         guard lastMenu?.type == MenuType.Song.rawValue else {
             beep()
@@ -469,13 +464,13 @@ class QSMusicController {
         }
     }
     
-    func push(menuModel:QSMenuModel) {
+    private func push(menuModel:QSMenuModel) {
         self.menuStack.append(menuModel)
         self.menu?.presentMenuWithModel(menuModel: menuModel)
         self.navtitle?.push(title: menuModel.title)
     }
     
-    func pop() {
+    private func pop() {
         if self.menuStack.count > 1 {
             self.menuStack.removeLast()
             self.menu?.presentMenuWithModel(menuModel: self.menuStack.last!)
@@ -523,7 +518,7 @@ class QSMusicController {
     
     private var contentLength = 0
     private var lineNum = 0
-    func showHint(with content: String, at lineNum: Int) {
+    private func showHint(with content: String, at lineNum: Int) {
         isHintOn = true
         contentLength = content.lengthInCurses()
         self.lineNum = lineNum
@@ -531,7 +526,7 @@ class QSMusicController {
         refresh()
     }
     
-    func hideHint() {
+    private func hideHint() {
         isHintOn = false
         mvwaddstr(self.mainwin.window, Int32(lineNum), 3, contentLength.space)
         contentLength = 0
@@ -539,7 +534,7 @@ class QSMusicController {
         refresh()
     }
     
-    func removeLoginWidget() {
+    private func removeLoginWidget() {
         guard loginWidget != nil else { return }
         loginWidget?.hide()
         loginWidget = nil
@@ -549,5 +544,4 @@ class QSMusicController {
         navtitle?.currentSong = player.songList[player.currentIndex].title
         navtitle?.drawWidget()
     }
-    
 }

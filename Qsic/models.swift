@@ -32,7 +32,6 @@ public class QSMenuModel {
     }
     
     init(title:String, type:MenuType, items:[MenuItemModel], rowsNum:Int = 10, currentItemCode:Int) {
-        
         self.title = title
         self.type = type.rawValue
         self.items = items
@@ -291,7 +290,6 @@ public class RankingModel: MenuItemModel {
 }
 
 public func generateRankingModels() -> [RankingModel] {
-    
     let rankingList = [
         ("云音乐新歌榜","3779629"),
         ("云音乐热歌榜","3778678"),
@@ -337,7 +335,6 @@ public class SearchModel:MenuItemModel {
         super.init(title: itemTitle, code: code)
     }
 }
-
 
 public func generateSearchTypeModels(content:String) -> [SearchModel] {
     let menuData = [("歌曲",0),
@@ -433,5 +430,3 @@ public func generateSongListModels(type:ClassType) -> [MenuItemModel] {
     }
     return models
 }
-
-

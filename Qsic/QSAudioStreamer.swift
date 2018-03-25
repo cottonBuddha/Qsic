@@ -12,9 +12,7 @@ import AudioToolbox
 public protocol AudioStreamerProtocol : NSObjectProtocol{
     
     func playingDidStart()
-    
     func playingDidEnd()
-    
     func handleNetworkError(error:Error)
 }
 
@@ -258,7 +256,6 @@ func audioQueueOutputCallback(_ clientData:UnsafeMutableRawPointer?, _ inAQ:Audi
 }
 
 func audioQueueRunningListener(clientData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, propertyID: AudioQueuePropertyID) {
-    
     let this = Unmanaged<QSAudioStreamer>.fromOpaque(UnsafeRawPointer(clientData)!).takeUnretainedValue()
     var status: OSStatus = 0
     var dataSize: UInt32 = 0
@@ -270,4 +267,3 @@ func audioQueueRunningListener(clientData: UnsafeMutableRawPointer?, inAQ: Audio
         this.stopped = running == 0
     }
 }
-

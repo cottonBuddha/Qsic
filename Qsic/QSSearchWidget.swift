@@ -31,11 +31,6 @@ class QSSearchWidget: QSWidget {
         self.addSubWidget(widget: inputWidget!)
         let content = inputWidget?.input()
         contentLength = content!.lengthInCurses()
-//        if (content == "/") {
-//            eraseSelf()
-//            return
-//        }
         completionHandler(content!)
     }
-
 }

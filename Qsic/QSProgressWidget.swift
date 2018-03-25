@@ -13,6 +13,7 @@ enum ProgressType: Int {
     case FireFly
     case Ing
 }
+
 class QSProgressWidget: QSWidget  {
     
     private var progressType: ProgressType!
@@ -114,5 +115,4 @@ class QSProgressWidget: QSWidget  {
             }
         })
     }
-
 }

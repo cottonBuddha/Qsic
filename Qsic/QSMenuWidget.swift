@@ -81,7 +81,6 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
     }
     
     @objc func handleWithKeyEvent(keyEventNoti: Notification) {
-        
         if progress != nil, progress!.isLoading {
             return
         }
@@ -138,6 +137,4 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
 }
-

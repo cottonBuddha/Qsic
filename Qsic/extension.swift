@@ -112,7 +112,6 @@ extension Array {
         }
         return splitArr
     }
-    
 }
 
 extension Int {
@@ -139,7 +138,6 @@ extension Int {
         let delayTime = DispatchTime.now() + .seconds(self)
         DispatchQueue.main.asyncAfter(deadline: delayTime, execute: task)
     }
-    
 }
 
 extension CountableRange where Bound == Int {
@@ -150,7 +148,6 @@ extension CountableRange where Bound == Int {
             return  Int(arc4random_uniform(count)) + self.lowerBound
         }
     }
-
 }
 
 extension Dictionary where Key == String {
@@ -211,4 +208,3 @@ extension Dictionary where Key == String {
         return nil
     }
 }
-

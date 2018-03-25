@@ -11,7 +11,6 @@ class QSLoginWidget: QSWidget {
     
     var accountInput: QSInputWidget?
     var passwordInput: QSInputWidget?
-    
     var accountLength: Int = 0
     var passwordLength: Int = 0
     
@@ -48,5 +47,4 @@ class QSLoginWidget: QSWidget {
     func hide() {
         eraseSelf()
     }
-    
 }

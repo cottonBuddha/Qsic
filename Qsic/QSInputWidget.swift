@@ -76,6 +76,4 @@ class QSInputWidget: QSWidget {
         
         return content
     }
-    
 }
-

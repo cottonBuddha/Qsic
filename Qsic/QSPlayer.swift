@@ -50,9 +50,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     var playMode: PlayMode = .OrderCycle
-    
     var streamer: QSAudioStreamer?
-    
     var volumeValue: Float32 = 0.5
     
     private override init() {
@@ -67,7 +65,6 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func play() {
-
         guard songList.count > 0 else { return }
         let id = songList[currentIndex].id
         NotificationCenter.default.post(Notification.init(name:
@@ -164,23 +161,19 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func playSong(url:String) {
-            if self.streamer != nil {
-                self.streamer?.stop()
-                self.streamer?.releaseStreamer()
-                self.streamer = nil
-            }
-            self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
-            self.streamer?.delegate = self
-            self.streamer?.setVolume(value: self.volumeValue)
-            
-            self.isPlaying = true
+        if self.streamer != nil {
+            self.streamer?.stop()
+            self.streamer?.releaseStreamer()
+            self.streamer = nil
+        }
+        self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
+        self.streamer?.delegate = self
+        self.streamer?.setVolume(value: self.volumeValue)
+        self.isPlaying = true
     }
     
-    
     private func getIndex(type:IndexType) -> Int {
-
         if playMode == .OrderCycle || playMode == .SingleCycle {
-            
             currentIndex = currentIndex + type.rawValue
             if currentIndex >= self.songList.count {
                 currentIndex = 0

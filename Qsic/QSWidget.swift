@@ -44,7 +44,6 @@ class QSWidget {
     }
     
     public func resize() {
-        
 //        resizeterm(Int32, Int32)
     }
     
@@ -56,7 +55,6 @@ class QSWidget {
         widget.subWidgets?.forEach({ (widget) in
             widget.addSubWidget(widget: widget)
         })
-        
     }
     
     public func removeSubWidget(widget:QSWidget) {
@@ -83,7 +81,6 @@ class QSWidget {
     deinit {
         destroyWindow()
     }
-    
 }
 
 extension QSWidget : Equatable {

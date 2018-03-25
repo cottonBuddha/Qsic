@@ -527,7 +527,6 @@ class API {
         return addPadding(encText: encText, modulus: modulus)
     }
     
-    
     private func addPadding(encText:String, modulus:String) -> String {
         var ml = modulus.count
         for char in modulus {
@@ -584,6 +583,4 @@ class API {
         
         completionHandler()
     }
-
 }
-

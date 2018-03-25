@@ -51,7 +51,5 @@ class QSNaviTitleWidget: QSWidget {
         self.eraseSelf()
         mvwaddstr(self.window, 0, 0, subStr)
         wrefresh(self.window)
-    }
-    
+    }    
 }
-

@@ -86,14 +86,12 @@ public class SongModel:MenuItemModel {
     var album : String = ""
     
     init(itemDic:Dictionary<String, Any>, code:Int) {
-        
         self.name = itemDic.getString(key: "name")
         self.id = itemDic.getNumber(key: "id").stringValue
         self.mp3Url = itemDic.getString(key: "mp3Url")
         self.quality = itemDic.getString(key: "quality")
         self.artist = itemDic.getString(key: "artist")
         self.album = itemDic.getString(key: "album")
-        
         super.init(title: self.name, code: code)
     }
 }
@@ -132,7 +130,6 @@ public func generateSongModels(data:Data) -> [SongModel] {
         var albumName = ""
 
         if let albumDic = item.optDictionary(key: "album") {
-            
             if let artists = albumDic.optArray(key: "artists") {
                 artists.forEach {
                     let artDic = $0 as! [String:Any]
@@ -196,10 +193,8 @@ public func generateAlbumModels(data:Data) -> [AlbumModel] {
             albums.append(album)
             code = code + 1
         }
-        
         return albums
     }
-    
     return []
 }
 
@@ -273,7 +268,6 @@ public func generateSongListsModels(data: Data) -> [SongListModel] {
         code = code + 1
         lists.append(model)
     })
-    
     return lists
 }
 
@@ -346,7 +340,6 @@ public func generateSearchTypeModels(content:String) -> [SearchModel] {
         let model = SearchModel.init(itemTitle: $0.0, content: content, code: $0.1)
         itemArr.append(model)
     }
-    
     return itemArr
 }
 

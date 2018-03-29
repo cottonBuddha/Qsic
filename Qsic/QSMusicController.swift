@@ -87,7 +87,7 @@ class QSMusicController {
         let nickName = UserDefaults.standard.value(forKey: UD_USER_NICKNAME) as? String ?? "网易云音乐"
         let dataModel = QSMenuModel.init(title: nickName, type:MenuType.Home, items: menuItems, currentItemCode: 0)
         self.menuStack.append(dataModel)
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) { (type,item) in
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) {[unowned self] (type,item) in
             if let menuType = MenuType.init(rawValue: type) {
                 switch menuType {
                 case MenuType.Home:
@@ -117,7 +117,6 @@ class QSMusicController {
                 }
             }
         }
-        
         return mainMenu
     }
     

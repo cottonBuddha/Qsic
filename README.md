@@ -7,7 +7,9 @@
 
 ## 安装
 ```    
-    $ brew tap cottonbuddha/core && brew install qsic
+    $ brew tap cottonbuddha/core && brew install qsic   
+    
+    也可直接从release下载qsic tar包，解压后放到/usr/local/bin下。
 ```
 ## 操作
 快捷键 | 功能
@@ -27,7 +29,7 @@ space | 播放/暂停
  w    | 退出且登出
  a    | 添加到喜欢
  s    | 搜索
- d    | 登录
+ d    | 登录(仅支持手机号)
  f    | 当前播放列表
  1    | 单曲循环
  2    | 顺序播放

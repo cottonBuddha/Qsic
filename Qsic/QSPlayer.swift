@@ -87,7 +87,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         } else {
             let ids = getAllSongId(songList: songList)
             if ids.count <= 60 {
-                API.shared.getSongUrls(ids: ids) { (urlDic) in
+                API.shared.getSongUrls(ids: ids) { [unowned self] (urlDic) in
                     self.urlDic = urlDic!
                     if let url = self.urlDic[id] {
                         self.playSong(url: url)
@@ -97,7 +97,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
                     }
                 }
             } else {
-                API.shared.getSongUrl(id: ids[currentIndex], completionHandler: { (url) in
+                API.shared.getSongUrl(id: ids[currentIndex], completionHandler: { [unowned self] (url) in
                     self.urlDic[id] = url
                     self.playSong(url: url!)
                     self.currentSongId = id

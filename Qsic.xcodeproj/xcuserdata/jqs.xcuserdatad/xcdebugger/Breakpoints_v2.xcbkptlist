@@ -90,12 +90,12 @@
                   moduleName = "Qsic"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/jqs/an/Qsic/Qsic/models.swift"
-                  timestampString = "543698619.993209"
+                  timestampString = "545235424.673888"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "118"
                   endingLineNumber = "118"
-                  offsetFromSymbolStart = "7948">
+                  offsetFromSymbolStart = "9755">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -105,12 +105,12 @@
                   moduleName = "Qsic"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/jqs/an/Qsic/Qsic/models.swift"
-                  timestampString = "543698620.003579"
+                  timestampString = "545235424.676351"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "118"
                   endingLineNumber = "118"
-                  offsetFromSymbolStart = "8053">
+                  offsetFromSymbolStart = "9857">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -129,6 +129,38 @@
             endingLineNumber = "122"
             landmarkName = "generateSongModels(data:)"
             landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Qsic.generateSongModels(data: Foundation.Data) -&gt; Swift.Array&lt;Qsic.SongModel&gt;"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/models.swift"
+                  timestampString = "545235424.681734"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
+                  offsetFromSymbolStart = "9914">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Any) -&gt; () in Qsic.generateSongModels(data: Foundation.Data) -&gt; Swift.Array&lt;Qsic.SongModel&gt;"
+                  moduleName = "Qsic"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jqs/an/Qsic/Qsic/models.swift"
+                  timestampString = "545235424.684684"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

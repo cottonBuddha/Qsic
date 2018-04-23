@@ -34,6 +34,3 @@ if 1 == argCount {
         print("I have no idea of this order! Try -h or -v")
     }
 }
-
-
-

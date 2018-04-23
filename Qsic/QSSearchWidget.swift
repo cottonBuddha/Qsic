@@ -26,7 +26,7 @@ class QSSearchWidget: QSWidget {
         mvwaddstr(self.window, 0, 0, "请输入:")
     }
     
-    func getInputContent(completionHandler:@escaping (String)->()) {
+    public func getInputContent(completionHandler:@escaping (String)->()) {
         inputWidget = QSInputWidget.init(startX: 8, startY: 0, width: 20, height: 1)
         self.addSubWidget(widget: inputWidget!)
         let content = inputWidget?.input()

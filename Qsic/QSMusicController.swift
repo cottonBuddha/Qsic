@@ -11,56 +11,49 @@ import Darwin
 
 enum MenuType: Int {
     case Home
-    case Song
-    case Help
-    case Album
     case Artist
-    case Search
-    case Ranking
-    case PlayList
-    case SongLists
-    case SongOrList
+    case Song
+    case Album
     case SongOrAlbum
+    case SongOrList
+    case Ranking
+    case Search
+    case Help
+    case PlayList
     case SongListFirstClass
     case SongListSecondClass
+    case SongLists
 }
 
 public protocol KeyEventProtocol {
-    func handleWithKeyEvent(keyEventNoti: Notification)
+    func handleWithKeyEvent(keyCode:Int32)
 }
 
-let kNotificationKeyEvent = "NotificationKeyEvent"
-
-class QSMusicController {
+class QSMusicController : PlayerControlable {
     
     private var navtitle : QSNaviTitleWidget?
     private var menu : QSMenuWidget?
     private var menuStack : [QSMenuModel] = []
-    private var getchThread : Thread?
+    private var getChThread : Thread?
     private var searchBar : QSSearchWidget?
     private var loginWidget : QSLoginWidget?
     private var player : QSPlayer = QSPlayer.shared
     private var isHintOn: Bool = false
-    
-    var mainwin : QSMainWindow = QSMainWindow.init()
+    private var dancer: QSProgressWidget = QSProgressWidget.init(startX: 0, startY: 0, type: .Dancer)
 
+    var mainwin : QSMainWindow = QSMainWindow.init()
+    
     func start() {
         self.menu = self.initHomeMenu()
         self.mainwin.addSubWidget(widget: self.menu!)
-        
         self.navtitle = self.initNaviTitle()
         self.mainwin.addSubWidget(widget: self.navtitle!)
-        
         self.navtitle?.push(title: self.menu!.title)
-        
-        self.getchThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
-        self.getchThread?.start()
-        
-        self.mainwin.addSubWidget(widget: player.dancer!)
-        
+        self.player.delegate = self
+        self.getChThread = Thread.init(target: self, selector: #selector(QSMusicController.listenToInstructions), object: nil)
+        self.getChThread?.start()
+        self.mainwin.addSubWidget(widget: dancer)
         NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.songChanged), name:Notification.Name(rawValue: kNotificationSongHasChanged), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(QSMusicController.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
-
         RunLoop.main.run()
     }
     
@@ -83,11 +76,10 @@ class QSMusicController {
             let item = MenuItemModel.init(title: $0.0, code: $0.1)
             menuItems.append(item)
         }
-        
         let nickName = UserDefaults.standard.value(forKey: UD_USER_NICKNAME) as? String ?? "网易云音乐"
         let dataModel = QSMenuModel.init(title: nickName, type:MenuType.Home, items: menuItems, currentItemCode: 0)
         self.menuStack.append(dataModel)
-        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) {[unowned self] (type,item) in
+        let mainMenu = QSMenuWidget.init(startX: 3, startY: 3, width: Int(COLS-6), dataModel: dataModel) { (type,item) in
             if let menuType = MenuType.init(rawValue: type) {
                 switch menuType {
                 case MenuType.Home:
@@ -117,6 +109,7 @@ class QSMusicController {
                 }
             }
         }
+        
         return mainMenu
     }
     
@@ -138,7 +131,7 @@ class QSMusicController {
             }
             let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongOrList, items: menuItems, currentItemCode: 0)
             self.push(menuModel: dataModel)
-
+            
         case 2:
             self.menu?.showProgress()
             API.shared.artists { [unowned self] (artists) in
@@ -146,7 +139,7 @@ class QSMusicController {
                 let dataModel = QSMenuModel.init(title: "歌手", type:MenuType.Artist, items: artists, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
-
+            
         case 3:
             let models = generateListClassModels()
             let dataModel = QSMenuModel.init(title: "歌单", type: MenuType.SongListFirstClass, items: models, currentItemCode: 0)
@@ -163,7 +156,7 @@ class QSMusicController {
                     self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
                 }
             })
-
+            
         case 5:
             self.handleSearchCommandKey()
             
@@ -187,12 +180,16 @@ class QSMusicController {
         let code = item.code
         switch code {
         case 0:
+            self.menu?.showProgress()
             API.shared.getSongsOfArtist(artistId: item.artistId) { [unowned self] (models) in
+                self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             }
         case 1:
+            self.menu?.showProgress()
             API.shared.getAlbumsOfArtist(artistId: item.artistId, completionHandler: { [unowned self] (models) in
+                self.menu?.hideProgress()
                 let dataModel = QSMenuModel.init(title: "专辑", type: MenuType.Album, items: models, currentItemCode: 0)
                 self.push(menuModel: dataModel)
             })
@@ -256,7 +253,7 @@ class QSMusicController {
             case .List:
                 let menuModel = QSMenuModel.init(title: "歌单", type: MenuType.SongLists, items: models, currentItemCode: 0)
                 self.push(menuModel: menuModel)
-//                mvaddstr(2, 2, models.first?.title)
+                //mvaddstr(2, 2, models.first?.title)
             }
         }
     }
@@ -282,7 +279,7 @@ class QSMusicController {
         self.push(menuModel: dataModel)
     }
     
-    private func handleSongListSecondClassSelection(item: MenuItemModel) {
+    private func handleSongListSecondClassSelection(item:MenuItemModel) {
         self.menu?.showProgress()
         API.shared.songlists(type: item.title) { [unowned self] (models) in
             self.menu?.hideProgress()
@@ -291,7 +288,7 @@ class QSMusicController {
         }
     }
     
-    private func handleSongListsSelection(item: SongListModel) {
+    private func handleSongListsSelection(item:SongListModel) {
         self.menu?.showProgress()
         API.shared.songListDetail(listId: item.id, completionHandler: { [unowned self]
             (songModels) in
@@ -301,8 +298,7 @@ class QSMusicController {
         })
     }
     
-    private func handleAddToMyListSelection(item: SongListModel) {
-
+    private func handleAddToMyListSelection(item:SongListModel) {
         API.shared.addSongToMyList(tracks: item.idOfTheSongShouldBeAdded, pid: item.id) { [unowned self] (finish) in
             if finish {
                 self.showHint(with: "添加完成，请返回↵", at: 14)
@@ -312,7 +308,7 @@ class QSMusicController {
         }
     }
     
-    private func handleSongOrListSelection(item: MenuItemModel) {
+    private func handleSongOrListSelection(item:MenuItemModel) {
         let code = item.code
         switch code {
         case 0:
@@ -347,19 +343,16 @@ class QSMusicController {
             beep()
             return
         }
-        
         if player.isPlaying {
-            player.dancer?.pause()
+            dancer.pause()
         }
-
         let startY = menuStack.last?.type == MenuType.Home.rawValue ? 11 : 14
         self.loginWidget = QSLoginWidget.init(startX: 3, startY: startY)
         self.mainwin.addSubWidget(widget: self.loginWidget!)
         self.loginWidget?.getInputContent(completionHandler: { (account, password) in
-
             API.shared.login(account: account, password: password, completionHandler: { [unowned self] (accountNameAndId) in
                 if self.player.isPlaying {
-                    self.player.dancer?.load()
+                    self.dancer.load()
                 }
                 self.removeLoginWidget()
                 if accountNameAndId.0 != "" {
@@ -368,7 +361,6 @@ class QSMusicController {
                     self.navtitle?.drawWidget()
                     UserDefaults.standard.set(accountNameAndId.0, forKey: UD_USER_NICKNAME)
                     UserDefaults.standard.set(accountNameAndId.1, forKey: UD_USER_ID)
-
                     self.showHint(with: "登录成功！", at: 11)
                 } else {
                     self.showHint(with: "登录失败！", at: 11)
@@ -382,20 +374,21 @@ class QSMusicController {
             beep()
             return
         }
-        
         if player.isPlaying {
-            player.dancer?.pause()
+            dancer.pause()
         }
-        
         let startY = 11
         searchBar = QSSearchWidget.init(startX: 3, startY: startY)
         mainwin.addSubWidget(widget: searchBar!)
         searchBar?.getInputContent(completionHandler: {[unowned self] (content) in
             if self.player.isPlaying {
-                self.player.dancer?.load()
+                self.dancer.load()
             }
             self.searchBar?.eraseSelf()
             self.mainwin.removeSubWidget(widget: self.searchBar!)
+            if content == "" {
+                return
+            }
             let models = generateSearchTypeModels(content: content)
             let menuModel = QSMenuModel.init(title: "搜索", type: MenuType.Search, items: models, currentItemCode: 0)
             self.push(menuModel: menuModel)
@@ -435,14 +428,10 @@ class QSMusicController {
                 self.hideHint()
                 continue
             }
-//            mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kNotificationKeyEvent), object: ic)
-            }
-//            print(ic)
-//            self.menu?.handleWithKeyEvent(keyEventNoti: ic)
-//            self.handleWithKeyEvent(keyCode: ic)
-//            self.player.handleWithKeyEvent(keyEventNoti: ic)
+            //mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
+            self.menu?.handleWithKeyEvent(keyCode: ic)
+            self.handleWithKeyEvent(keyCode: ic)
+            self.player.handleWithKeyEvent(keyCode: ic)
         } while (ic != CMD_QUIT && ic != CMD_QUIT_LOGOUT)
         
         curs_set(1)
@@ -456,7 +445,7 @@ class QSMusicController {
         DispatchQueue.main.async {
             self.menu?.eraseSelf()
             self.navtitle?.eraseSelf()
-            self.player.dancer?.eraseSelf()
+            self.dancer.eraseSelf()
             self.mainwin.end()
             NotificationCenter.default.removeObserver(self)
             exit(0)
@@ -477,11 +466,11 @@ class QSMusicController {
         }
     }
     
-    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
+    private func handleWithKeyEvent(keyCode:Int32) {
         if menu?.progress != nil, menu!.progress!.isLoading {
             return
         }
-        let keyCode = keyEventNoti.object as! Int32
+        
         switch keyCode {
         case CMD_BACK.0, CMD_BACK.1:
             self.pop()
@@ -542,5 +531,13 @@ class QSMusicController {
     @objc func songChanged() {
         navtitle?.currentSong = player.songList[player.currentIndex].title
         navtitle?.drawWidget()
+    }
+    
+    func playerWillPlay() {
+        self.dancer.load()
+    }
+    
+    func playerWillPause() {
+        self.dancer.pause()
     }
 }

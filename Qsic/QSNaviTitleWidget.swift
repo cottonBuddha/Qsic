@@ -17,17 +17,17 @@ class QSNaviTitleWidget: QSWidget {
         super.init(startX: startX, startY: startY, width: width, height: 2)
     }
     
-    func push(title:String) {
+    public func push(title:String) {
         self.titleStack.append(title)
         self.refreshNaviTitle()
     }
     
-    func pop() {
+    public func pop() {
         self.titleStack.removeLast()
         self.refreshNaviTitle()
     }
     
-    func refreshNaviTitle() {
+    public func refreshNaviTitle() {
         drawWidget()
     }
     
@@ -51,5 +51,5 @@ class QSNaviTitleWidget: QSWidget {
         self.eraseSelf()
         mvwaddstr(self.window, 0, 0, subStr)
         wrefresh(self.window)
-    }    
+    }
 }

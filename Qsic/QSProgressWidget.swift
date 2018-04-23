@@ -49,7 +49,7 @@ class QSProgressWidget: QSWidget  {
         wrefresh(self.window)
     }
     
-    func load() {
+    public func load() {
         DispatchQueue.main.async {
             if self.isLoading { return }
             self.isLoading = true
@@ -57,20 +57,20 @@ class QSProgressWidget: QSWidget  {
         }
     }
     
-    func end() {
+    public func end() {
         self.isLoading = false
         self.timer?.invalidate()
         self.timer = nil
         self.eraseSelf()
     }
     
-    func pause() {
+    public func pause() {
         self.isLoading = false
         let type:ProgressType = self.progressType
         var item = "[PAUSE]"
         switch type {
         case .Dancer:
-            item = "╭(￣３￣)╯"
+            item = "╭(￣３￣)ー"
         default: break
             
         }

@@ -11,6 +11,7 @@ class QSLoginWidget: QSWidget {
     
     var accountInput: QSInputWidget?
     var passwordInput: QSInputWidget?
+    
     var accountLength: Int = 0
     var passwordLength: Int = 0
     
@@ -30,7 +31,7 @@ class QSLoginWidget: QSWidget {
         mvwaddstr(self.window, 2, 0, "密码:")
     }
     
-    func getInputContent(completionHandler:(String,String)->()) {
+    public func getInputContent(completionHandler:(String,String)->()) {
         accountInput = QSInputWidget.init(startX: 6, startY: 1, width: 40, height: 1)
         self.addSubWidget(widget: accountInput!)
         let account = accountInput?.input()
@@ -44,7 +45,7 @@ class QSLoginWidget: QSWidget {
         completionHandler(account!,password!)
     }
     
-    func hide() {
+    public func hide() {
         eraseSelf()
     }
 }

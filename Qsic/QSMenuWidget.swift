@@ -10,7 +10,7 @@ import Foundation
 import Darwin
 
 class QSMenuWidget: QSWidget,KeyEventProtocol {
-
+    
     var title : String = ""
     var type : Int = 0
     var selected : ((_ type:Int, _ selectedItem: MenuItemModel) -> ())?
@@ -42,7 +42,6 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         self.selected = selected
         super.init(startX: startX, startY: startY, width: width, height: dataModel.rowsNum)
         self.setUpMenu(dataModel: dataModel)
-        NotificationCenter.default.addObserver(self, selector: #selector(QSMenuWidget.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
     }
     
     private func setUpMenu(dataModel:QSMenuModel) {
@@ -54,11 +53,11 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         self.drawMenu()
         wrefresh(self.window)
     }
-
+    
     private func drawMenu() {
         for index in 0..<self.splitItems[self.currentPageIndex].count {
-//            let bcolor = init_color(0, 1, 0, 0)
-//            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
+            //            let bcolor = init_color(0, 1, 0, 0)
+            //            init_pair(1, Int16(COLOR_CYAN), Int16(use_default_colors()))
             mvwaddstr(self.window, Int32(index), 0, splitItems[self.currentPageIndex][index].title)
             mvwchgat(self.window, Int32(self.currentRowIndex), 0, -1, 2097152, 1, nil)
         }
@@ -68,23 +67,24 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         }
     }
     
-    func presentMenuWithModel(menuModel:QSMenuModel) {
+    public func presentMenuWithModel(menuModel:QSMenuModel) {
         self.eraseSelf()
         self.setUpMenu(dataModel: menuModel)
         self.currentItemCode = menuModel.currentItemCode
         self.drawWidget()
     }
     
-    func refreshMenu() {
+    private func refreshMenu() {
         self.eraseSelf()
         self.drawWidget()
     }
     
-    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
+    func handleWithKeyEvent(keyCode:Int32) {
+        
         if progress != nil, progress!.isLoading {
             return
         }
-        let keyCode = keyEventNoti.object as! Int32
+        
         switch keyCode {
         case CMD_UP:
             self.currentItemCode = self.currentItemCode - 1
@@ -104,22 +104,22 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
             if self.selected != nil && self.dataModel != nil && self.dataModel.items.count != 0 {
                 self.selected!(self.type, self.dataModel.items[self.currentItemCode])
             }
-//        case CMD_PLAY_PREVIOUS.0, CMD_PLAY_PREVIOUS.1:
-//            if self.type == MenuType.Song.rawValue {
-//                self.currentItemCode = self.currentItemCode - 1
-//                self.refreshMenu()
-//            }
-//        case CMD_PLAY_NEXT.0, CMD_PLAY_NEXT.1:
-//            if self.type == MenuType.Song.rawValue {
-//                self.currentItemCode = self.currentItemCode + 1
-//                self.refreshMenu()
-//            }
+            //        case CMD_PLAY_PREVIOUS.0, CMD_PLAY_PREVIOUS.1:
+            //            if self.type == MenuType.Song.rawValue {
+            //                self.currentItemCode = self.currentItemCode - 1
+            //                self.refreshMenu()
+            //            }
+            //        case CMD_PLAY_NEXT.0, CMD_PLAY_NEXT.1:
+            //            if self.type == MenuType.Song.rawValue {
+            //                self.currentItemCode = self.currentItemCode + 1
+            //                self.refreshMenu()
+        //            }
         default:
-          break
+            break
         }
     }
     
-    func showProgress() {
+    public func showProgress() {
         guard progress == nil else { return }
         let startX = self.dataModel.items[self.currentItemCode].title.lengthInCurses()
         progress = QSProgressWidget.init(startX: startX, startY: self.currentRowIndex, type: .FireFly)
@@ -127,14 +127,10 @@ class QSMenuWidget: QSWidget,KeyEventProtocol {
         progress!.load()
     }
     
-    func hideProgress() {
+    public func hideProgress() {
         guard progress != nil else { return }
         progress!.end()
         self.removeSubWidget(widget: progress!)
         progress = nil
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }

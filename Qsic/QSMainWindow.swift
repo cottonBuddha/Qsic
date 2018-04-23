@@ -18,14 +18,14 @@ class QSMainWindow: QSWidget {
         keypad(stdscr, true)
         noecho()
         cbreak()
-/* 背景色遮挡我终端的背景图，所以不要了。
-        use_default_colors()
-        start_color()
-        init_pair(1,Int16(COLOR_WHITE),Int16(COLOR_BLUE));
-        init_pair(2,Int16(COLOR_BLUE),Int16(COLOR_WHITE));
-        init_pair(3,Int16(COLOR_RED),Int16(COLOR_CYAN));
-        bkgd(3)
- */
+        /* 背景色遮挡我终端的背景图，所以不要了。
+         use_default_colors()
+         start_color()
+         init_pair(1,Int16(COLOR_WHITE),Int16(COLOR_BLUE));
+         init_pair(2,Int16(COLOR_BLUE),Int16(COLOR_WHITE));
+         init_pair(3,Int16(COLOR_RED),Int16(COLOR_CYAN));
+         bkgd(3)
+         */
         curs_set(0)
         refresh()
     }

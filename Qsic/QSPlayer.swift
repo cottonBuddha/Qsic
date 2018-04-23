@@ -19,20 +19,26 @@ enum IndexType : Int {
     case Previous = -1
 }
 
+@objc protocol PlayerControlable {
+    
+    func playerWillPlay()
+    func playerWillPause()
+}
+
 let kNotificationSongHasChanged = "notificationSongHasChanged"
 
 class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     private static let sharedInstance = QSPlayer()
     
+    weak var delegate: PlayerControlable?
+    
     open class var shared: QSPlayer {
         get {
             return sharedInstance
         }
     }
-    
-    var dancer: QSProgressWidget?
-
+        
     var currentSongId: String?
     var songList: [SongModel] = []
     var currentIndex: Int = 0
@@ -41,22 +47,25 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     
     var isPlaying : Bool = false {
         didSet {
+            guard delegate != nil else {
+                return
+            }
             if isPlaying {
-                dancer?.load()
+                delegate?.playerWillPlay()
             } else {
-                dancer?.pause()
+                delegate?.playerWillPause()
             }
         }
     }
     
     var playMode: PlayMode = .OrderCycle
+    
     var streamer: QSAudioStreamer?
+    
     var volumeValue: Float32 = 0.5
     
     private override init() {
         super.init()
-        dancer = QSProgressWidget.init(startX: 0, startY: 0, type: .Dancer)
-        NotificationCenter.default.addObserver(self, selector: #selector(QSPlayer.handleWithKeyEvent(keyEventNoti:)), name:Notification.Name(rawValue: kNotificationKeyEvent), object: nil)
     }
     
     func play(songList:[SongModel]) {
@@ -87,18 +96,26 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         } else {
             let ids = getAllSongId(songList: songList)
             if ids.count <= 60 {
-                API.shared.getSongUrls(ids: ids) { [unowned self] (urlDic) in
+                API.shared.getSongUrls(ids: ids) { (urlDic) in
+                    guard urlDic != nil else {
+                        beep()
+                        return
+                    }
                     self.urlDic = urlDic!
                     if let url = self.urlDic[id] {
                         self.playSong(url: url)
                         self.currentSongId = id
                     } else {
-//                        self.next()
+                        //self.next()
+                        beep()
                     }
                 }
             } else {
-                API.shared.getSongUrl(id: ids[currentIndex], completionHandler: { [unowned self] (url) in
-                    self.urlDic[id] = url
+                API.shared.getSongUrl(id: ids[currentIndex], completionHandler: { (url) in
+                    guard url != nil else {
+                        beep()
+                        return
+                    }
                     self.playSong(url: url!)
                     self.currentSongId = id
                 })
@@ -113,16 +130,14 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         }
         return urls
     }
-
+    
     func next() {
-//        guard isPlayingDidStart else { return }
         pause()
         self.currentIndex = getIndex(type: .Next)
         play()
     }
     
     func previous() {
-//        guard isPlayingDidStart else { return }
         pause()
         self.currentIndex = getIndex(type: .Previous)
         play()
@@ -169,11 +184,15 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
         self.streamer?.delegate = self
         self.streamer?.setVolume(value: self.volumeValue)
+        
         self.isPlaying = true
     }
     
+    
     private func getIndex(type:IndexType) -> Int {
+        
         if playMode == .OrderCycle || playMode == .SingleCycle {
+            
             currentIndex = currentIndex + type.rawValue
             if currentIndex >= self.songList.count {
                 currentIndex = 0
@@ -186,7 +205,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         } else if playMode == .ShuffleCycle {
             currentIndex = (0..<urlDic.count).random
         }
-
+        
         return currentIndex
     }
     
@@ -204,13 +223,11 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func handleNetworkError(error: Error) {
-//        print(error)
+        //        print(error)
     }
     
-    @objc func handleWithKeyEvent(keyEventNoti: Notification) {
+    func handleWithKeyEvent(keyCode:Int32) {
         guard self.songList.count > 0 else { return }
-        let keyCode = keyEventNoti.object as! Int32
-
         switch keyCode {
         case CMD_PLAY_PAUSE:
             guard songList.count > 0 else { return }
@@ -236,9 +253,5 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         default:
             break
         }
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }

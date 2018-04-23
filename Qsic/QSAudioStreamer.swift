@@ -62,7 +62,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
     }
     
     deinit {
-        mvaddstr(1, 1, "关了")
+//        mvaddstr(1, 1, "关了")
     }
     
     func play() {

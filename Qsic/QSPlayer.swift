@@ -43,6 +43,8 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     var songList: [SongModel] = []
     var currentIndex: Int = 0
     var isPlayingDidStart: Bool = false
+    let playerQueue = DispatchQueue.init(label: "playerQueue")
+    
     private var urlDic : [String:String] = [:]
     
     var isPlaying : Bool = false {
@@ -58,11 +60,10 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         }
     }
     
-    var playMode: PlayMode = .OrderCycle
+    private var playMode: PlayMode = .OrderCycle
     
-    var streamer: QSAudioStreamer?
-    
-    var volumeValue: Float32 = 0.5
+    private var streamer: QSAudioStreamer?
+    private var volumeValue: Float32 = 0.5
     
     private override init() {
         super.init()
@@ -76,8 +77,11 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     func play() {
         guard songList.count > 0 else { return }
         let id = songList[currentIndex].id
-        NotificationCenter.default.post(Notification.init(name:
-            Notification.Name(rawValue: kNotificationSongHasChanged)))
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(Notification.init(name:
+                Notification.Name(rawValue: kNotificationSongHasChanged)))
+        }
+        
         if let url = urlDic[id] {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyyMMddHHmmss"
@@ -106,7 +110,6 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
                         self.playSong(url: url)
                         self.currentSongId = id
                     } else {
-                        //self.next()
                         beep()
                     }
                 }
@@ -176,16 +179,18 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
     }
     
     func playSong(url:String) {
-        if self.streamer != nil {
-            self.streamer?.stop()
-            self.streamer?.releaseStreamer()
-            self.streamer = nil
+        playerQueue.async {
+            if self.streamer != nil {
+                self.streamer?.stop()
+                self.streamer?.releaseStreamer()
+                self.streamer = nil
+            }
+            self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
+            self.streamer?.delegate = self
+            self.streamer?.setVolume(value: self.volumeValue)
+            
+            self.isPlaying = true
         }
-        self.streamer = QSAudioStreamer.init(url: URL.init(string: url)!)
-        self.streamer?.delegate = self
-        self.streamer?.setVolume(value: self.volumeValue)
-        
-        self.isPlaying = true
     }
     
     
@@ -230,7 +235,7 @@ class QSPlayer : NSObject,AudioStreamerProtocol,KeyEventProtocol {
         guard self.songList.count > 0 else { return }
         switch keyCode {
         case CMD_PLAY_PAUSE:
-            guard songList.count > 0 else { return }
+            guard self.songList.count > 0 else { return }
             if self.isPlaying {
                 self.pause()
             } else {

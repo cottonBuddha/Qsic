@@ -196,7 +196,10 @@ class API {
         }
         let params = ["limit":20, "csrf_token":csrf] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+            guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
@@ -216,7 +219,10 @@ class API {
         let params = ["limit":20, "csrf_token":csrf] as [String : Any]
         
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongListsModels(data: data!)
             completionHandler(models)
         }
@@ -228,7 +234,10 @@ class API {
         let params = ["cat":type, "limit":"100", "order":"hot"]
         
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongListsModels(data: data!)
             completionHandler(models)
         }
@@ -248,7 +257,10 @@ class API {
 
         let params = ["id":listId, "total": "true", "csrf_token":csrf, "limit": 1000, "n": 1000, "offset": 0] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
@@ -276,7 +288,10 @@ class API {
         var idResultStr : String = ""
 
         self.GET(urlStr: rankingUrl!, params: ["id":rankingId]) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let str = String.init(data: data!, encoding: String.Encoding.utf8)
             let regResult = str?.matchRegExp("/song\\?id=(\\d+)")
             regResult?.forEach {
@@ -290,7 +305,10 @@ class API {
             let params = ["ids":"[\(idResultStr)]"]
             
             self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
-                guard data != nil else {return}
+                            guard data != nil else {
+                completionHandler([])
+                return
+            }
                 let models = generateSongModels(data: data!)
                 completionHandler(models)
             }
@@ -306,7 +324,10 @@ class API {
         }
         let params = ["uid":userId, "limit":"100"]
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongListsModels(data: data!)
             completionHandler(models)
         }
@@ -365,7 +386,10 @@ class API {
         let params = ["offset":"0","limit":"100"]
         
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateArtistModles(data: data!)
             completionHandler(models)
         }
@@ -376,7 +400,10 @@ class API {
         let urlStr = self.urlDic["songOfArtist"]! + "/" + artistId
         
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongModels(data: data!)
             completionHandler(models)
         }
@@ -388,7 +415,10 @@ class API {
         let params = ["offset":"0","limit":"100"]
         
         self.GET(urlStr: urlStr, params: params) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateAlbumModels(data: data!)
             completionHandler(models)
         }
@@ -399,7 +429,10 @@ class API {
         let urlStr = self.urlDic["songsOfAlbum"]! + "/" + albumId
         
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
-            guard data != nil else {return}
+                        guard data != nil else {
+                completionHandler([])
+                return
+            }
             let models = generateSongModels(data:data!)
             completionHandler(models)
         }
@@ -432,7 +465,9 @@ class API {
         let params = ["br": 128000, "csrf_token":"", "ids":"[\(id)]"] as [String : Any]
         
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
-            guard data != nil else {return}
+            guard data != nil else {
+                return
+            }
             if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 let dataDic = dataArr.lastObject as! NSDictionary
@@ -447,7 +482,10 @@ class API {
         let params = ["br": 128000, "csrf_token":"", "ids":idsStr] as [String : Any]
         
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
-            guard data != nil else {return}
+            guard data != nil else {
+                completionHandler([:])
+                return
+            }
             var idAndUrlPairs : [String:String] = [:]
             if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray

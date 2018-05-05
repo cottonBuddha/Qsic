@@ -70,7 +70,7 @@ class QSProgressWidget: QSWidget  {
         var item = "[PAUSE]"
         switch type {
         case .Dancer:
-            item = "╭(￣３￣)ー"
+            item = "╭(￣３￣)╯"
         default: break
             
         }

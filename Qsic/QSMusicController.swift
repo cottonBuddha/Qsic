@@ -153,7 +153,7 @@ class QSMusicController : PlayerControlable {
                     let dataModel = QSMenuModel.init(title: "收藏", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：接口出错，或未登录，请按\"d\"键进行登录", at: 11)
                 }
             })
             
@@ -316,10 +316,10 @@ class QSMusicController : PlayerControlable {
             API.shared.recommendSongs(completionHandler: { [unowned self] (models) in
                 self.menu?.hideProgress()
                 if models.count > 0 {
-                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.Song, items: models, currentItemCode: 0)
+                    let dataModel = QSMenuModel.init(title: "歌曲", type:MenuType.Song, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：接口出错，或未登录，请返回首页按\"d\"键进行登录", at: 11)
                 }
             })
         case 1:
@@ -327,10 +327,10 @@ class QSMusicController : PlayerControlable {
             API.shared.recommendPlayList(completionHandler: { [unowned self] (models) in
                 self.menu?.hideProgress()
                 if models.count > 0 {
-                    let dataModel = QSMenuModel.init(title: "推荐", type:MenuType.SongLists, items: models, currentItemCode: 0)
+                    let dataModel = QSMenuModel.init(title: "专辑", type:MenuType.SongLists, items: models, currentItemCode: 0)
                     self.push(menuModel: dataModel)
                 } else {
-                    self.showHint(with: "提示：未登录，请返回首页按\"d\"键进行登录", at: 11)
+                    self.showHint(with: "提示：接口出错，或未登录，请返回首页按\"d\"键进行登录", at: 11)
                 }
             })
         default:
@@ -429,9 +429,11 @@ class QSMusicController : PlayerControlable {
                 continue
             }
             //mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
-            self.menu?.handleWithKeyEvent(keyCode: ic)
-            self.handleWithKeyEvent(keyCode: ic)
+            DispatchQueue.main.async {
+                self.handleWithKeyEvent(keyCode: ic)
+            }
             self.player.handleWithKeyEvent(keyCode: ic)
+            self.menu?.handleWithKeyEvent(keyCode: ic)
         } while (ic != CMD_QUIT && ic != CMD_QUIT_LOGOUT)
         
         curs_set(1)

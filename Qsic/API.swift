@@ -150,7 +150,9 @@ class API {
                         userId = idNum.stringValue
                     }
                 }
-                completionHandler((accountName,userId))
+                DispatchQueue.main.async {
+                    completionHandler((accountName,userId))
+                }
             }
         }
     }
@@ -172,7 +174,9 @@ class API {
                     userId = idNum.stringValue
                 }
             }
-            completionHandler((accountName,userId))
+            DispatchQueue.main.async {
+                completionHandler((accountName,userId))
+            }
         }
     }
     
@@ -197,11 +201,15 @@ class API {
         let params = ["limit":20, "csrf_token":csrf] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
             guard data != nil else {
-                completionHandler([])
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -219,12 +227,16 @@ class API {
         let params = ["limit":20, "csrf_token":csrf] as [String : Any]
         
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongListsModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -234,12 +246,16 @@ class API {
         let params = ["cat":type, "limit":"100", "order":"hot"]
         
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongListsModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -257,12 +273,16 @@ class API {
 
         let params = ["id":listId, "total": "true", "csrf_token":csrf, "limit": 1000, "n": 1000, "offset": 0] as [String : Any]
         self.POST(urlStr: urlStr!, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -288,8 +308,10 @@ class API {
         var idResultStr : String = ""
 
         self.GET(urlStr: rankingUrl!, params: ["id":rankingId]) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let str = String.init(data: data!, encoding: String.Encoding.utf8)
@@ -305,12 +327,16 @@ class API {
             let params = ["ids":"[\(idResultStr)]"]
             
             self.GET(urlStr: detailUrl!, params: params) { (data, response, error) in
-                            guard data != nil else {
-                completionHandler([])
-                return
-            }
+                guard data != nil else {
+                    DispatchQueue.main.async {
+                        completionHandler([])
+                    }
+                    return
+                }
                 let models = generateSongModels(data: data!)
-                completionHandler(models)
+                DispatchQueue.main.async {
+                    completionHandler(models)
+                }
             }
         }
     }
@@ -324,12 +350,16 @@ class API {
         }
         let params = ["uid":userId, "limit":"100"]
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongListsModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -346,7 +376,9 @@ class API {
                     finish = true
                 }
             }
-            completionHandler(finish)
+            DispatchQueue.main.async {
+                completionHandler(finish)
+            }
         }
     }
     
@@ -361,7 +393,9 @@ class API {
             if (response as! HTTPURLResponse).statusCode == 200 {
                 finish = true
             }
-            completionHandler(finish)
+            DispatchQueue.main.async {
+                completionHandler(finish)
+            }
         }
     }
 
@@ -372,10 +406,9 @@ class API {
         self.GET(urlStr: urlStr!, params: ["trackId":id, "like":"true"]) { (data, response, error) in
             guard data != nil else {return}
             let obj = data?.jsonObject() as! NSDictionary
-            if obj["code"] as! NSNumber == 200 {
-                completionHandler(true)
-            } else {
-                completionHandler(false)
+            let finish: Bool = obj["code"] as! NSNumber == 200
+            DispatchQueue.main.async {
+                completionHandler(finish)
             }
         }
     }
@@ -386,12 +419,16 @@ class API {
         let params = ["offset":"0","limit":"100"]
         
         self.GET(urlStr: urlStr!, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateArtistModles(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -400,12 +437,16 @@ class API {
         let urlStr = self.urlDic["songOfArtist"]! + "/" + artistId
         
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -415,12 +456,16 @@ class API {
         let params = ["offset":"0","limit":"100"]
         
         self.GET(urlStr: urlStr, params: params) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateAlbumModels(data: data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -429,12 +474,16 @@ class API {
         let urlStr = self.urlDic["songsOfAlbum"]! + "/" + albumId
         
         self.GET(urlStr: urlStr, params: nil) { (data, response, error) in
-                        guard data != nil else {
-                completionHandler([])
+            guard data != nil else {
+                DispatchQueue.main.async {
+                    completionHandler([])
+                }
                 return
             }
             let models = generateSongModels(data:data!)
-            completionHandler(models)
+            DispatchQueue.main.async {
+                completionHandler(models)
+            }
         }
     }
     
@@ -456,7 +505,9 @@ class API {
             case .List:
                 models = generateSongListsModels(data: data!)
             }
-            completionHandler(type,models)
+            DispatchQueue.main.async {
+                completionHandler(type,models)
+            }
         }
     }
     
@@ -471,7 +522,9 @@ class API {
             if let dic = data?.jsonObject() as? NSDictionary {
                 let dataArr = dic["data"] as! NSArray
                 let dataDic = dataArr.lastObject as! NSDictionary
-                completionHandler(dataDic["url"] as? String)
+                DispatchQueue.main.async {
+                    completionHandler(dataDic["url"] as? String)
+                }
             }
         }
     }
@@ -483,7 +536,9 @@ class API {
         
         self.POST(urlStr: "https://music.163.com/weapi/song/enhance/player/url", params: params) { (data, response, error) in
             guard data != nil else {
-                completionHandler([:])
+                DispatchQueue.main.async {
+                    completionHandler([:])
+                }
                 return
             }
             var idAndUrlPairs : [String:String] = [:]
@@ -496,7 +551,9 @@ class API {
                         idAndUrlPairs.updateValue(url, forKey: id!)
                     }
                 }
-                completionHandler(idAndUrlPairs)
+                DispatchQueue.main.async {
+                    completionHandler(idAndUrlPairs)
+                }
             }
         }
     }

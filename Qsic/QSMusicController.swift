@@ -429,11 +429,12 @@ class QSMusicController : PlayerControlable {
                 continue
             }
             //mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
-            DispatchQueue.main.async {
+//            DispatchQueue.main.async {
                 self.handleWithKeyEvent(keyCode: ic)
-            }
+//            }
             self.player.handleWithKeyEvent(keyCode: ic)
             self.menu?.handleWithKeyEvent(keyCode: ic)
+
         } while (ic != CMD_QUIT && ic != CMD_QUIT_LOGOUT)
         
         curs_set(1)

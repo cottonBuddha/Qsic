@@ -47,7 +47,7 @@ class QSAudioStreamer : NSObject,URLSessionDataDelegate{
         self.url = url
         let selfPointer = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
         AudioFileStreamOpen(selfPointer, audioFileStreamPropertyListenerProc, audioFileStreamPacketsProc, kAudioFileMP3Type, &audioFileStreamID)
-        self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+        self.session = URLSession.init(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.current)
         
         let task = self.session.dataTask(with: url)
         task.resume()

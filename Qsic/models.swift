@@ -76,7 +76,7 @@ public func generateArtistModles(data:Data) -> [ArtistModel] {
     return []
 }
 
-//歌曲列表
+//MARK:歌曲列表
 public class SongModel:MenuItemModel {
     var name : String = ""
     var id : String = ""
@@ -151,7 +151,7 @@ public func generateSongModels(data:Data) -> [SongModel] {
     return songModels
 }
 
-//专辑列表
+//MARK:专辑列表
 public class AlbumModel:MenuItemModel {
     var name : String = ""
     var id : String = ""
@@ -199,7 +199,7 @@ public func generateAlbumModels(data:Data) -> [AlbumModel] {
 }
 
 
-//歌曲或专辑选择列表
+//MARK:歌曲或专辑选择列表
 public class SongOrAlbumModel:MenuItemModel {
     var name : String = ""
     var artistId : String = ""
@@ -221,7 +221,7 @@ public func generateSongOrAlbumModels(artistId:String) -> [SongOrAlbumModel] {
     return itemArr
 }
 
-//歌单
+//MARK:歌单
 public class SongListModel: MenuItemModel {
     var name: String = ""
     var id: String = ""
@@ -271,7 +271,7 @@ public func generateSongListsModels(data: Data) -> [SongListModel] {
     return lists
 }
 
-//歌曲榜单
+//MARK:歌曲榜单
 public class RankingModel: MenuItemModel {
     var name : String = ""
     var id : String = ""
@@ -319,7 +319,7 @@ public func generateRankingModels() -> [RankingModel] {
     return itemArr
 }
 
-//搜索类型
+//MARK:搜索类型
 public class SearchModel:MenuItemModel {
     var content : String = ""
     var type : SearchType = SearchType.Song
@@ -343,7 +343,7 @@ public func generateSearchTypeModels(content:String) -> [SearchModel] {
     return itemArr
 }
 
-//帮助
+//MARK:帮助
 public func generateHelpModels() -> [MenuItemModel] {
     let helpData = ["↑"+6.space+"上移动",
                     "↓"+6.space+"下移动",

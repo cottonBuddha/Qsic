@@ -426,9 +426,7 @@ class QSMusicController : PlayerControlable {
                 continue
             }
             //mvwaddstr(self.mainwin.window, 2, 2, "\(ic)")
-//            DispatchQueue.main.async {
-                self.handleWithKeyEvent(keyCode: ic)
-//            }
+            self.handleWithKeyEvent(keyCode: ic)
             self.player.handleWithKeyEvent(keyCode: ic)
             self.menu?.handleWithKeyEvent(keyCode: ic)
 

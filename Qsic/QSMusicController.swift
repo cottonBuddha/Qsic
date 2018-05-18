@@ -412,11 +412,8 @@ class QSMusicController : PlayerControlable {
         }
         let currentItem = lastMenu?.items[lastMenu!.currentItemCode] as! SongModel
         API.shared.like(id: currentItem.id) { [unowned self] (finish) in
-            if finish {
-                self.showHint(with: "已添加至喜欢↵", at: 14)
-            } else {
-                self.showHint(with: "添加失败↵", at: 14)
-            }
+            let hint = finish ? "已添加至喜欢↵" : "添加失败↵"
+            self.showHint(with: hint, at: 14)
         }
     }
     
